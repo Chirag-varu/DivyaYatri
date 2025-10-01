@@ -122,6 +122,20 @@
     }
   }
 
+  /* Advanced UI animations */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   /* Smooth scrolling for better UX */
   html {
     scroll-behavior: smooth;
@@ -131,5 +145,258 @@
   .divyayatri-focus:focus {
     outline: 2px solid #3F3CBB; /* Deep Indigo */
     outline-offset: 2px;
+  }
+
+  /* Enhanced shadow utilities */
+  .shadow-3xl {
+    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    background: rgba(255, 250, 240, 0.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 250, 240, 0.18);
+  }
+
+  /* Advanced Animations & Micro-interactions */
+  
+  /* Stagger animation for child elements */
+  .stagger-animation > * {
+    animation: fadeInUp 0.8s ease-out both;
+  }
+  
+  .stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+  .stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+  .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+  .stagger-animation > *:nth-child(6) { animation-delay: 0.6s; }
+
+  /* Scroll-triggered reveal animation */
+  .reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .reveal-on-scroll.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Enhanced hover effects */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Button ripple effect */
+  .ripple {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ripple::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: width 0.6s, height 0.6s, top 0.6s, left 0.6s;
+    transform: translate(-50%, -50%);
+  }
+  
+  .ripple:active::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Floating animations */
+  .float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .float-delayed {
+    animation: float 3s ease-in-out infinite 1.5s;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* Gradient text animation */
+  .gradient-text-animated {
+    background: linear-gradient(-45deg, #3F3CBB, #FFD166, #FF6B6B, #00A8E8);
+    background-size: 400% 400%;
+    animation: gradientShift 4s ease infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Particle system background */
+  .particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  .particle {
+    position: absolute;
+    background: linear-gradient(45deg, rgba(63, 60, 187, 0.1), rgba(255, 209, 102, 0.1));
+    border-radius: 50%;
+    animation: particleFloat 20s linear infinite;
+  }
+  
+  @keyframes particleFloat {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* Advanced loading skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+  
+  @keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Smooth page transitions */
+  .page-transition {
+    animation: pageEnter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  @keyframes pageEnter {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Enhanced glass morphism variants */
+  .glass-strong {
+    background: rgba(255, 250, 240, 0.35);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 250, 240, 0.25);
+  }
+  
+  .glass-subtle {
+    background: rgba(255, 250, 240, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 250, 240, 0.1);
+  }
+
+  /* Typography enhancements */
+  .text-shadow-soft {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-shadow-strong {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Interactive elements */
+  .interactive-scale {
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .interactive-scale:hover {
+    transform: scale(1.05);
+  }
+  
+  .interactive-scale:active {
+    transform: scale(0.98);
+  }
+
+  /* Progress indicators */
+  .progress-line {
+    background: linear-gradient(90deg, #3F3CBB, #FFD166, #FF6B6B);
+    height: 2px;
+    animation: progressGlow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes progressGlow {
+    0% { box-shadow: 0 0 5px rgba(63, 60, 187, 0.5); }
+    100% { box-shadow: 0 0 20px rgba(255, 209, 102, 0.8); }
+  }
+
+  /* Shimmer effect for loading states */
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  /* Enhanced mobile responsiveness */
+  @media (max-width: 768px) {
+    .glass, .glass-strong, .glass-subtle {
+      backdrop-filter: blur(10px);
+    }
+    
+    .hover-lift:hover {
+      transform: translateY(-4px) scale(1.01);
+    }
+    
+    .interactive-scale:hover {
+      transform: scale(1.02);
+    }
+  }
+
+  /* Touch-friendly interactions */
+  @media (hover: none) and (pointer: coarse) {
+    .hover-lift:active {
+      transform: translateY(-4px) scale(1.01);
+    }
+    
+    .interactive-scale:active {
+      transform: scale(0.95);
+    }
+    
+    .ripple:active::before {
+      width: 200px;
+      height: 200px;
+    }
   }
 }

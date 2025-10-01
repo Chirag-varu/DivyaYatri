@@ -17,6 +17,17 @@ import {
   ArrowRight,
   CheckCircle
 } from 'lucide-react';
+import { 
+  AnimatedBackground, 
+  ScrollProgressIndicator, 
+  EnhancedCard, 
+  RippleButton,
+  AnimatedCounter,
+  FloatingElement,
+  TypewriterText,
+  AdvancedImage
+} from '@/components/ui/enhanced';
+import { useScrollReveal } from '@/hooks/useAdvancedAnimations';
 
 interface Temple {
   _id: string;
@@ -49,6 +60,11 @@ const fetchFeaturedTemples = async (): Promise<Temple[]> => {
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  
+  const heroRef = useScrollReveal();
+  const statsRef = useScrollReveal();
+  const featuresRef = useScrollReveal();
+  const templesRef = useScrollReveal();
 
   const { data: featuredTemples = [] } = useQuery({
     queryKey: ['featured-temples'],
@@ -115,138 +131,243 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#8B0000] to-[#8B0000]/80 py-20 px-4 text-[#FFF8E7] relative overflow-hidden">
-                <div className="absolute inset-0 bg-[#8B0000]/30"></div>
-        <div className="container mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-[#FFD700] drop-shadow-lg">
-            Discover Sacred Temples
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
-            Explore India's spiritual heritage with DivyaYatri - your trusted companion for sacred journeys
-          </p>
+    <AnimatedBackground>
+      <ScrollProgressIndicator />
+      <div className="flex flex-col min-h-screen page-transition">
+        {/* Hero Section */}
+        <section className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 py-24 px-4 text-background relative overflow-hidden">
+          {/* Enhanced animated background elements */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/40 via-transparent to-secondary/20"></div>
+          <FloatingElement delay={0} intensity="strong">
+            <div className="absolute top-20 left-10 w-32 h-32 bg-secondary/15 rounded-full blur-3xl"></div>
+          </FloatingElement>
+          <FloatingElement delay={1} intensity="strong">
+            <div className="absolute bottom-20 right-10 w-40 h-40 bg-accent/15 rounded-full blur-3xl"></div>
+          </FloatingElement>
+          <FloatingElement delay={2} intensity="subtle">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-secondary/5 to-accent/5 rounded-full blur-3xl"></div>
+          </FloatingElement>
           
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} className="max-w-2xl mx-auto relative mb-8">
-            <div className="flex bg-[#FFF8E7] rounded-lg p-2 shadow-xl border border-[#FFD700]/30">
-              <Input
-                type="text"
-                placeholder="Search temples by name, city, or deity..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 border-0 text-gray-900 placeholder:text-gray-500"
-              />
-              <Button type="submit" size="lg" className="ml-2">
-                <Search className="h-5 w-5 mr-2" />
-                Search
-              </Button>
-            </div>
-          </form>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/temples">
-              <Button size="lg" variant="secondary" className="w-full sm:w-auto">
-                Browse All Temples
-              </Button>
-            </Link>
-            <Link to="/about">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-gray-900">
-                Learn More
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-12 bg-white border-b">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-[#FFD700] mb-2">{stat.number}</div>
-                <div className="text-gray-600 text-sm md:text-base">{stat.label}</div>
+          <div className="container mx-auto text-center relative z-10">
+            <div 
+              ref={heroRef.ref}
+              className={`transition-all duration-1000 ${
+                heroRef.isVisible 
+                  ? 'opacity-100 transform translate-y-0' 
+                  : 'opacity-0 transform translate-y-10'
+              }`}
+            >
+              <h1 className="text-5xl md:text-7xl font-bold mb-8 drop-shadow-2xl leading-tight text-shadow-strong">
+                <span className="gradient-text-animated">
+                  Discover Sacred Temples
+                </span>
+              </h1>
+              <div className="text-xl md:text-2xl mb-12 opacity-95 max-w-4xl mx-auto leading-relaxed font-medium">
+                <TypewriterText 
+                  text="Explore India's spiritual heritage with DivyaYatri - your trusted companion for sacred journeys"
+                  speed={40}
+                />
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
+            
+            {/* Enhanced Search Bar */}
+            <div className="stagger-animation">
+              <form onSubmit={handleSearch} className="max-w-3xl mx-auto relative mb-12">
+                <div className="flex glass-strong rounded-2xl p-3 shadow-2xl border border-secondary/30 hover:border-secondary/50 transition-all duration-300 group">
+                  <Input
+                    type="text"
+                    placeholder="Search temples by name, city, or deity..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="flex-1 border-0 text-foreground placeholder:text-foreground/60 bg-transparent text-lg py-3 focus:outline-none"
+                  />
+                  <RippleButton 
+                    type="submit" 
+                    size="lg" 
+                    className="ml-3 px-8 py-3 rounded-xl shadow-lg"
+                  >
+                    <Search className="h-5 w-5 mr-2" />
+                    Search
+                  </RippleButton>
+                </div>
+              </form>
+            </div>
 
-      {/* Features Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose DivyaYatri?
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              We make your spiritual journey smoother with comprehensive temple information and community insights.
-            </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center stagger-animation">
+              <Link to="/temples">
+                <RippleButton 
+                  size="xl" 
+                  variant="secondary" 
+                  className="w-full sm:w-auto shadow-xl hover:shadow-2xl"
+                >
+                  Browse All Temples
+                </RippleButton>
+              </Link>
+              <Link to="/about">
+                <RippleButton 
+                  size="xl" 
+                  variant="outline" 
+                  className="w-full sm:w-auto border-2 border-background text-background hover:bg-background hover:text-primary shadow-xl hover:shadow-2xl"
+                >
+                  Learn More
+                </RippleButton>
+              </Link>
+            </div>
           </div>
+        </section>
+
+        {/* Enhanced Stats Section */}
+        <section className="py-16 bg-gradient-to-r from-background via-muted/10 to-background border-b border-border shadow-lg relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-secondary/5 via-transparent to-accent/5"></div>
+          <div className="container mx-auto px-4 relative z-10">
+            <div 
+              ref={statsRef.ref}
+              className={`grid grid-cols-2 md:grid-cols-4 gap-8 transition-all duration-1000 ${
+                statsRef.isVisible 
+                  ? 'opacity-100 transform translate-y-0' 
+                  : 'opacity-0 transform translate-y-10'
+              }`}
+            >
+              {stats.map((stat, index) => (
+                <div key={index} className="text-center group">
+                  <EnhancedCard 
+                    variant="glass" 
+                    hoverEffect="scale"
+                    delay={index * 0.1}
+                    className="p-6 border border-secondary/10 hover:border-secondary/30"
+                  >
+                    <div className="text-4xl md:text-5xl font-bold text-secondary mb-3 group-hover:text-primary transition-colors duration-300">
+                      {stat.number.includes('+') ? (
+                        <>
+                          <AnimatedCounter end={parseInt(stat.number.replace(/[+,]/g, ''))} />
+                          {stat.number.includes('k') && 'k'}
+                          {stat.number.includes('+') && '+'}
+                        </>
+                      ) : (
+                        stat.number
+                      )}
+                    </div>
+                    <div className="text-foreground/80 text-sm md:text-base font-medium">{stat.label}</div>
+                  </EnhancedCard>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Enhanced Features Section */}
+        <section className="py-24 px-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-secondary/3 via-transparent to-accent/3"></div>
+          <FloatingElement delay={0}>
+            <div className="absolute top-10 right-10 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
+          </FloatingElement>
+          <FloatingElement delay={1}>
+            <div className="absolute bottom-10 left-10 w-48 h-48 bg-accent/5 rounded-full blur-3xl"></div>
+          </FloatingElement>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <Card key={index} className="text-center border-0 shadow-lg hover:shadow-xl hover:shadow-[#FFD700]/20 hover:-translate-y-2 transition-all duration-300 ease-in-out cursor-pointer group">
-                  <CardHeader>
-                    <Icon className="h-12 w-12 mx-auto text-[#FF6F3C] mb-4 group-hover:text-[#FFD700] transition-colors" />
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
-                    <CardDescription className="text-gray-600">
-                      {feature.description}
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              );
-            })}
+          <div className="container mx-auto relative z-10">
+            <div 
+              ref={featuresRef.ref}
+              className={`text-center mb-16 transition-all duration-1000 ${
+                featuresRef.isVisible 
+                  ? 'opacity-100 transform translate-y-0' 
+                  : 'opacity-0 transform translate-y-10'
+              }`}
+            >
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-shadow-soft">
+                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  Why Choose DivyaYatri?
+                </span>
+              </h2>
+              <p className="text-xl text-foreground/80 max-w-3xl mx-auto leading-relaxed">
+                We make your spiritual journey smoother with comprehensive temple information and community insights.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-animation">
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <EnhancedCard 
+                    key={index} 
+                    variant="glass" 
+                    hoverEffect="lift"
+                    delay={index * 0.1}
+                    className="text-center overflow-hidden relative"
+                  >
+                    <CardHeader className="p-8">
+                      <div className="relative mb-6">
+                        <FloatingElement delay={index * 0.2}>
+                          <div className="w-20 h-20 mx-auto bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                            <Icon className="h-10 w-10 text-accent group-hover:text-secondary transition-colors duration-300" />
+                          </div>
+                        </FloatingElement>
+                        <div className="absolute inset-0 bg-gradient-to-r from-accent/20 to-secondary/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      </div>
+                      <CardTitle className="text-xl font-bold mb-4 group-hover:text-primary transition-colors duration-300">
+                        {feature.title}
+                      </CardTitle>
+                      <CardDescription className="text-foreground/70 leading-relaxed text-base">
+                        {feature.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </EnhancedCard>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
       {/* Featured Temples Section */}
-      <section className="py-16 px-4 bg-gray-50">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Featured Temples</h2>
-            <p className="text-lg text-gray-600">Discover some of the most visited and highly rated temples</p>
+      <section className="py-24 px-4 bg-gradient-to-r from-muted/10 via-background to-muted/10 border-y border-border/50 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-secondary/3"></div>
+        
+        <div className="container mx-auto relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Featured Temples</h2>
+            <p className="text-xl text-foreground/80 max-w-3xl mx-auto leading-relaxed">Discover some of the most visited and highly rated temples across India</p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {featuredTemples.length > 0 ? (
               featuredTemples.map((temple) => (
-                <Card key={temple._id} className="temple-card overflow-hidden hover:shadow-xl hover:shadow-[#FFD700]/30 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer group">
-                  <div className="h-48 bg-gradient-to-r from-orange-300 to-red-400 relative">
+                <Card key={temple._id} className="temple-card group overflow-hidden hover:shadow-2xl hover:shadow-secondary/30 hover:-translate-y-2 transition-all duration-500 ease-out cursor-pointer bg-background/90 backdrop-blur-sm rounded-3xl border-0">
+                  <div className="h-56 relative overflow-hidden rounded-t-3xl">
                     {temple.images[0] ? (
                       <img
                         src={temple.images[0]}
                         alt={temple.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-r from-orange-300 to-red-400 flex items-center justify-center text-white text-6xl">
+                      <div className="w-full h-full bg-gradient-to-br from-secondary/20 via-accent/20 to-primary/20 flex items-center justify-center text-primary text-7xl group-hover:scale-110 transition-transform duration-500">
                         🕉
                       </div>
                     )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
-                  <CardHeader>
-                    <CardTitle className="text-lg">{temple.name}</CardTitle>
-                    <CardDescription>
+                  <CardHeader className="p-6">
+                    <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors duration-300">{temple.name}</CardTitle>
+                    <CardDescription className="text-foreground/70 flex items-center">
+                      <MapPin className="h-4 w-4 mr-1 text-accent" />
                       {temple.location.city}, {temple.location.state}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                  <CardContent className="p-6 pt-0">
+                    <p className="text-sm text-foreground/70 mb-6 line-clamp-2 leading-relaxed">
                       {temple.description}
                     </p>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                        <span className="text-sm font-medium">{temple.rating.toFixed(1)}</span>
-                        <span className="text-sm text-gray-500">({temple.reviewCount} reviews)</span>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 bg-secondary/10 px-3 py-1 rounded-full">
+                          <Star className="h-4 w-4 text-secondary fill-current" />
+                          <span className="text-sm font-semibold">{temple.rating.toFixed(1)}</span>
+                        </div>
+                        <span className="text-xs text-foreground/60">({temple.reviewCount} reviews)</span>
                       </div>
                       <Link to={`/temple/${temple._id}`}>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" className="rounded-full px-4 hover:bg-primary hover:text-background transition-all duration-300">
                           View Details
                         </Button>
                       </Link>
@@ -255,27 +376,32 @@ export default function HomePage() {
                 </Card>
               ))
             ) : (
-              // Fallback mock data
+              // Enhanced fallback mock data
               [1, 2, 3, 4, 5, 6].map((temple) => (
-                <Card key={temple} className="temple-card overflow-hidden">
-                  <div className="h-48 bg-gradient-to-r from-orange-300 to-red-400 flex items-center justify-center text-white text-6xl">
+                <Card key={temple} className="temple-card group overflow-hidden hover:shadow-2xl hover:shadow-secondary/30 hover:-translate-y-2 transition-all duration-500 ease-out cursor-pointer bg-background/90 backdrop-blur-sm rounded-3xl border-0">
+                  <div className="h-56 bg-gradient-to-br from-secondary/20 via-accent/20 to-primary/20 flex items-center justify-center text-primary text-7xl group-hover:scale-110 transition-transform duration-500 rounded-t-3xl">
                     🕉
                   </div>
-                  <CardHeader>
-                    <CardTitle>Sacred Temple {temple}</CardTitle>
-                    <CardDescription>City, State</CardDescription>
+                  <CardHeader className="p-6">
+                    <CardTitle className="group-hover:text-primary transition-colors duration-300">Sacred Temple {temple}</CardTitle>
+                    <CardDescription className="flex items-center">
+                      <MapPin className="h-4 w-4 mr-1 text-accent" />
+                      City, State
+                    </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-600 mb-4">
+                  <CardContent className="p-6 pt-0">
+                    <p className="text-sm text-foreground/70 mb-6 leading-relaxed">
                       A beautiful temple with rich history and spiritual significance for devotees.
                     </p>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                        <span className="text-sm font-medium">4.8</span>
-                        <span className="text-sm text-gray-500">(127 reviews)</span>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 bg-secondary/10 px-3 py-1 rounded-full">
+                          <Star className="h-4 w-4 text-secondary fill-current" />
+                          <span className="text-sm font-semibold">4.8</span>
+                        </div>
+                        <span className="text-xs text-foreground/60">(127 reviews)</span>
                       </div>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="rounded-full px-4 hover:bg-primary hover:text-background transition-all duration-300">
                         View Details
                       </Button>
                     </div>
@@ -287,9 +413,9 @@ export default function HomePage() {
 
           <div className="text-center">
             <Link to="/temples">
-              <Button size="lg">
+              <Button size="lg" className="px-8 py-4 text-lg font-semibold rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 bg-primary hover:bg-primary/90">
                 View All Temples
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-3 h-6 w-6" />
               </Button>
             </Link>
           </div>
@@ -297,85 +423,108 @@ export default function HomePage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section className="py-24 px-4 bg-gradient-to-br from-background via-muted/5 to-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/3 via-transparent to-secondary/3"></div>
+        <div className="absolute top-20 right-20 w-72 h-72 bg-gradient-to-r from-secondary/10 to-accent/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-r from-accent/10 to-primary/10 rounded-full blur-3xl"></div>
+        
+        <div className="container mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-8 leading-tight">
                 Everything You Need for Your Spiritual Journey
               </h2>
-              <p className="text-lg text-gray-600 mb-8">
+              <p className="text-xl text-foreground/80 mb-10 leading-relaxed">
                 DivyaYatri provides comprehensive information and tools to make your temple visits 
                 meaningful and hassle-free. Join our community of spiritual seekers.
               </p>
               
-              <div className="space-y-4 mb-8">
+              <div className="space-y-6 mb-10">
                 {benefits.map((benefit, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700">{benefit}</span>
+                  <div key={index} className="flex items-center gap-4 group hover:translate-x-2 transition-transform duration-300">
+                    <div className="w-10 h-10 bg-gradient-to-r from-accent/20 to-secondary/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <CheckCircle className="h-6 w-6 text-accent group-hover:text-secondary transition-colors duration-300" />
+                    </div>
+                    <span className="text-foreground font-medium text-lg">{benefit}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-6">
                 <Link to="/register">
-                  <Button size="lg" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto px-8 py-4 text-lg font-semibold rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
                     Join DivyaYatri
                   </Button>
                 </Link>
                 <Link to="/contact">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto px-8 py-4 text-lg font-semibold rounded-2xl border-2 hover:bg-primary hover:text-background shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
                     Contact Us
                   </Button>
                 </Link>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <Card className="text-center p-6 hover:shadow-lg hover:shadow-[#FFD700]/20 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer group">
-                <Users className="h-12 w-12 mx-auto text-[#FF6F3C] mb-4 group-hover:text-[#FFD700] transition-colors" />
-                <h3 className="font-semibold mb-2 group-hover:text-[#8B0000] transition-colors">Community</h3>
-                <p className="text-sm text-gray-600">Connect with fellow devotees</p>
+            <div className="grid grid-cols-2 gap-6">
+              <Card className="text-center p-8 hover:shadow-2xl hover:shadow-secondary/20 hover:-translate-y-3 transition-all duration-500 ease-out cursor-pointer group bg-background/80 backdrop-blur-sm rounded-3xl border-0">
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Users className="h-8 w-8 text-accent group-hover:text-secondary transition-colors duration-300" />
+                </div>
+                <h3 className="font-bold text-lg mb-3 group-hover:text-primary transition-colors duration-300">Community</h3>
+                <p className="text-sm text-foreground/70 leading-relaxed">Connect with fellow devotees and share spiritual experiences</p>
               </Card>
-              <Card className="text-center p-6 hover:shadow-lg hover:shadow-[#FFD700]/20 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer group">
-                <Heart className="h-12 w-12 mx-auto text-[#FF6F3C] mb-4 group-hover:text-[#FFD700] transition-colors" />
-                <h3 className="font-semibold mb-2 group-hover:text-[#8B0000] transition-colors">Spiritual</h3>
-                <p className="text-sm text-gray-600">Deepen your spiritual practice</p>
+              <Card className="text-center p-8 hover:shadow-2xl hover:shadow-secondary/20 hover:-translate-y-3 transition-all duration-500 ease-out cursor-pointer group bg-background/80 backdrop-blur-sm rounded-3xl border-0">
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Heart className="h-8 w-8 text-accent group-hover:text-secondary transition-colors duration-300" />
+                </div>
+                <h3 className="font-bold text-lg mb-3 group-hover:text-primary transition-colors duration-300">Spiritual</h3>
+                <p className="text-sm text-foreground/70 leading-relaxed">Deepen your spiritual practice with guided insights</p>
               </Card>
-              <Card className="text-center p-6 hover:shadow-lg hover:shadow-[#FFD700]/20 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer group">
-                <MapPin className="h-12 w-12 mx-auto text-[#FF6F3C] mb-4 group-hover:text-[#FFD700] transition-colors" />
-                <h3 className="font-semibold mb-2 group-hover:text-[#8B0000] transition-colors">Discover</h3>
-                <p className="text-sm text-gray-600">Explore new sacred places</p>
+              <Card className="text-center p-8 hover:shadow-2xl hover:shadow-secondary/20 hover:-translate-y-3 transition-all duration-500 ease-out cursor-pointer group bg-background/80 backdrop-blur-sm rounded-3xl border-0">
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <MapPin className="h-8 w-8 text-accent group-hover:text-secondary transition-colors duration-300" />
+                </div>
+                <h3 className="font-bold text-lg mb-3 group-hover:text-primary transition-colors duration-300">Discover</h3>
+                <p className="text-sm text-foreground/70 leading-relaxed">Explore new sacred places and hidden gems</p>
               </Card>
-              <Card className="text-center p-6 hover:shadow-lg hover:shadow-[#FFD700]/20 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer group">
-                <Star className="h-12 w-12 mx-auto text-[#FF6F3C] mb-4 group-hover:text-[#FFD700] transition-colors" />
-                <h3 className="font-semibold mb-2 group-hover:text-[#8B0000] transition-colors">Reviews</h3>
-                <p className="text-sm text-gray-600">Share your experiences</p>
+              <Card className="text-center p-8 hover:shadow-2xl hover:shadow-secondary/20 hover:-translate-y-3 transition-all duration-500 ease-out cursor-pointer group bg-background/80 backdrop-blur-sm rounded-3xl border-0">
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Star className="h-8 w-8 text-accent group-hover:text-secondary transition-colors duration-300" />
+                </div>
+                <h3 className="font-bold text-lg mb-3 group-hover:text-primary transition-colors duration-300">Reviews</h3>
+                <p className="text-sm text-foreground/70 leading-relaxed">Share authentic reviews and read trusted feedback</p>
               </Card>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Decorative Separator */}
+      <div className="h-2 bg-gradient-to-r from-transparent via-secondary/40 to-transparent relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-accent/20 via-secondary/20 to-accent/20 blur-sm"></div>
+      </div>
+
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-[#8B0000] text-[#FFF8E7]">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[#FFD700]">
+      <section className="py-24 px-4 bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/60 via-transparent to-secondary/20"></div>
+        <div className="absolute top-10 left-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-10 right-10 w-56 h-56 bg-accent/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        
+        <div className="container mx-auto text-center relative z-10">
+          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-secondary leading-tight">
             Ready to Begin Your Spiritual Journey?
           </h2>
-          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto text-[#FFF8E7]">
+          <p className="text-xl md:text-2xl mb-12 opacity-95 max-w-4xl mx-auto text-background leading-relaxed">
             Join thousands of devotees who trust DivyaYatri for their temple visits. 
             Start exploring today and discover the sacred.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-8 justify-center">
             <Link to="/temples">
-              <Button size="lg" className="w-full sm:w-auto bg-[#FFD700] text-[#8B0000] hover:bg-[#FFF8E7] hover:text-[#8B0000] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-semibold">
+              <Button size="lg" className="w-full sm:w-auto px-10 py-5 text-xl font-bold rounded-2xl bg-secondary text-primary hover:bg-background hover:text-primary transition-all duration-300 shadow-2xl hover:shadow-3xl hover:scale-110 transform">
                 Start Exploring
               </Button>
             </Link>
             <Link to="/register">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-[#FFD700] text-[#FFD700] hover:bg-[#FFD700] hover:text-[#8B0000] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-semibold">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto px-10 py-5 text-xl font-bold rounded-2xl border-2 border-secondary text-secondary hover:bg-secondary hover:text-primary transition-all duration-300 shadow-2xl hover:shadow-3xl hover:scale-110 transform">
                 Create Account
               </Button>
             </Link>
@@ -383,5 +532,6 @@ export default function HomePage() {
         </div>
       </section>
     </div>
+    </AnimatedBackground>
   );
 }
