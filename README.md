@@ -25,6 +25,7 @@ A comprehensive temple guide application built with MERN stack, TypeScript, and 
 ## 🎯 Features
 
 - **Authentication**: JWT-based with role-based access (user, admin, temple manager)
+- **Google OAuth**: Social login with Google accounts
 - **Temple Management**: Complete CRUD with temple claim workflow
 - **Search & Discovery**: Search by location, deity, filters with map view
 - **Temple Details**: Comprehensive information with reviews and photos
@@ -59,6 +60,8 @@ npm install
 ```
 
 4. Set up environment variables (see .env.example files)
+
+   **Important**: For Google OAuth functionality, follow the [Google OAuth Setup Guide](./GOOGLE_OAUTH_SETUP.md)
 
 5. Start development servers
 ```bash
@@ -106,12 +109,15 @@ CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 GOOGLE_MAPS_API_KEY=your_google_maps_key
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
 ```
 
 ### Client (.env)
 ```
 VITE_API_URL=http://localhost:5000
 VITE_GOOGLE_MAPS_API_KEY=your_google_maps_key
+VITE_GOOGLE_CLIENT_ID=your_google_client_id
 ```
 
 ## 📝 License

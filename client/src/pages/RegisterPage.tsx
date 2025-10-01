@@ -5,6 +5,7 @@ import { toast } from '@/hooks/useToast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { GoogleOAuthButton } from '@/components/auth/GoogleOAuthButton';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -21,7 +22,7 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { register, isAuthenticated } = useAuth();
+  const { register, loginWithGoogle, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already authenticated
@@ -149,6 +150,38 @@ export default function RegisterPage() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleGoogleSuccess = async (userData: {
+    googleId: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    avatar?: string;
+  }) => {
+    try {
+      await loginWithGoogle(userData);
+      toast.success({
+        title: 'Welcome to DivyaYatri!',
+        description: 'You have successfully signed up with Google.',
+      });
+    } catch (error) {
+      console.error('Google registration error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Google sign up failed. Please try again.';
+      
+      toast.error({
+        title: 'Google sign up failed',
+        description: errorMessage,
+      });
+    }
+  };
+
+  const handleGoogleError = (error: string) => {
+    console.error('Google OAuth error:', error);
+    toast.error({
+      title: 'Google sign up failed',
+      description: error,
+    });
   };
 
   return (
@@ -326,6 +359,24 @@ export default function RegisterPage() {
                 'Create account'
               )}
             </Button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            <GoogleOAuthButton
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              disabled={isSubmitting}
+              text="Sign up with Google"
+            />
 
             <div className="text-center">
               <p className="text-sm text-gray-600">

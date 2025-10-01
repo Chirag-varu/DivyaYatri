@@ -23,6 +23,13 @@ export interface AuthState {
 export interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
   register: (userData: RegisterData) => Promise<void>;
+  loginWithGoogle: (userData: {
+    googleId: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    avatar?: string;
+  }) => Promise<void>;
   logout: () => void;
   updateProfile: (userData: Partial<User>) => Promise<void>;
 }
@@ -214,6 +221,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'LOGOUT' });
   };
 
+  const loginWithGoogle = async (userData: {
+    googleId: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    avatar?: string;
+  }): Promise<void> => {
+    dispatch({ type: 'LOGIN_START' });
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('token', data.data.token);
+        dispatch({
+          type: 'LOGIN_SUCCESS',
+          payload: {
+            user: data.data.user,
+            token: data.data.token,
+          },
+        });
+      } else {
+        throw new Error(data.error || 'Google login failed');
+      }
+    } catch (error) {
+      dispatch({ type: 'LOGIN_FAILURE' });
+      throw error;
+    }
+  };
+
   const updateProfile = async (userData: Partial<User>): Promise<void> => {
     if (!state.token) {
       throw new Error('No authentication token');
@@ -248,6 +293,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ...state,
     login,
     register,
+    loginWithGoogle,
     logout,
     updateProfile,
   };

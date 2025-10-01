@@ -288,7 +288,8 @@ export const deleteReview = async (req: AuthenticatedRequest, res: Response): Pr
 export const reportReview = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const { reason } = req.body;
+    // Note: reason could be used for logging or admin notifications in the future
+    // const { reason } = req.body;
 
     if (!req.user) {
       res.status(401).json({
