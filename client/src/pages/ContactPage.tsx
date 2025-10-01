@@ -19,11 +19,9 @@ import {
   AnimatedBackground, 
   ScrollProgressIndicator, 
   EnhancedCard, 
-  RippleButton,
   FloatingElement,
   TypewriterText 
 } from '@/components/ui/enhanced';
-import { LoadingButton } from '@/components/ui/loading';
 import { useScrollReveal } from '@/hooks/useAdvancedAnimations';
 
 export default function ContactPage() {
@@ -38,8 +36,6 @@ export default function ContactPage() {
   
   const heroRef = useScrollReveal();
   const formRef = useScrollReveal();
-  const contactInfoRef = useScrollReveal();
-  const faqRef = useScrollReveal();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};

@@ -15,10 +15,7 @@ import {
   Database,
   Settings,
   Activity,
-  Calendar,
   Plus,
-  Edit,
-  Trash2,
   Filter,
   Search
 } from 'lucide-react';
@@ -79,7 +76,7 @@ const fetchDashboardStats = async (): Promise<DashboardStats> => {
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
 
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: fetchDashboardStats,
   });

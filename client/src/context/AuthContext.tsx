@@ -3,6 +3,9 @@ import type { ReactNode } from 'react';
 
 // Types
 export interface User {
+  _id: any;
+  location: string;
+  bio: string;
   id: string;
   email: string;
   firstName: string;

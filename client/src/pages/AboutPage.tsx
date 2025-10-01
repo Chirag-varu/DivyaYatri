@@ -1,5 +1,4 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { 
   Heart, 
@@ -261,7 +260,7 @@ export default function AboutPage() {
               }`}
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-6 text-shadow-soft">
-                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-secondary">
                   Why Choose DivyaYatri?
                 </span>
               </h2>
@@ -425,7 +424,7 @@ export default function AboutPage() {
                 <Link to="/temples">
                   <RippleButton 
                     size="xl" 
-                    className="w-full sm:w-auto bg-white text-primary hover:bg-white/90 font-semibold shadow-2xl hover:shadow-3xl"
+                    className="w-full sm:w-auto bg-white text-primary hover:bg-white/90 font-semibold shadow-2xl hover:shadow-3xl border-4 border-double"
                   >
                     Start Exploring
                   </RippleButton>

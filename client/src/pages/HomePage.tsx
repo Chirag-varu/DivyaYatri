@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   Search, 
   MapPin, 
@@ -198,7 +197,7 @@ export default function HomePage() {
                 <RippleButton 
                   size="xl" 
                   variant="secondary" 
-                  className="w-full sm:w-auto shadow-xl hover:shadow-2xl"
+                  className="w-full sm:w-auto shadow-xl hover:shadow-2xl border-4 border-double "
                 >
                   Browse All Temples
                 </RippleButton>
@@ -275,7 +274,7 @@ export default function HomePage() {
               }`}
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-shadow-soft">
-                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-secondary">
                   Why Choose DivyaYatri?
                 </span>
               </h2>
@@ -319,219 +318,275 @@ export default function HomePage() {
           </div>
         </section>
 
-      {/* Featured Temples Section */}
-      <section className="py-24 px-4 bg-gradient-to-r from-muted/10 via-background to-muted/10 border-y border-border/50 relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-secondary/3"></div>
-        
-        <div className="container mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Featured Temples</h2>
-            <p className="text-xl text-foreground/80 max-w-3xl mx-auto leading-relaxed">Discover some of the most visited and highly rated temples across India</p>
-          </div>
+        {/* Enhanced Featured Temples Section */}
+        <section className="py-24 px-4 bg-gradient-to-r from-muted/10 via-background to-muted/10 border-y border-border/50 relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-secondary/3"></div>
+          <FloatingElement delay={0}>
+            <div className="absolute top-10 right-10 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
+          </FloatingElement>
+          <FloatingElement delay={1}>
+            <div className="absolute bottom-10 left-10 w-48 h-48 bg-accent/5 rounded-full blur-3xl"></div>
+          </FloatingElement>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {featuredTemples.length > 0 ? (
-              featuredTemples.map((temple) => (
-                <Card key={temple._id} className="temple-card group overflow-hidden hover:shadow-2xl hover:shadow-secondary/30 hover:-translate-y-2 transition-all duration-500 ease-out cursor-pointer bg-background/90 backdrop-blur-sm rounded-3xl border-0">
-                  <div className="h-56 relative overflow-hidden rounded-t-3xl">
-                    {temple.images[0] ? (
-                      <img
-                        src={temple.images[0]}
-                        alt={temple.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-secondary/20 via-accent/20 to-primary/20 flex items-center justify-center text-primary text-7xl group-hover:scale-110 transition-transform duration-500">
-                        🕉
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                  <CardHeader className="p-6">
-                    <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors duration-300">{temple.name}</CardTitle>
-                    <CardDescription className="text-foreground/70 flex items-center">
-                      <MapPin className="h-4 w-4 mr-1 text-accent" />
-                      {temple.location.city}, {temple.location.state}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-6 pt-0">
-                    <p className="text-sm text-foreground/70 mb-6 line-clamp-2 leading-relaxed">
-                      {temple.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1 bg-secondary/10 px-3 py-1 rounded-full">
-                          <Star className="h-4 w-4 text-secondary fill-current" />
-                          <span className="text-sm font-semibold">{temple.rating.toFixed(1)}</span>
-                        </div>
-                        <span className="text-xs text-foreground/60">({temple.reviewCount} reviews)</span>
-                      </div>
-                      <Link to={`/temple/${temple._id}`}>
-                        <Button variant="outline" size="sm" className="rounded-full px-4 hover:bg-primary hover:text-background transition-all duration-300">
-                          View Details
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              // Enhanced fallback mock data
-              [1, 2, 3, 4, 5, 6].map((temple) => (
-                <Card key={temple} className="temple-card group overflow-hidden hover:shadow-2xl hover:shadow-secondary/30 hover:-translate-y-2 transition-all duration-500 ease-out cursor-pointer bg-background/90 backdrop-blur-sm rounded-3xl border-0">
-                  <div className="h-56 bg-gradient-to-br from-secondary/20 via-accent/20 to-primary/20 flex items-center justify-center text-primary text-7xl group-hover:scale-110 transition-transform duration-500 rounded-t-3xl">
-                    🕉
-                  </div>
-                  <CardHeader className="p-6">
-                    <CardTitle className="group-hover:text-primary transition-colors duration-300">Sacred Temple {temple}</CardTitle>
-                    <CardDescription className="flex items-center">
-                      <MapPin className="h-4 w-4 mr-1 text-accent" />
-                      City, State
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-6 pt-0">
-                    <p className="text-sm text-foreground/70 mb-6 leading-relaxed">
-                      A beautiful temple with rich history and spiritual significance for devotees.
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1 bg-secondary/10 px-3 py-1 rounded-full">
-                          <Star className="h-4 w-4 text-secondary fill-current" />
-                          <span className="text-sm font-semibold">4.8</span>
-                        </div>
-                        <span className="text-xs text-foreground/60">(127 reviews)</span>
-                      </div>
-                      <Button variant="outline" size="sm" className="rounded-full px-4 hover:bg-primary hover:text-background transition-all duration-300">
-                        View Details
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
-
-          <div className="text-center">
-            <Link to="/temples">
-              <Button size="lg" className="px-8 py-4 text-lg font-semibold rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 bg-primary hover:bg-primary/90">
-                View All Temples
-                <ArrowRight className="ml-3 h-6 w-6" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="py-24 px-4 bg-gradient-to-br from-background via-muted/5 to-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/3 via-transparent to-secondary/3"></div>
-        <div className="absolute top-20 right-20 w-72 h-72 bg-gradient-to-r from-secondary/10 to-accent/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-r from-accent/10 to-primary/10 rounded-full blur-3xl"></div>
-        
-        <div className="container mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-8 leading-tight">
-                Everything You Need for Your Spiritual Journey
+          <div className="container mx-auto relative z-10">
+            <div 
+              ref={templesRef.ref}
+              className={`text-center mb-16 transition-all duration-1000 ${
+                templesRef.isVisible 
+                  ? 'opacity-100 transform translate-y-0' 
+                  : 'opacity-0 transform translate-y-10'
+              }`}
+            >
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-shadow-soft">
+                <span className="bg-gradient-to-r from-primary to-secondary text-foreground/80 leading-relaxed">
+                  Featured Temples
+                </span>
               </h2>
-              <p className="text-xl text-foreground/80 mb-10 leading-relaxed">
-                DivyaYatri provides comprehensive information and tools to make your temple visits 
-                meaningful and hassle-free. Join our community of spiritual seekers.
+              <p className="text-xl text-foreground/80 max-w-3xl mx-auto leading-relaxed">
+                Discover some of the most visited and highly rated temples across India
               </p>
-              
-              <div className="space-y-6 mb-10">
-                {benefits.map((benefit, index) => (
-                  <div key={index} className="flex items-center gap-4 group hover:translate-x-2 transition-transform duration-300">
-                    <div className="w-10 h-10 bg-gradient-to-r from-accent/20 to-secondary/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <CheckCircle className="h-6 w-6 text-accent group-hover:text-secondary transition-colors duration-300" />
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 stagger-animation">
+              {featuredTemples.length > 0 ? (
+                featuredTemples.map((temple, index) => (
+                  <EnhancedCard 
+                    key={temple._id} 
+                    variant="glass-strong" 
+                    hoverEffect="lift"
+                    delay={index * 0.1}
+                    className="temple-card group overflow-hidden cursor-pointer border-2 border-primary/10 hover:border-primary/30 transition-all duration-500"
+                  >
+                    <div className="h-56 relative overflow-hidden rounded-t-3xl border-b border-primary/10">
+                      {temple.images[0] ? (
+                        <AdvancedImage
+                          src={temple.images[0]}
+                          alt={temple.name}
+                          className="w-full h-full group-hover:scale-110 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-secondary/20 via-accent/20 to-primary/20 flex items-center justify-center text-primary text-7xl group-hover:scale-110 transition-transform duration-500">
+                          🕉
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-semibold text-primary border border-primary/20">
+                        Featured
+                      </div>
                     </div>
-                    <span className="text-foreground font-medium text-lg">{benefit}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-6">
-                <Link to="/register">
-                  <Button size="lg" className="w-full sm:w-auto px-8 py-4 text-lg font-semibold rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
-                    Join DivyaYatri
-                  </Button>
-                </Link>
-                <Link to="/contact">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto px-8 py-4 text-lg font-semibold rounded-2xl border-2 hover:bg-primary hover:text-background shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
-                    Contact Us
-                  </Button>
-                </Link>
-              </div>
+                    <CardHeader className="p-6">
+                      <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors duration-300">{temple.name}</CardTitle>
+                      <CardDescription className="text-foreground/70 flex items-center">
+                        <MapPin className="h-4 w-4 mr-1 text-accent" />
+                        {temple.location.city}, {temple.location.state}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-6 pt-0">
+                      <p className="text-sm text-foreground/70 mb-6 line-clamp-2 leading-relaxed">
+                        {temple.description}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1 bg-secondary/10 px-3 py-1 rounded-full">
+                            <Star className="h-4 w-4 text-secondary fill-current" />
+                            <span className="text-sm font-semibold">{temple.rating.toFixed(1)}</span>
+                          </div>
+                          <span className="text-xs text-foreground/60">({temple.reviewCount} reviews)</span>
+                        </div>
+                        <Link to={`/temple/${temple._id}`}>
+                          <RippleButton 
+                            variant="outline" 
+                            size="sm" 
+                            className="rounded-full px-4 border-primary/30 hover:bg-primary hover:text-background transition-all duration-300 hover:scale-105"
+                          >
+                            View Details
+                          </RippleButton>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </EnhancedCard>
+                ))
+              ) : (
+                // Enhanced fallback mock data
+                [1, 2, 3, 4, 5, 6].map((temple, index) => (
+                  <EnhancedCard 
+                    key={temple} 
+                    variant="glass-strong" 
+                    hoverEffect="lift"
+                    delay={index * 0.1}
+                    className="temple-card group overflow-hidden cursor-pointer border-2 border-primary/10 hover:border-primary/30 transition-all duration-500"
+                  >
+                    <div className="h-56 bg-gradient-to-br from-secondary/20 via-accent/20 to-primary/20 flex items-center justify-center text-primary text-7xl group-hover:scale-110 transition-transform duration-500 rounded-t-3xl border-b border-primary/10 relative">
+                      🕉
+                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-semibold text-primary border border-primary/20">
+                        Featured
+                      </div>
+                    </div>
+                    <CardHeader className="p-6">
+                      <CardTitle className="group-hover:text-primary transition-colors duration-300">Sacred Temple {temple}</CardTitle>
+                      <CardDescription className="flex items-center">
+                        <MapPin className="h-4 w-4 mr-1 text-accent" />
+                        City, State
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-6 pt-0">
+                      <p className="text-sm text-foreground/70 mb-6 leading-relaxed">
+                        A beautiful temple with rich history and spiritual significance for devotees.
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1 bg-secondary/10 px-3 py-1 rounded-full">
+                            <Star className="h-4 w-4 text-secondary fill-current" />
+                            <span className="text-sm font-semibold">4.8</span>
+                          </div>
+                          <span className="text-xs text-foreground/60">(120 reviews)</span>
+                        </div>
+                        <RippleButton 
+                          variant="outline" 
+                          size="sm" 
+                          className="rounded-full px-4 border-primary/30 hover:bg-primary hover:text-background transition-all duration-300 hover:scale-105"
+                        >
+                          View Details
+                        </RippleButton>
+                      </div>
+                    </CardContent>
+                  </EnhancedCard>
+                ))
+              )}
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
-              <Card className="text-center p-8 hover:shadow-2xl hover:shadow-secondary/20 hover:-translate-y-3 transition-all duration-500 ease-out cursor-pointer group bg-background/80 backdrop-blur-sm rounded-3xl border-0">
-                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Users className="h-8 w-8 text-accent group-hover:text-secondary transition-colors duration-300" />
-                </div>
-                <h3 className="font-bold text-lg mb-3 group-hover:text-primary transition-colors duration-300">Community</h3>
-                <p className="text-sm text-foreground/70 leading-relaxed">Connect with fellow devotees and share spiritual experiences</p>
-              </Card>
-              <Card className="text-center p-8 hover:shadow-2xl hover:shadow-secondary/20 hover:-translate-y-3 transition-all duration-500 ease-out cursor-pointer group bg-background/80 backdrop-blur-sm rounded-3xl border-0">
-                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Heart className="h-8 w-8 text-accent group-hover:text-secondary transition-colors duration-300" />
-                </div>
-                <h3 className="font-bold text-lg mb-3 group-hover:text-primary transition-colors duration-300">Spiritual</h3>
-                <p className="text-sm text-foreground/70 leading-relaxed">Deepen your spiritual practice with guided insights</p>
-              </Card>
-              <Card className="text-center p-8 hover:shadow-2xl hover:shadow-secondary/20 hover:-translate-y-3 transition-all duration-500 ease-out cursor-pointer group bg-background/80 backdrop-blur-sm rounded-3xl border-0">
-                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <MapPin className="h-8 w-8 text-accent group-hover:text-secondary transition-colors duration-300" />
-                </div>
-                <h3 className="font-bold text-lg mb-3 group-hover:text-primary transition-colors duration-300">Discover</h3>
-                <p className="text-sm text-foreground/70 leading-relaxed">Explore new sacred places and hidden gems</p>
-              </Card>
-              <Card className="text-center p-8 hover:shadow-2xl hover:shadow-secondary/20 hover:-translate-y-3 transition-all duration-500 ease-out cursor-pointer group bg-background/80 backdrop-blur-sm rounded-3xl border-0">
-                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Star className="h-8 w-8 text-accent group-hover:text-secondary transition-colors duration-300" />
-                </div>
-                <h3 className="font-bold text-lg mb-3 group-hover:text-primary transition-colors duration-300">Reviews</h3>
-                <p className="text-sm text-foreground/70 leading-relaxed">Share authentic reviews and read trusted feedback</p>
-              </Card>
+            <div className="text-center">
+              <Link to="/temples">
+                <RippleButton 
+                  size="lg" 
+                  className="px-12 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl border-4 border-double"
+                >
+                  View All Temples
+                  <ArrowRight className="ml-3 h-6 w-6" />
+                </RippleButton>
+              </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Decorative Separator */}
-      <div className="h-2 bg-gradient-to-r from-transparent via-secondary/40 to-transparent relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-accent/20 via-secondary/20 to-accent/20 blur-sm"></div>
+        {/* Benefits Section */}
+        <section className="py-24 px-4 bg-gradient-to-br from-background via-muted/5 to-background relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/3 via-transparent to-secondary/3"></div>
+          <div className="absolute top-20 right-20 w-72 h-72 bg-gradient-to-r from-secondary/10 to-accent/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-r from-accent/10 to-primary/10 rounded-full blur-3xl"></div>
+          
+          <div className="container mx-auto relative z-10">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-8 leading-tight">
+                  Everything You Need for Your Spiritual Journey
+                </h2>
+                <p className="text-xl text-foreground/80 mb-10 leading-relaxed">
+                  DivyaYatri provides comprehensive information and tools to make your temple visits 
+                  meaningful and hassle-free. Join our community of spiritual seekers.
+                </p>
+                
+                <div className="space-y-6 mb-10">
+                  {benefits.map((benefit, index) => (
+                    <div key={index} className="flex items-center gap-4 group hover:translate-x-2 transition-transform duration-300">
+                      <div className="w-10 h-10 bg-gradient-to-r from-accent/20 to-secondary/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <CheckCircle className="h-6 w-6 text-accent group-hover:text-secondary transition-colors duration-300" />
+                      </div>
+                      <span className="text-foreground font-medium text-lg">{benefit}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-6">
+                  <Link to="/register">
+                    <RippleButton 
+                      size="lg" 
+                      className="w-full sm:w-auto px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl border-4 border-double"
+                    >
+                      Join DivyaYatri
+                    </RippleButton>
+                  </Link>
+                  <Link to="/contact">
+                    <RippleButton 
+                      variant="outline" 
+                      size="lg" 
+                      className="w-full sm:w-auto px-8 py-4 text-lg font-semibold border-2 hover:bg-primary hover:text-background shadow-xl hover:shadow-2xl"
+                    >
+                      Contact Us
+                    </RippleButton>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                {[
+                  { icon: Users, title: 'Community', description: 'Connect with fellow devotees and share spiritual experiences' },
+                  { icon: Heart, title: 'Spiritual', description: 'Deepen your spiritual practice with guided insights' },
+                  { icon: MapPin, title: 'Discover', description: 'Explore new sacred places and hidden gems' },
+                  { icon: Star, title: 'Reviews', description: 'Share authentic reviews and read trusted feedback' }
+                ].map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <EnhancedCard 
+                      key={index}
+                      variant="glass" 
+                      hoverEffect="lift"
+                      delay={index * 0.1}
+                      className="text-center p-8"
+                    >
+                      <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Icon className="h-8 w-8 text-accent group-hover:text-secondary transition-colors duration-300" />
+                      </div>
+                      <h3 className="font-bold text-lg mb-3 group-hover:text-primary transition-colors duration-300">{item.title}</h3>
+                      <p className="text-sm text-foreground/70 leading-relaxed">{item.description}</p>
+                    </EnhancedCard>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-24 px-4 bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-background relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/60 via-transparent to-secondary/20"></div>
+          <FloatingElement delay={0}>
+            <div className="absolute top-10 left-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl"></div>
+          </FloatingElement>
+          <FloatingElement delay={2}>
+            <div className="absolute bottom-10 right-10 w-56 h-56 bg-accent/10 rounded-full blur-3xl"></div>
+          </FloatingElement>
+          
+          <div className="container mx-auto text-center relative z-10">
+            <h2 className="text-4xl md:text-6xl font-bold mb-8 text-secondary leading-tight">
+              Ready to Begin Your Spiritual Journey?
+            </h2>
+            <p className="text-xl md:text-2xl mb-12 opacity-95 max-w-4xl mx-auto text-background leading-relaxed">
+              Join thousands of devotees who trust DivyaYatri for their temple visits. 
+              Start exploring today and discover the sacred.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-8 justify-center">
+              <Link to="/temples">
+                <RippleButton 
+                  size="xl" 
+                  className="w-full sm:w-auto px-10 py-5 text-xl font-bold bg-secondary text-primary hover:bg-background hover:text-primary shadow-2xl hover:shadow-3xl border-4 border-double"
+                >
+                  Start Exploring
+                </RippleButton>
+              </Link>
+              <Link to="/register">
+                <RippleButton 
+                  size="xl" 
+                  variant="outline" 
+                  className="w-full sm:w-auto px-10 py-5 text-xl font-bold border-2 border-secondary text-secondary hover:bg-secondary hover:text-primary shadow-2xl hover:shadow-3xl"
+                >
+                  Create Account
+                </RippleButton>
+              </Link>
+            </div>
+          </div>
+        </section>
       </div>
-
-      {/* CTA Section */}
-      <section className="py-24 px-4 bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/60 via-transparent to-secondary/20"></div>
-        <div className="absolute top-10 left-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-10 right-10 w-56 h-56 bg-accent/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
-        
-        <div className="container mx-auto text-center relative z-10">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-secondary leading-tight">
-            Ready to Begin Your Spiritual Journey?
-          </h2>
-          <p className="text-xl md:text-2xl mb-12 opacity-95 max-w-4xl mx-auto text-background leading-relaxed">
-            Join thousands of devotees who trust DivyaYatri for their temple visits. 
-            Start exploring today and discover the sacred.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-8 justify-center">
-            <Link to="/temples">
-              <Button size="lg" className="w-full sm:w-auto px-10 py-5 text-xl font-bold rounded-2xl bg-secondary text-primary hover:bg-background hover:text-primary transition-all duration-300 shadow-2xl hover:shadow-3xl hover:scale-110 transform">
-                Start Exploring
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto px-10 py-5 text-xl font-bold rounded-2xl border-2 border-secondary text-secondary hover:bg-secondary hover:text-primary transition-all duration-300 shadow-2xl hover:shadow-3xl hover:scale-110 transform">
-                Create Account
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-    </div>
     </AnimatedBackground>
   );
 }

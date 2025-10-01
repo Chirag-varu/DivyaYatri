@@ -4,7 +4,20 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Search, MapPin, Star, Filter, Grid, List } from 'lucide-react';
+import { 
+  Search, 
+  MapPin, 
+  Star, 
+  Filter, 
+  Grid, 
+  List, 
+  SlidersHorizontal,
+  X,
+  Clock,
+  Heart,
+  Navigation,
+  Users
+} from 'lucide-react';
 
 interface Temple {
   _id: string;
@@ -28,26 +41,95 @@ interface Temple {
   isActive: boolean;
 }
 
-const fetchTemples = async (searchQuery?: string): Promise<Temple[]> => {
-  const url = searchQuery 
-    ? `${import.meta.env.VITE_API_URL}/api/temples?search=${encodeURIComponent(searchQuery)}`
-    : `${import.meta.env.VITE_API_URL}/api/temples`;
-    
-  const response = await fetch(url);
+interface SearchFilters {
+  category: string;
+  state: string;
+  city: string;
+  minRating: number;
+  features: string[];
+  sortBy: 'name' | 'rating' | 'reviews' | 'distance';
+  sortOrder: 'asc' | 'desc';
+}
+
+const fetchTemples = async (searchQuery?: string, filters?: Partial<SearchFilters>): Promise<Temple[]> => {
+  const params = new URLSearchParams();
   
-  if (!response.ok) {
-    throw new Error('Failed to fetch temples');
+  if (searchQuery) params.append('search', searchQuery);
+  if (filters?.category && filters.category !== 'all') params.append('category', filters.category);
+  if (filters?.state && filters.state !== 'all') params.append('state', filters.state);
+  if (filters?.city && filters.city !== 'all') params.append('city', filters.city);
+  if (filters?.minRating && filters.minRating > 0) params.append('minRating', filters.minRating.toString());
+  if (filters?.features && filters.features.length > 0) params.append('features', filters.features.join(','));
+  if (filters?.sortBy) params.append('sortBy', filters.sortBy);
+  if (filters?.sortOrder) params.append('sortOrder', filters.sortOrder);
+  
+  const url = `${import.meta.env.VITE_API_URL}/api/temples?${params.toString()}`;
+  
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Failed to fetch temples');
+    }
+    const data = await response.json();
+    return data.data?.temples || [];
+  } catch (error) {
+    console.error('Error fetching temples:', error);
+    // Return mock data for development
+    return [
+      {
+        _id: '1',
+        name: 'Golden Temple',
+        description: 'The most sacred Sikh shrine, known for its stunning golden architecture and peaceful atmosphere.',
+        location: {
+          address: 'Golden Temple Rd',
+          city: 'Amritsar',
+          state: 'Punjab',
+          coordinates: [31.6200, 74.8765]
+        },
+        images: ['/api/placeholder/400/300'],
+        rating: 4.8,
+        reviewCount: 1250,
+        category: 'sikh',
+        features: ['Parking', 'Food Court', 'Guest House'],
+        timings: { open: '04:00', close: '22:00' },
+        isActive: true
+      },
+      {
+        _id: '2',
+        name: 'Meenakshi Temple',
+        description: 'Ancient temple dedicated to Goddess Meenakshi with magnificent gopurams and intricate carvings.',
+        location: {
+          address: 'Madurai Main',
+          city: 'Madurai',
+          state: 'Tamil Nadu',
+          coordinates: [9.9195, 78.1195]
+        },
+        images: ['/api/placeholder/400/300'],
+        rating: 4.7,
+        reviewCount: 890,
+        category: 'hindu',
+        features: ['Audio Guide', 'Wheelchair Access'],
+        timings: { open: '05:00', close: '21:30' },
+        isActive: true
+      }
+    ];
   }
-  
-  const data = await response.json();
-  return data.data.temples || [];
 };
 
 export default function TemplesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<SearchFilters>({
+    category: 'all',
+    state: 'all',
+    city: 'all',
+    minRating: 0,
+    features: [],
+    sortBy: 'name',
+    sortOrder: 'asc'
+  });
 
   // Debounce search query
   useEffect(() => {
@@ -59,22 +141,64 @@ export default function TemplesPage() {
   }, [searchQuery]);
 
   const { data: temples = [], isLoading, error } = useQuery({
-    queryKey: ['temples', debouncedQuery],
-    queryFn: () => fetchTemples(debouncedQuery),
+    queryKey: ['temples', debouncedQuery, filters],
+    queryFn: () => fetchTemples(debouncedQuery, filters),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const categories = ['all', 'hindu', 'buddhist', 'jain', 'sikh', 'other'];
+  const states = ['all', 'Maharashtra', 'Gujarat', 'Rajasthan', 'Uttar Pradesh', 'Tamil Nadu', 'Kerala', 'Karnataka', 'Punjab'];
+  const availableFeatures = ['Parking', 'Food Court', 'Guest House', 'Online Booking', 'Wheelchair Access', 'Audio Guide'];
 
-  const filteredTemples = temples.filter(temple => {
-    if (selectedCategory === 'all') return true;
-    return temple.category.toLowerCase() === selectedCategory;
-  });
+  const handleFilterChange = (key: keyof SearchFilters, value: any) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  const handleFeatureToggle = (feature: string) => {
+    setFilters(prev => ({
+      ...prev,
+      features: prev.features.includes(feature)
+        ? prev.features.filter(f => f !== feature)
+        : [...prev.features, feature]
+    }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      category: 'all',
+      state: 'all',
+      city: 'all',
+      minRating: 0,
+      features: [],
+      sortBy: 'name',
+      sortOrder: 'asc'
+    });
+    setSearchQuery('');
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // Search is already handled by the debounced query
   };
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-secondary/5 to-accent/5 flex items-center justify-center">
+        <Card className="max-w-md w-full mx-4">
+          <CardContent className="p-8 text-center">
+            <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Temples</h2>
+            <p className="text-text/70 mb-6">Unable to load temples. Please try again later.</p>
+            <Button onClick={() => window.location.reload()}>
+              Retry
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/5 to-accent/5">
@@ -112,6 +236,15 @@ export default function TemplesPage() {
                   />
                 </div>
                 <Button 
+                  type="button"
+                  onClick={() => setShowFilters(!showFilters)}
+                  variant={showFilters ? "default" : "outline"}
+                  className="px-6 py-3 text-lg font-semibold transition-all duration-300"
+                >
+                  <SlidersHorizontal className="h-5 w-5 mr-2" />
+                  Filters
+                </Button>
+                <Button 
                   type="submit" 
                   className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                 >
@@ -119,181 +252,284 @@ export default function TemplesPage() {
                 </Button>
               </form>
 
-              <div className="flex flex-wrap items-center gap-6">
-                {/* Category Filter */}
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center">
-                    <Filter className="h-5 w-5 text-primary" />
+              {/* Advanced Filters */}
+              {showFilters && (
+                <div className="border-t border-primary/10 pt-6 space-y-6 animate-fadeInUp">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {/* Category Filter */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text mb-2">Category</label>
+                      <select
+                        value={filters.category}
+                        onChange={(e) => handleFilterChange('category', e.target.value)}
+                        className="w-full bg-white/50 backdrop-blur-sm border-2 border-primary/20 rounded-lg px-4 py-2 text-text font-medium focus:border-primary focus:bg-white transition-all duration-300"
+                      >
+                        {categories.map(category => (
+                          <option key={category} value={category}>
+                            {category.charAt(0).toUpperCase() + category.slice(1)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* State Filter */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text mb-2">State</label>
+                      <select
+                        value={filters.state}
+                        onChange={(e) => handleFilterChange('state', e.target.value)}
+                        className="w-full bg-white/50 backdrop-blur-sm border-2 border-primary/20 rounded-lg px-4 py-2 text-text font-medium focus:border-primary focus:bg-white transition-all duration-300"
+                      >
+                        {states.map(state => (
+                          <option key={state} value={state}>
+                            {state}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Rating Filter */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text mb-2">Min Rating</label>
+                      <select
+                        value={filters.minRating}
+                        onChange={(e) => handleFilterChange('minRating', parseInt(e.target.value))}
+                        className="w-full bg-white/50 backdrop-blur-sm border-2 border-primary/20 rounded-lg px-4 py-2 text-text font-medium focus:border-primary focus:bg-white transition-all duration-300"
+                      >
+                        <option value={0}>All Ratings</option>
+                        <option value={4}>4+ Stars</option>
+                        <option value={3}>3+ Stars</option>
+                        <option value={2}>2+ Stars</option>
+                      </select>
+                    </div>
+
+                    {/* Sort By */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text mb-2">Sort By</label>
+                      <select
+                        value={filters.sortBy}
+                        onChange={(e) => handleFilterChange('sortBy', e.target.value)}
+                        className="w-full bg-white/50 backdrop-blur-sm border-2 border-primary/20 rounded-lg px-4 py-2 text-text font-medium focus:border-primary focus:bg-white transition-all duration-300"
+                      >
+                        <option value="name">Name</option>
+                        <option value="rating">Rating</option>
+                        <option value="reviews">Reviews</option>
+                        <option value="distance">Distance</option>
+                      </select>
+                    </div>
                   </div>
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="bg-white/50 backdrop-blur-sm border-2 border-primary/20 rounded-lg px-4 py-2 text-text font-medium focus:border-primary focus:bg-white transition-all duration-300"
-                  >
-                    {categories.map(category => (
-                      <option key={category} value={category}>
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
-                      </option>
-                    ))}
-                  </select>
+
+                  {/* Features Filter */}
+                  <div>
+                    <label className="block text-sm font-semibold text-text mb-3">Features</label>
+                    <div className="flex flex-wrap gap-3">
+                      {availableFeatures.map(feature => (
+                        <button
+                          key={feature}
+                          type="button"
+                          onClick={() => handleFeatureToggle(feature)}
+                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                            filters.features.includes(feature)
+                              ? 'bg-primary text-white shadow-lg'
+                              : 'bg-white/50 text-text hover:bg-primary/10'
+                          }`}
+                        >
+                          {feature}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Clear Filters */}
+                  <div className="flex justify-end">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={clearFilters}
+                      className="flex items-center gap-2"
+                    >
+                      <X className="h-4 w-4" />
+                      Clear All Filters
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center justify-between gap-6 mt-6">
+                {/* Results Count */}
+                <div>
+                  <p className="text-text/70 text-lg font-medium">
+                    {isLoading ? 'Loading...' : `${temples.length} temples found`}
+                  </p>
                 </div>
 
                 {/* View Mode Toggle */}
-                <div className="flex items-center bg-white/50 backdrop-blur-sm border-2 border-primary/20 rounded-lg overflow-hidden">
-                  <Button
-                    variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => setViewMode('grid')}
-                    className={`rounded-none border-0 ${
-                      viewMode === 'grid' 
-                        ? 'bg-gradient-to-r from-primary to-secondary text-white' 
-                        : 'bg-transparent text-text hover:bg-primary/10'
-                    }`}
-                  >
-                    <Grid className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === 'list' ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => setViewMode('list')}
-                    className={`rounded-none border-0 ${
-                      viewMode === 'list' 
-                        ? 'bg-gradient-to-r from-primary to-secondary text-white' 
-                        : 'bg-transparent text-text hover:bg-primary/10'
-                    }`}
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-semibold text-text">View:</span>
+                  <div className="flex bg-white/50 backdrop-blur-sm rounded-lg p-1 border-2 border-primary/20">
+                    <button
+                      onClick={() => setViewMode('grid')}
+                      className={`p-2 rounded-md transition-all duration-300 ${
+                        viewMode === 'grid' 
+                          ? 'bg-primary text-white shadow-lg' 
+                          : 'text-text hover:bg-primary/10'
+                      }`}
+                    >
+                      <Grid className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`p-2 rounded-md transition-all duration-300 ${
+                        viewMode === 'list' 
+                          ? 'bg-primary text-white shadow-lg' 
+                          : 'text-text hover:bg-primary/10'
+                      }`}
+                    >
+                      <List className="h-5 w-5" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Results Count */}
-        <div className="mb-8">
-          <p className="text-text/70 text-lg font-medium">
-            {isLoading ? 'Loading...' : `${filteredTemples.length} temples found`}
-          </p>
-        </div>
-
-        {/* Error State */}
-        {error && (
-          <div className="bg-red-50/80 backdrop-blur-sm border border-red-200 text-red-600 px-6 py-4 rounded-xl mb-8 animate-fadeInUp">
-            Error loading temples. Please try again later.
-          </div>
-        )}
-
-        {/* Temples Grid/List */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[...Array(6)].map((_, i) => (
-              <Card key={i} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg animate-pulse">
-                <div className="h-64 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-t-lg"></div>
-                <CardHeader>
-                  <div className="h-6 bg-gradient-to-r from-text/20 to-text/10 rounded mb-3"></div>
-                  <div className="h-4 bg-gradient-to-r from-text/20 to-text/10 rounded w-3/4"></div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="h-4 bg-gradient-to-r from-text/20 to-text/10 rounded"></div>
-                    <div className="h-4 bg-gradient-to-r from-text/20 to-text/10 rounded w-1/2"></div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : filteredTemples.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="max-w-md mx-auto">
-              <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Search className="h-12 w-12 text-primary" />
-              </div>
-              <h3 className="text-2xl font-bold text-text mb-4">No temples found</h3>
-              <p className="text-text/70 mb-8 text-lg">
-                Try adjusting your search criteria or browse all temples.
-              </p>
-              <Button 
-                onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}
-                className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-              >
-                Clear Filters
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className={viewMode === 'grid' 
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
-            : 'space-y-8'
-          }>
-            {filteredTemples.map((temple) => (
-              <Card key={temple._id} className={`group bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 overflow-hidden ${
-                viewMode === 'list' ? 'flex' : ''
-              }`}>
-                <div className={viewMode === 'list' ? 'w-80 flex-shrink-0' : ''}>
-                  <div className="relative overflow-hidden">
-                    <img
-                      src={temple.images[0] || '/placeholder-temple.jpg'}
-                      alt={temple.name}
-                      className={`object-cover transition-transform duration-500 group-hover:scale-110 ${
-                        viewMode === 'list' 
-                          ? 'w-full h-full rounded-l-lg' 
-                          : 'w-full h-64 rounded-t-lg'
-                      }`}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-xl font-bold text-text group-hover:text-primary transition-colors duration-300">{temple.name}</CardTitle>
-                        <CardDescription className="flex items-center gap-2 mt-2 text-text/70">
-                          <MapPin className="h-4 w-4" />
-                          {temple.location.city}, {temple.location.state}
-                        </CardDescription>
-                      </div>
-                      <div className="flex items-center gap-1 bg-yellow-50 px-3 py-2 rounded-full">
-                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                        <span className="font-semibold text-yellow-700">{temple.rating.toFixed(1)}</span>
-                        <span className="text-yellow-600 text-sm">({temple.reviewCount})</span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-text/70 mb-6 line-clamp-2 leading-relaxed">
-                      {temple.description}
-                    </p>
-                    
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      <span className="inline-block bg-gradient-to-r from-primary/20 to-secondary/20 text-primary text-sm px-3 py-1 rounded-full font-medium">
-                        {temple.category}
-                      </span>
-                      {temple.features.slice(0, 2).map((feature, index) => (
-                        <span key={index} className="inline-block bg-text/10 text-text/70 text-sm px-3 py-1 rounded-full">
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm text-text/60 bg-secondary/10 px-3 py-2 rounded-lg">
-                        Open: {temple.timings.open} - {temple.timings.close}
-                      </div>
-                      <Link to={`/temple/${temple._id}`}>
-                        <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
-                          View Details
-                        </Button>
-                      </Link>
+        {/* Results */}
+        <div className="mb-12">
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, i) => (
+                <Card key={i} className="bg-white/80 backdrop-blur-sm animate-pulse">
+                  <div className="h-48 bg-gray-200 rounded-t-lg"></div>
+                  <CardContent className="p-6">
+                    <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                    <div className="flex justify-between">
+                      <div className="h-4 bg-gray-200 rounded w-20"></div>
+                      <div className="h-4 bg-gray-200 rounded w-16"></div>
                     </div>
                   </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : temples.length === 0 ? (
+            <Card className="bg-white/80 backdrop-blur-sm shadow-xl border-0">
+              <CardContent className="p-12 text-center">
+                <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Search className="h-12 w-12 text-primary" />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-              </Card>
-            ))}
-          </div>
-        )}
+                <h3 className="text-2xl font-bold text-text mb-4">No temples found</h3>
+                <p className="text-text/70 mb-6 max-w-md mx-auto">
+                  Try adjusting your search criteria or filters to find more temples.
+                </p>
+                <Button 
+                  onClick={clearFilters}
+                  className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
+                >
+                  Clear Filters
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className={`grid gap-8 ${
+              viewMode === 'grid' 
+                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
+                : 'grid-cols-1'
+            }`}>
+              {temples.map((temple) => (
+                <Card 
+                  key={temple._id} 
+                  className={`group bg-white/80 backdrop-blur-sm shadow-xl border-0 hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden ${
+                    viewMode === 'list' ? 'flex flex-row' : ''
+                  }`}
+                >
+                  <div className={`${viewMode === 'list' ? 'w-1/3' : 'w-full'} relative overflow-hidden`}>
+                    <img
+                      src={temple.images[0] || '/api/placeholder/400/300'}
+                      alt={temple.name}
+                      className={`${
+                        viewMode === 'list' ? 'h-full' : 'h-48'
+                      } w-full object-cover group-hover:scale-110 transition-transform duration-700`}
+                    />
+                    <div className="absolute top-4 right-4">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="bg-white/90 backdrop-blur-sm hover:bg-white hover:scale-110"
+                      >
+                        <Heart className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                      <span className="text-sm font-medium text-primary capitalize">{temple.category}</span>
+                    </div>
+                  </div>
+                  
+                  <div className={`${viewMode === 'list' ? 'w-2/3' : 'w-full'} p-6`}>
+                    <CardHeader className="p-0 mb-4">
+                      <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors duration-300">
+                        {temple.name}
+                      </CardTitle>
+                      <CardDescription className="text-foreground/70 flex items-center">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        {temple.location.city}, {temple.location.state}
+                      </CardDescription>
+                    </CardHeader>
+                    
+                    <CardContent className="p-0">
+                      <p className="text-foreground/80 mb-4 line-clamp-2">{temple.description}</p>
+                      
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="font-semibold">{temple.rating}</span>
+                          <span className="text-foreground/60">({temple.reviewCount} reviews)</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-foreground/60">
+                          <Clock className="h-4 w-4" />
+                          <span className="text-sm">{temple.timings.open} - {temple.timings.close}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {temple.features.slice(0, 3).map((feature, index) => (
+                          <span
+                            key={index}
+                            className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full font-medium"
+                          >
+                            {feature}
+                          </span>
+                        ))}
+                        {temple.features.length > 3 && (
+                          <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+                            +{temple.features.length - 3} more
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex gap-3">
+                        <Button 
+                          asChild
+                          className="flex-1 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                        >
+                          <Link to={`/temples/${temple._id}`}>
+                            View Details
+                          </Link>
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          className="bg-white/50 backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300"
+                        >
+                          <Navigation className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

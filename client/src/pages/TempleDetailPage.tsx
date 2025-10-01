@@ -140,7 +140,7 @@ export default function TempleDetailPage() {
           <h2 className="text-2xl font-bold text-text mb-4">Temple Not Found</h2>
           <p className="text-text/70 mb-8">The temple you're looking for doesn't exist or has been removed.</p>
           <Link to="/temples">
-            <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+            <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border-4 border-double">
               Browse All Temples
             </Button>
           </Link>

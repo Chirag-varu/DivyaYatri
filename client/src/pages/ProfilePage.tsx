@@ -1,11 +1,73 @@
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from '@/hooks/useToast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Eye, EyeOff, Loader2, User, Shield } from 'lucide-react';
+import { 
+  Eye, 
+  EyeOff, 
+  Loader2, 
+  User, 
+  Shield, 
+  Heart,
+  MapPin,
+  Star,
+  Calendar,
+  Camera,
+  Settings,
+  Bell,
+  Trash2,
+  Edit,
+  Plus
+} from 'lucide-react';
+
+interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  bio?: string;
+  location?: string;
+  role: string;
+}
+
+interface Temple {
+  _id: string;
+  name: string;
+  description: string;
+  location: {
+    city: string;
+    state: string;
+  };
+  images: string[];
+  rating: number;
+  reviewCount: number;
+  category: string;
+}
+
+interface Visit {
+  _id: string;
+  temple: Temple;
+  visitDate: string;
+  status: 'planned' | 'completed' | 'cancelled';
+  notes?: string;
+  rating?: number;
+  review?: string;
+}
+
+interface UserPreferences {
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+  marketingEmails: boolean;
+  templeUpdates: boolean;
+  reviewReminders: boolean;
+  favoriteCategories: string[];
+  preferredStates: string[];
+}
 
 export default function ProfilePage() {
   const { user, updateProfile, isAuthenticated } = useAuth();
@@ -15,6 +77,8 @@ export default function ProfilePage() {
     firstName: '',
     lastName: '',
     phone: '',
+    bio: '',
+    location: '',
   });
   const [profileErrors, setProfileErrors] = useState<Record<string, string>>({});
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
@@ -33,7 +97,101 @@ export default function ProfilePage() {
   });
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
-  // Success messages handled by toasts
+  // User preferences state
+  const [preferences, setPreferences] = useState<UserPreferences>({
+    emailNotifications: true,
+    smsNotifications: false,
+    marketingEmails: false,
+    templeUpdates: true,
+    reviewReminders: true,
+    favoriteCategories: [],
+    preferredStates: []
+  });
+
+  // Avatar upload state
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
+  // Fetch user's favorite temples
+  const { data: favoriteTemples = [] } = useQuery({
+    queryKey: ['user-favorites', user && '_id' in user ? (user as User)._id : undefined],
+    queryFn: async () => {
+      if (!user) return [];
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${user._id}/favorites`);
+        if (!response.ok) throw new Error('Failed to fetch favorites');
+        const data = await response.json();
+        return data.data || [];
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+        return mockFavoriteTemples;
+      }
+    },
+    enabled: !!user,
+  });
+
+  // Fetch user's visit history
+  const { data: visitHistory = [] } = useQuery({
+    queryKey: [
+      'user-visits',
+      user && '_id' in user ? (user as User)._id : undefined
+    ],
+    queryFn: async () => {
+      if (!user || !('_id' in user)) return [];
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${(user as User)._id}/visits`);
+        if (!response.ok) throw new Error('Failed to fetch visits');
+        const data = await response.json();
+        return data.data || [];
+      } catch (error) {
+        console.error('Error fetching visits:', error);
+        return mockVisitHistory;
+      }
+    },
+    enabled: !!user,
+  });
+
+  // Mock data for development
+  const mockFavoriteTemples: Temple[] = [
+    {
+      _id: '1',
+      name: 'Golden Temple',
+      description: 'The most sacred Sikh shrine',
+      location: { city: 'Amritsar', state: 'Punjab' },
+      images: ['/api/placeholder/300/200'],
+      rating: 4.8,
+      reviewCount: 1250,
+      category: 'sikh'
+    },
+    {
+      _id: '2',
+      name: 'Meenakshi Temple',
+      description: 'Ancient temple with magnificent gopurams',
+      location: { city: 'Madurai', state: 'Tamil Nadu' },
+      images: ['/api/placeholder/300/200'],
+      rating: 4.7,
+      reviewCount: 890,
+      category: 'hindu'
+    }
+  ];
+
+  const mockVisitHistory: Visit[] = [
+    {
+      _id: '1',
+      temple: mockFavoriteTemples[0],
+      visitDate: '2024-09-15',
+      status: 'completed',
+      notes: 'Beautiful experience during evening prayers',
+      rating: 5,
+      review: 'Absolutely divine experience!'
+    },
+    {
+      _id: '2',
+      temple: mockFavoriteTemples[1],
+      visitDate: '2024-10-05',
+      status: 'planned',
+      notes: 'Planning to visit during Diwali'
+    }
+  ];
 
   // Initialize profile data when user loads
   useEffect(() => {
@@ -42,6 +200,8 @@ export default function ProfilePage() {
         firstName: user.firstName || '',
         lastName: user.lastName || '',
         phone: user.phone || '',
+        bio: user.bio || '',
+        location: user.location || '',
       });
     }
   }, [user]);
