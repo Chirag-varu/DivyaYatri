@@ -51,6 +51,17 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // DivyaYatri Spiritual Theme Colors
+        spiritual: {
+          saffron: "#FF6F3C",
+          maroon: "#8B0000",
+          golden: "#FFD700",
+          cream: "#FFF8E7",
+          deepGreen: "#2E7D32",
+          skyBlue: "#00A8E8",
+          textGray: "#666666",
+          lightGray: "#F5F5F5",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -185,10 +185,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-spiritual-cream py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
+          <CardTitle className="text-2xl font-bold text-center text-spiritual-maroon">
             Create an account
           </CardTitle>
           <CardDescription className="text-center">
@@ -205,7 +205,7 @@ export default function RegisterPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <label htmlFor="firstName" className="text-sm font-medium text-gray-700">
+                <label htmlFor="firstName" className="text-sm font-medium text-spiritual-maroon">
                   First Name
                 </label>
                 <Input
@@ -224,7 +224,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="lastName" className="text-sm font-medium text-gray-700">
+                <label htmlFor="lastName" className="text-sm font-medium text-spiritual-maroon">
                   Last Name
                 </label>
                 <Input
@@ -244,7 +244,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="text-sm font-medium text-spiritual-maroon">
                 Email
               </label>
               <Input
@@ -263,7 +263,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="phone" className="text-sm font-medium text-gray-700">
+              <label htmlFor="phone" className="text-sm font-medium text-spiritual-maroon">
                 Phone Number <span className="text-gray-400">(optional)</span>
               </label>
               <Input
@@ -282,7 +282,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="text-sm font-medium text-spiritual-maroon">
                 Password
               </label>
               <div className="relative">
@@ -314,7 +314,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
+              <label htmlFor="confirmPassword" className="text-sm font-medium text-spiritual-maroon">
                 Confirm Password
               </label>
               <div className="relative">

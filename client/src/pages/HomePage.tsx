@@ -117,10 +117,10 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="temple-gradient py-20 px-4 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
+      <section className="bg-gradient-to-br from-spiritual-maroon to-spiritual-maroon/80 py-20 px-4 text-spiritual-cream relative overflow-hidden">
+        <div className="absolute inset-0 bg-spiritual-maroon/30"></div>
         <div className="container mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-spiritual-golden drop-shadow-lg">
             Discover Sacred Temples
           </h1>
           <p className="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
@@ -129,7 +129,7 @@ export default function HomePage() {
           
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="max-w-2xl mx-auto relative mb-8">
-            <div className="flex bg-white rounded-lg p-2 shadow-lg">
+            <div className="flex bg-spiritual-cream rounded-lg p-2 shadow-xl border border-spiritual-golden/30">
               <Input
                 type="text"
                 placeholder="Search temples by name, city, or deity..."

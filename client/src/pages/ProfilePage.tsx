@@ -236,8 +236,8 @@ export default function ProfilePage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
-        <p className="text-gray-600 mt-2">Manage your account settings and preferences</p>
+        <h1 className="text-3xl font-bold text-spiritual-maroon">Profile</h1>
+        <p className="text-spiritual-textGray mt-2">Manage your account settings and preferences</p>
       </div>
 
 
@@ -315,7 +315,7 @@ export default function ProfilePage() {
                     type="email"
                     value={user.email}
                     disabled
-                    className="bg-gray-50"
+                    className="bg-spiritual-cream/50"
                   />
                   <p className="text-xs text-gray-500">Email cannot be changed</p>
                 </div>
@@ -343,7 +343,7 @@ export default function ProfilePage() {
                   <Input
                     value={user.role.charAt(0).toUpperCase() + user.role.slice(1).replace('_', ' ')}
                     disabled
-                    className="bg-gray-50"
+                    className="bg-spiritual-cream/50"
                   />
                 </div>
 

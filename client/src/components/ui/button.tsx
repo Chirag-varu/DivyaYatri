@@ -9,15 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-spiritual-saffron text-white hover:bg-spiritual-saffron/90 shadow-sm",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-spiritual-maroon bg-background hover:bg-spiritual-cream hover:text-spiritual-maroon",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-spiritual-skyBlue text-white hover:bg-spiritual-skyBlue/80",
+        ghost: "hover:bg-spiritual-cream hover:text-spiritual-maroon",
+        link: "text-spiritual-saffron underline-offset-4 hover:underline",
+        spiritual: "bg-spiritual-maroon text-spiritual-golden hover:bg-spiritual-maroon/90 shadow-md",
+        golden: "bg-spiritual-golden text-spiritual-maroon hover:bg-spiritual-golden/90 shadow-sm",
       },
       size: {
         default: "h-10 px-4 py-2",

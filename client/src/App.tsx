@@ -34,9 +34,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router>
-          <div className="min-h-screen bg-background font-sans antialiased">
+          <div className="min-h-screen bg-spiritual-cream font-sans antialiased">
             <Navbar />
-            <main className="flex-1">
+            <main className="flex-1 bg-spiritual-cream">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/temples" element={<TemplesPage />} />

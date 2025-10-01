@@ -137,7 +137,7 @@ export function GoogleOAuthButton({
     <Button
       type="button"
       variant="outline"
-      className="w-full border-gray-300 hover:bg-gray-50"
+      className="w-full border-spiritual-maroon hover:bg-spiritual-cream transition-colors duration-200"
       onClick={handleGoogleLogin}
       disabled={disabled || isLoading}
     >

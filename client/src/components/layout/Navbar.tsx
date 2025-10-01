@@ -32,36 +32,36 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b">
+    <nav className="bg-spiritual-maroon shadow-lg border-b border-spiritual-golden">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 temple-gradient rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-spiritual-golden rounded-lg flex items-center justify-center shadow-md">
               <span className="text-white font-bold text-lg">🕉</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">DivyaYatri</span>
+            <span className="text-xl font-bold text-spiritual-golden">DivyaYatri</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-700 hover:text-primary transition-colors">
+            <Link to="/" className="text-spiritual-golden hover:text-spiritual-cream transition-colors">
               Home
             </Link>
-            <Link to="/temples" className="text-gray-700 hover:text-primary transition-colors">
+            <Link to="/temples" className="text-spiritual-golden hover:text-spiritual-cream transition-colors">
               Temples
             </Link>
-            <Link to="/about" className="text-gray-700 hover:text-primary transition-colors">
+            <Link to="/about" className="text-spiritual-golden hover:text-spiritual-cream transition-colors">
               About
             </Link>
-            <Link to="/contact" className="text-gray-700 hover:text-primary transition-colors">
+            <Link to="/contact" className="text-spiritual-golden hover:text-spiritual-cream transition-colors">
               Contact
             </Link>
           </div>
 
           {/* Right side buttons */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="hidden md:flex">
+            <Button variant="ghost" size="icon" className="hidden md:flex text-spiritual-golden hover:text-spiritual-cream hover:bg-spiritual-golden/10">
               <Search className="h-5 w-5" />
             </Button>
             
@@ -72,10 +72,10 @@ export default function Navbar() {
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center space-x-2"
                 >
-                  <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
+                  <div className="w-8 h-8 bg-spiritual-saffron text-white rounded-full flex items-center justify-center text-sm font-medium shadow-sm">
                     {user.firstName.charAt(0).toUpperCase()}
                   </div>
-                  <span className="hidden md:block">{user.firstName}</span>
+                  <span className="hidden md:block text-spiritual-golden">{user.firstName}</span>
                 </Button>
 
                 {showUserMenu && (
