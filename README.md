@@ -1,6 +1,12 @@
 # DivyaYatri - Temple Guide App
 
-A comprehensive temple guide application built with MERN stack, TypeScript, and shadcn/ui.
+> **Smart India Hackathon 2025 Project** 🇮🇳
+
+A comprehensive temple guide application built with MERN stack, TypeScript, and shadcn/ui, developed as part of Smart India Hackathon 2025.
+
+## 🏆 SIH 2025 Project
+
+This project is being developed for **Smart India Hackathon 2025**, focusing on creating a digital platform to promote India's rich spiritual and cultural heritage through temple exploration and management.
 
 ## 🛠️ Tech Stack
 

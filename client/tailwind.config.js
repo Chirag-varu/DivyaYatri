@@ -54,7 +54,7 @@ export default {
         // DivyaYatri Spiritual Theme Colors
         spiritual: {
           saffron: "#FF6F3C",
-          maroon: "#8B0000",
+          maroon: "#8B0000", 
           golden: "#FFD700",
           cream: "#FFF8E7",
           deepGreen: "#2E7D32",
@@ -62,6 +62,15 @@ export default {
           textGray: "#666666",
           lightGray: "#F5F5F5",
         },
+        // Alternative direct color definitions for better v4 compatibility
+        "spiritual-saffron": "#FF6F3C",
+        "spiritual-maroon": "#8B0000",
+        "spiritual-golden": "#FFD700", 
+        "spiritual-cream": "#FFF8E7",
+        "spiritual-deepGreen": "#2E7D32",
+        "spiritual-skyBlue": "#00A8E8",
+        "spiritual-textGray": "#666666",
+        "spiritual-lightGray": "#F5F5F5",
       },
       borderRadius: {
         lg: "var(--radius)",
