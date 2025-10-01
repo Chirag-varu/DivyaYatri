@@ -117,10 +117,10 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-spiritual-maroon to-spiritual-maroon/80 py-20 px-4 text-spiritual-cream relative overflow-hidden">
-        <div className="absolute inset-0 bg-spiritual-maroon/30"></div>
+      <section className="bg-gradient-to-br from-[#8B0000] to-[#8B0000]/80 py-20 px-4 text-[#FFF8E7] relative overflow-hidden">
+                <div className="absolute inset-0 bg-[#8B0000]/30"></div>
         <div className="container mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-spiritual-golden drop-shadow-lg">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-[#FFD700] drop-shadow-lg">
             Discover Sacred Temples
           </h1>
           <p className="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
@@ -129,7 +129,7 @@ export default function HomePage() {
           
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="max-w-2xl mx-auto relative mb-8">
-            <div className="flex bg-spiritual-cream rounded-lg p-2 shadow-xl border border-spiritual-golden/30">
+            <div className="flex bg-[#FFF8E7] rounded-lg p-2 shadow-xl border border-[#FFD700]/30">
               <Input
                 type="text"
                 placeholder="Search temples by name, city, or deity..."
@@ -165,7 +165,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stat.number}</div>
+                <div className="text-3xl md:text-4xl font-bold text-[#FFD700] mb-2">{stat.number}</div>
                 <div className="text-gray-600 text-sm md:text-base">{stat.label}</div>
               </div>
             ))}
@@ -189,9 +189,9 @@ export default function HomePage() {
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
-                <Card key={index} className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow">
+                <Card key={index} className="text-center border-0 shadow-lg hover:shadow-xl hover:shadow-[#FFD700]/20 hover:-translate-y-2 transition-all duration-300 ease-in-out cursor-pointer group">
                   <CardHeader>
-                    <Icon className="h-12 w-12 mx-auto text-primary mb-4" />
+                    <Icon className="h-12 w-12 mx-auto text-[#FF6F3C] mb-4 group-hover:text-[#FFD700] transition-colors" />
                     <CardTitle className="text-xl">{feature.title}</CardTitle>
                     <CardDescription className="text-gray-600">
                       {feature.description}
@@ -215,7 +215,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {featuredTemples.length > 0 ? (
               featuredTemples.map((temple) => (
-                <Card key={temple._id} className="temple-card overflow-hidden hover:shadow-lg transition-shadow">
+                <Card key={temple._id} className="temple-card overflow-hidden hover:shadow-xl hover:shadow-[#FFD700]/30 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer group">
                   <div className="h-48 bg-gradient-to-r from-orange-300 to-red-400 relative">
                     {temple.images[0] ? (
                       <img
@@ -333,24 +333,24 @@ export default function HomePage() {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <Card className="text-center p-6">
-                <Users className="h-12 w-12 mx-auto text-primary mb-4" />
-                <h3 className="font-semibold mb-2">Community</h3>
+              <Card className="text-center p-6 hover:shadow-lg hover:shadow-[#FFD700]/20 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer group">
+                <Users className="h-12 w-12 mx-auto text-[#FF6F3C] mb-4 group-hover:text-[#FFD700] transition-colors" />
+                <h3 className="font-semibold mb-2 group-hover:text-[#8B0000] transition-colors">Community</h3>
                 <p className="text-sm text-gray-600">Connect with fellow devotees</p>
               </Card>
-              <Card className="text-center p-6">
-                <Heart className="h-12 w-12 mx-auto text-primary mb-4" />
-                <h3 className="font-semibold mb-2">Spiritual</h3>
+              <Card className="text-center p-6 hover:shadow-lg hover:shadow-[#FFD700]/20 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer group">
+                <Heart className="h-12 w-12 mx-auto text-[#FF6F3C] mb-4 group-hover:text-[#FFD700] transition-colors" />
+                <h3 className="font-semibold mb-2 group-hover:text-[#8B0000] transition-colors">Spiritual</h3>
                 <p className="text-sm text-gray-600">Deepen your spiritual practice</p>
               </Card>
-              <Card className="text-center p-6">
-                <MapPin className="h-12 w-12 mx-auto text-primary mb-4" />
-                <h3 className="font-semibold mb-2">Discover</h3>
+              <Card className="text-center p-6 hover:shadow-lg hover:shadow-[#FFD700]/20 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer group">
+                <MapPin className="h-12 w-12 mx-auto text-[#FF6F3C] mb-4 group-hover:text-[#FFD700] transition-colors" />
+                <h3 className="font-semibold mb-2 group-hover:text-[#8B0000] transition-colors">Discover</h3>
                 <p className="text-sm text-gray-600">Explore new sacred places</p>
               </Card>
-              <Card className="text-center p-6">
-                <Star className="h-12 w-12 mx-auto text-primary mb-4" />
-                <h3 className="font-semibold mb-2">Reviews</h3>
+              <Card className="text-center p-6 hover:shadow-lg hover:shadow-[#FFD700]/20 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer group">
+                <Star className="h-12 w-12 mx-auto text-[#FF6F3C] mb-4 group-hover:text-[#FFD700] transition-colors" />
+                <h3 className="font-semibold mb-2 group-hover:text-[#8B0000] transition-colors">Reviews</h3>
                 <p className="text-sm text-gray-600">Share your experiences</p>
               </Card>
             </div>
@@ -359,23 +359,23 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-primary text-white">
+      <section className="py-16 px-4 bg-[#8B0000] text-[#FFF8E7]">
         <div className="container mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[#FFD700]">
             Ready to Begin Your Spiritual Journey?
           </h2>
-          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto text-[#FFF8E7]">
             Join thousands of devotees who trust DivyaYatri for their temple visits. 
             Start exploring today and discover the sacred.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/temples">
-              <Button size="lg" variant="secondary" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto bg-[#FFD700] text-[#8B0000] hover:bg-[#FFF8E7] hover:text-[#8B0000] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-semibold">
                 Start Exploring
               </Button>
             </Link>
             <Link to="/register">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-primary">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-[#FFD700] text-[#FFD700] hover:bg-[#FFD700] hover:text-[#8B0000] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-semibold">
                 Create Account
               </Button>
             </Link>

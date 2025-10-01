@@ -32,36 +32,36 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-spiritual-maroon shadow-lg border-b border-spiritual-golden">
+    <nav className="bg-[#F8F9FA] shadow-lg border-b border-[#FFD700] sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-spiritual-golden rounded-lg flex items-center justify-center shadow-md">
+            <div className="w-8 h-8 bg-[#FFD700] rounded-lg flex items-center justify-center shadow-md">
               <span className="text-white font-bold text-lg">🕉</span>
             </div>
-            <span className="text-xl font-bold text-spiritual-golden">DivyaYatri</span>
+            <span className="text-xl font-bold text-[#FFD700]">DivyaYatri</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-spiritual-golden hover:text-spiritual-cream transition-colors">
+            <Link to="/" className="text-[#FFD700] hover:text-[#FFF8E7] transition-colors">
               Home
             </Link>
-            <Link to="/temples" className="text-spiritual-golden hover:text-spiritual-cream transition-colors">
+            <Link to="/temples" className="text-[#FFD700] hover:text-[#FFF8E7] transition-colors">
               Temples
             </Link>
-            <Link to="/about" className="text-spiritual-golden hover:text-spiritual-cream transition-colors">
+            <Link to="/about" className="text-[#FFD700] hover:text-[#FFF8E7] transition-colors">
               About
             </Link>
-            <Link to="/contact" className="text-spiritual-golden hover:text-spiritual-cream transition-colors">
+            <Link to="/contact" className="text-[#FFD700] hover:text-[#FFF8E7] transition-colors">
               Contact
             </Link>
           </div>
 
           {/* Right side buttons */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="hidden md:flex text-spiritual-golden hover:text-spiritual-cream hover:bg-spiritual-golden/10">
+            <Button variant="ghost" size="icon" className="hidden md:flex text-[#FFD700] hover:text-[#FFF8E7] hover:bg-[#FFD700]/10 hover:scale-110 transition-all duration-200 ease-in-out">
               <Search className="h-5 w-5" />
             </Button>
             
@@ -70,12 +70,12 @@ export default function Navbar() {
                 <Button
                   variant="ghost"
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-2 group hover:bg-[#FFD700]/10 transition-all duration-200"
                 >
-                  <div className="w-8 h-8 bg-spiritual-saffron text-white rounded-full flex items-center justify-center text-sm font-medium shadow-sm">
+                  <div className="w-8 h-8 bg-[#FF6F3C] text-white rounded-full flex items-center justify-center text-sm font-medium shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-200">
                     {user.firstName.charAt(0).toUpperCase()}
                   </div>
-                  <span className="hidden md:block text-spiritual-golden">{user.firstName}</span>
+                  <span className="hidden md:block text-[#FFD700] group-hover:text-[#FFF8E7] transition-colors">{user.firstName}</span>
                 </Button>
 
                 {showUserMenu && (

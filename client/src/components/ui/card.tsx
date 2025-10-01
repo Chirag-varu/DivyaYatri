@@ -4,13 +4,13 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const cardVariants = cva(
-  "rounded-lg border bg-white border-spiritual-lightGray text-spiritual-textGray shadow-lg shadow-spiritual-lightGray/30",
+  "rounded-lg border bg-white border-[#F5F5F5] text-[#666666] shadow-lg shadow-[#F5F5F5]/30 hover:shadow-xl hover:shadow-[#FFD700]/20 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer",
   {
     variants: {
       variant: {
-        default: "bg-white border-spiritual-lightGray",
-        spiritual: "bg-spiritual-cream border-spiritual-golden shadow-spiritual-golden/20",
-        elevated: "bg-white border-spiritual-maroon/20 shadow-xl shadow-spiritual-maroon/10",
+        default: "bg-white border-[#F5F5F5] hover:border-[#FFD700]/30",
+        spiritual: "bg-[#FFF8E7] border-[#FFD700] shadow-[#FFD700]/20 hover:shadow-[#FFD700]/40 hover:bg-[#FFF8E7]/80",
+        elevated: "bg-white border-[#8B0000]/20 shadow-xl shadow-[#8B0000]/10 hover:shadow-2xl hover:shadow-[#8B0000]/20",
       }
     },
     defaultVariants: {

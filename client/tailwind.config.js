@@ -18,19 +18,28 @@ export default {
     },
     extend: {
       colors: {
+        // Core shadcn/ui system colors using CSS variables
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        
+        // DivyaYatri Theme Colors (shadcn/ui compatible)
         primary: {
-          DEFAULT: "hsl(var(--primary))",
+          DEFAULT: "hsl(var(--primary))", // Deep Indigo #3F3CBB
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
+          DEFAULT: "hsl(var(--secondary))", // Golden Sand #FFD166
           foreground: "hsl(var(--secondary-foreground))",
         },
+        accent: {
+          DEFAULT: "hsl(var(--accent))", // Warm Coral #FF6B6B
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        
+        // Additional shadcn/ui component colors
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
@@ -38,10 +47,6 @@ export default {
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -51,7 +56,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // DivyaYatri Spiritual Theme Colors
+        
+        // DivyaYatri Direct Color Access
+        text: "#4A4A4A", // Slate Gray
+        secondaryAccent: "#00A8E8", // Sky Blue
+        
+        // Legacy spiritual colors for backward compatibility
         spiritual: {
           saffron: "#FF6F3C",
           maroon: "#8B0000", 
@@ -62,15 +72,6 @@ export default {
           textGray: "#666666",
           lightGray: "#F5F5F5",
         },
-        // Alternative direct color definitions for better v4 compatibility
-        "spiritual-saffron": "#FF6F3C",
-        "spiritual-maroon": "#8B0000",
-        "spiritual-golden": "#FFD700", 
-        "spiritual-cream": "#FFF8E7",
-        "spiritual-deepGreen": "#2E7D32",
-        "spiritual-skyBlue": "#00A8E8",
-        "spiritual-textGray": "#666666",
-        "spiritual-lightGray": "#F5F5F5",
       },
       borderRadius: {
         lg: "var(--radius)",

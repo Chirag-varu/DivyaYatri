@@ -9,17 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-spiritual-saffron text-white hover:bg-spiritual-saffron/90 shadow-sm",
+        default: "bg-[#FF6F3C] text-white hover:bg-[#FF6F3C]/90 hover:scale-105 hover:shadow-lg shadow-sm transition-all duration-200 ease-in-out",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-spiritual-maroon bg-background hover:bg-spiritual-cream hover:text-spiritual-maroon",
+          "border border-[#8B0000] bg-background hover:bg-[#FFF8E7] hover:text-[#8B0000] hover:shadow-md hover:scale-105 transition-all duration-200 ease-in-out",
         secondary:
-          "bg-spiritual-skyBlue text-white hover:bg-spiritual-skyBlue/80",
-        ghost: "hover:bg-spiritual-cream hover:text-spiritual-maroon",
-        link: "text-spiritual-saffron underline-offset-4 hover:underline",
-        spiritual: "bg-spiritual-maroon text-spiritual-golden hover:bg-spiritual-maroon/90 shadow-md",
-        golden: "bg-spiritual-golden text-spiritual-maroon hover:bg-spiritual-golden/90 shadow-sm",
+          "bg-[#00A8E8] text-white hover:bg-[#00A8E8]/80 hover:scale-105 hover:shadow-lg transition-all duration-200 ease-in-out",
+        ghost: "hover:bg-[#FFF8E7] hover:text-[#8B0000] hover:scale-105 transition-all duration-200 ease-in-out",
+        link: "text-[#FF6F3C] underline-offset-4 hover:underline hover:text-[#FF6F3C]/80 transition-colors duration-200",
+        spiritual: "bg-[#8B0000] text-[#FFD700] hover:bg-[#8B0000]/90 hover:shadow-lg hover:shadow-[#FFD700]/20 hover:scale-105 shadow-md transition-all duration-200 ease-in-out",
+        golden: "bg-[#FFD700] text-[#8B0000] hover:bg-[#FFD700]/90 hover:shadow-lg hover:shadow-[#FFD700]/30 hover:scale-105 shadow-sm transition-all duration-200 ease-in-out",
       },
       size: {
         default: "h-10 px-4 py-2",
