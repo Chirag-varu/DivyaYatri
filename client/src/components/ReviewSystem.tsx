@@ -56,7 +56,6 @@ interface ReviewSystemProps {
 }
 
 export default function ReviewSystem({ 
-  templeId, 
   reviews, 
   onReviewSubmit, 
   onReviewVote, 

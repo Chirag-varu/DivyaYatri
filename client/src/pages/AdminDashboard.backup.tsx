@@ -128,7 +128,7 @@ export default function AdminDashboard() {
           <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <Shield className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text   mb-4">
             Admin Dashboard
           </h1>
           <p className="text-lg md:text-xl text-text/80 max-w-2xl mx-auto">

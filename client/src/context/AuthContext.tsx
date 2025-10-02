@@ -69,12 +69,12 @@ type AuthAction =
 // Initial state
 const initialState: AuthState = {
   user: null,
-  token: null,
+  accessToken: null,
   isLoading: true,
   isAuthenticated: false,
+  isEmailVerified: false,
+  requiresEmailVerification: false,
 };
-
-// Reducer
 function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case 'LOGIN_START':
@@ -86,29 +86,37 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
       return {
         ...state,
         user: action.payload.user,
-        token: action.payload.token,
+        accessToken: action.payload.token,
         isLoading: false,
         isAuthenticated: true,
+        isEmailVerified: action.payload.user.isEmailVerified,
+        requiresEmailVerification: !action.payload.user.isEmailVerified,
       };
     case 'LOGIN_FAILURE':
       return {
         ...state,
         user: null,
-        token: null,
+        accessToken: null,
         isLoading: false,
         isAuthenticated: false,
+        isEmailVerified: false,
+        requiresEmailVerification: false,
       };
     case 'LOGOUT':
       return {
         ...state,
         user: null,
-        token: null,
+        accessToken: null,
         isAuthenticated: false,
+        isEmailVerified: false,
+        requiresEmailVerification: false,
       };
     case 'UPDATE_USER':
       return {
         ...state,
         user: action.payload,
+        isEmailVerified: action.payload.isEmailVerified,
+        requiresEmailVerification: !action.payload.isEmailVerified,
       };
     case 'SET_LOADING':
       return {
@@ -232,18 +240,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const logout = (): void => {
+  const logout = async (): Promise<void> => {
     localStorage.removeItem('token');
     dispatch({ type: 'LOGOUT' });
   };
 
-  const loginWithGoogle = async (userData: {
-    googleId: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    avatar?: string;
-  }): Promise<void> => {
+  const logoutAll = async (): Promise<void> => {
+    localStorage.removeItem('token');
+    dispatch({ type: 'LOGOUT' });
+  };
+
+  const refreshToken = async (): Promise<void> => {
+    // Implementation would call refresh token endpoint
+    console.log('Refresh token not implemented yet');
+  };
+
+  const verifyEmail = async (token: string): Promise<void> => {
+    // Implementation would call email verification endpoint
+    console.log('Email verification not implemented yet', token);
+  };
+
+  const resendVerificationEmail = async (): Promise<void> => {
+    // Implementation would call resend verification endpoint
+    console.log('Resend verification email not implemented yet');
+  };
+
+  const requestPasswordReset = async (email: string): Promise<void> => {
+    // Implementation would call password reset request endpoint
+    console.log('Password reset request not implemented yet', email);
+  };
+
+  const resetPassword = async (token: string, newPassword: string): Promise<void> => {
+    // Implementation would call password reset endpoint
+    console.log('Password reset not implemented yet', token, newPassword);
+  };
+
+  const changePassword = async (currentPassword: string, newPassword: string): Promise<void> => {
+    // Implementation would call change password endpoint
+    console.log('Change password not implemented yet', currentPassword, newPassword);
+  };
+
+  const checkAuthStatus = async (): Promise<void> => {
+    // Already implemented in useEffect
+    console.log('Check auth status called');
+  };
+
+  const loginWithGoogle = async (credential: string): Promise<void> => {
     dispatch({ type: 'LOGIN_START' });
 
     try {
@@ -252,7 +294,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify({ credential }),
       });
 
       const data = await response.json();
@@ -276,7 +318,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const updateProfile = async (userData: Partial<User>): Promise<void> => {
-    if (!state.token) {
+    if (!state.accessToken) {
       throw new Error('No authentication token');
     }
 
@@ -285,7 +327,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${state.token}`,
+          'Authorization': `Bearer ${state.accessToken}`,
         },
         body: JSON.stringify(userData),
       });
@@ -311,7 +353,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     register,
     loginWithGoogle,
     logout,
+    logoutAll,
+    refreshToken,
+    verifyEmail,
+    resendVerificationEmail,
+    requestPasswordReset,
+    resetPassword,
+    changePassword,
     updateProfile,
+    checkAuthStatus,
   };
 
   return (

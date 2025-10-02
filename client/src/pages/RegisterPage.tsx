@@ -195,7 +195,7 @@ export default function RegisterPage() {
 
       <Card className="w-full max-w-lg bg-white/80 backdrop-blur-sm shadow-2xl border-0 hover:shadow-3xl transition-all duration-500 relative z-10">
         <CardHeader className="space-y-1 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-t-lg">
-          <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-primary to-secondary bg-clip-text  ">
             Create Account
           </CardTitle>
           <CardDescription className="text-center text-text/70 text-base">

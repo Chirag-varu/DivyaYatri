@@ -242,7 +242,7 @@ export default function TempleDetailPage() {
             <div className="mb-8">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+                  <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text   mb-2">
                     {temple.name}
                   </h1>
                   <div className="flex items-center gap-4 text-text/70">

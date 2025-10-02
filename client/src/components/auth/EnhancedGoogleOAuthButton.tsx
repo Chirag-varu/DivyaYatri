@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/EnhancedAuthContext';
-import { useToast } from '../hooks/useToast';
+import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/hooks/useToast';
 
 declare global {
   interface Window {
@@ -14,6 +14,9 @@ interface GoogleOAuthButtonProps {
   onError?: (error: string) => void;
   disabled?: boolean;
   text?: 'signin_with' | 'signup_with' | 'continue_with';
+  size?: 'small' | 'medium' | 'large';
+  fullWidth?: boolean;
+  className?: string;
 }
 
 export const GoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = ({
@@ -21,9 +24,12 @@ export const GoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = ({
   onError,
   disabled = false,
   text = 'signin_with',
+  size = 'medium',
+  fullWidth = true,
+  className = '',
 }) => {
   const { loginWithGoogle } = useAuth();
-  const { showToast } = useToast();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
 
@@ -73,20 +79,33 @@ export const GoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = ({
         cancel_on_tap_outside: true,
       });
 
-      // Render the Google Sign-In button
+      // Render the Google Sign-In button with responsive settings
       const buttonElement = document.getElementById('google-signin-button');
       if (buttonElement) {
+        // Get responsive button size based on screen width
+        const screenWidth = window.innerWidth;
+        let buttonSize = size;
+        let buttonWidth = fullWidth ? '100%' : 'auto';
+        
+        // Auto-adjust size for mobile devices
+        if (screenWidth < 480) {
+          buttonSize = 'medium';
+        } else if (screenWidth < 768) {
+          buttonSize = size === 'small' ? 'small' : 'medium';
+        }
+        
         window.google.accounts.id.renderButton(buttonElement, {
           theme: 'outline',
-          size: 'large',
+          size: buttonSize,
           text: text,
-          width: '100%',
+          width: buttonWidth,
           logo_alignment: 'left',
+          shape: 'rectangular',
         });
       }
 
-      // Set up One Tap prompt for returning users
-      if (text === 'signin_with') {
+      // Set up One Tap prompt for returning users (disabled on mobile for better UX)
+      if (text === 'signin_with' && window.innerWidth >= 768) {
         window.google.accounts.id.prompt();
       }
     } catch (error) {
@@ -106,7 +125,7 @@ export const GoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = ({
     try {
       await loginWithGoogle(response.credential);
       
-      showToast({
+      toast({
         title: 'Success',
         description: 'Successfully signed in with Google',
         type: 'success',
@@ -116,7 +135,7 @@ export const GoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = ({
     } catch (error: any) {
       console.error('Google login error:', error);
       
-      showToast({
+      toast({
         title: 'Authentication Failed',
         description: error.message || 'Failed to sign in with Google',
         type: 'error',
@@ -148,57 +167,61 @@ export const GoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = ({
 
   if (!isGoogleLoaded) {
     return (
-      <div className="w-full h-12 bg-gray-100 border border-gray-300 rounded-lg flex items-center justify-center">
+      <div className={`w-full h-12 sm:h-14 md:h-16 bg-gray-100 border border-gray-300 rounded-lg flex items-center justify-center ${className}`}>
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-gray-600 text-sm">Loading Google Sign-In...</span>
+          <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-gray-600 text-xs sm:text-sm md:text-base">Loading Google Sign-In...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full">
+    <div className={`w-full max-w-sm mx-auto sm:max-w-md md:max-w-lg ${className}`}>
       {/* Google Sign-In Button Container */}
       <div 
         id="google-signin-button" 
-        className={`w-full ${disabled || isLoading ? 'opacity-50 pointer-events-none' : ''}`}
+        className={`w-full transition-all duration-200 ${disabled || isLoading ? 'opacity-50 pointer-events-none' : 'hover:shadow-md'}`}
       />
 
       {/* Loading Overlay */}
       {isLoading && (
         <div className="relative">
-          <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg">
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-              <span className="text-blue-600 text-sm font-medium">Signing in...</span>
+          <div className="absolute inset-0 bg-white bg-opacity-90 backdrop-blur-sm flex items-center justify-center rounded-lg z-10">
+            <div className="flex items-center space-x-2 px-4">
+              <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-blue-600 text-xs sm:text-sm md:text-base font-medium">Signing in...</span>
             </div>
           </div>
         </div>
       )}
 
       {/* Fallback Manual Button */}
-      <div className="mt-2">
+      <div className="mt-3 sm:mt-4">
         <button
           type="button"
           onClick={handleManualSignIn}
           disabled={disabled || isLoading || !isGoogleLoaded}
-          className="w-full px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm md:text-base text-gray-600 hover:text-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          Having trouble? Click here to sign in with Google
+          <span className="hidden sm:inline">Having trouble? Click here to sign in with Google</span>
+          <span className="sm:hidden">Trouble signing in?</span>
         </button>
       </div>
 
       {/* Privacy Notice */}
-      <div className="mt-3 text-xs text-gray-500 text-center">
-        By signing in with Google, you agree to our{' '}
-        <button className="text-blue-600 hover:text-blue-800 underline">
+      <div className="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-500 text-center leading-relaxed px-2">
+        <span className="block sm:inline">By signing in with Google, you agree to our{' '}</span>
+        <button className="text-blue-600 hover:text-blue-800 underline transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
           Terms of Service
-        </button>{' '}
-        and{' '}
-        <button className="text-blue-600 hover:text-blue-800 underline">
-          Privacy Policy
         </button>
+        <span className="hidden sm:inline">{' '}and{' '}</span>
+        <span className="block sm:inline mt-1 sm:mt-0">
+          <span className="sm:hidden">and{' '}</span>
+          <button className="text-blue-600 hover:text-blue-800 underline transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
+            Privacy Policy
+          </button>
+        </span>
       </div>
     </div>
   );
@@ -236,6 +259,91 @@ export const useGoogleAuth = () => {
     signInWithGoogle,
     signInWithPopup,
     isLoading,
+  };
+};
+
+// Responsive Mobile-First Google OAuth Button
+export const MobileGoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = (props) => (
+  <GoogleOAuthButton 
+    {...props} 
+    size="medium"
+    className="sm:hidden" // Only show on mobile
+  />
+);
+
+// Responsive Desktop Google OAuth Button  
+export const DesktopGoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = (props) => (
+  <GoogleOAuthButton 
+    {...props} 
+    size="large"
+    className="hidden sm:block" // Hide on mobile
+  />
+);
+
+// Responsive Container Component
+interface ResponsiveGoogleOAuthProps extends GoogleOAuthButtonProps {
+  containerClassName?: string;
+}
+
+export const ResponsiveGoogleOAuth: React.FC<ResponsiveGoogleOAuthProps> = ({
+  containerClassName = '',
+  ...props
+}) => {
+  return (
+    <div className={`w-full space-y-0 ${containerClassName}`}>
+      {/* Mobile Version */}
+      <div className="block sm:hidden">
+        <GoogleOAuthButton 
+          {...props} 
+          size="medium"
+          className="w-full"
+        />
+      </div>
+      
+      {/* Tablet and Desktop Version */}
+      <div className="hidden sm:block">
+        <GoogleOAuthButton 
+          {...props} 
+          size="large"
+          className="w-full max-w-md mx-auto"
+        />
+      </div>
+    </div>
+  );
+};
+
+// Utility hook for responsive Google OAuth
+export const useResponsiveGoogleOAuth = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 640);
+      setIsTablet(width >= 640 && width < 1024);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  return {
+    isMobile,
+    isTablet,
+    isDesktop: !isMobile && !isTablet,
+    getOptimalSize: () => {
+      if (isMobile) return 'medium';
+      if (isTablet) return 'large';
+      return 'large';
+    },
+    getOptimalWidth: () => {
+      if (isMobile) return '100%';
+      if (isTablet) return 'auto';
+      return 'auto';
+    }
   };
 };
 

@@ -8,7 +8,7 @@ import {
   Search, 
   MapPin, 
   Star, 
-  Filter, 
+ 
   Grid, 
   List, 
   SlidersHorizontal,
@@ -16,7 +16,7 @@ import {
   Clock,
   Heart,
   Navigation,
-  Users
+
 } from 'lucide-react';
 
 interface Temple {
@@ -212,7 +212,7 @@ export default function TemplesPage() {
       <div className="container mx-auto px-4 py-12 relative z-10">
         {/* Header */}
         <div className="mb-12 text-center animate-fadeInUp">
-          <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-6">
+          <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text   mb-6">
             Discover Sacred Temples
           </h1>
           <p className="text-xl md:text-2xl text-text/80 max-w-3xl mx-auto leading-relaxed">

@@ -4,16 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { 
   Bell, 
   X, 
-  Check, 
+ 
   Calendar, 
   Star, 
   MapPin, 
-  User,
-  AlertCircle,
+
   Info,
   CheckCircle,
   Clock,
-  Settings
+
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from '@/hooks/useToast';

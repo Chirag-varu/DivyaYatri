@@ -1,24 +1,24 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
+
 import { 
-  BarChart3,
+
   Users, 
   MapPin, 
   Star, 
   TrendingUp,
   Eye,
   MessageSquare,
-  Shield,
-  Database,
-  Settings,
+
+
+
   Activity,
   Plus,
-  Filter,
-  Search,
+
+
   Edit,
   Trash2,
   CheckCircle,
@@ -26,9 +26,9 @@ import {
   AlertTriangle,
   Calendar,
   Download,
-  Upload,
+
   Bell,
-  Clock,
+
   Ban
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -339,15 +339,14 @@ export default function AdminDashboard() {
   const handleApproveTemple = async (templeId: string) => {
     try {
       // API call to approve temple
-      toast({
+      toast.success({
         title: "Temple Approved",
         description: "The temple has been approved and is now live.",
       });
     } catch (error) {
-      toast({
+      toast.error({
         title: "Error",
         description: "Failed to approve temple. Please try again.",
-        variant: "destructive",
       });
     }
   };
@@ -355,15 +354,14 @@ export default function AdminDashboard() {
   const handleSuspendUser = async (userId: string) => {
     try {
       // API call to suspend user
-      toast({
+      toast.success({
         title: "User Suspended",
         description: "The user has been suspended.",
       });
     } catch (error) {
-      toast({
+      toast.error({
         title: "Error",
         description: "Failed to suspend user. Please try again.",
-        variant: "destructive",
       });
     }
   };
@@ -376,10 +374,9 @@ export default function AdminDashboard() {
         description: "The review has been approved and is now visible.",
       });
     } catch (error) {
-      toast({
+      toast.error({
         title: "Error",
         description: "Failed to approve review. Please try again.",
-        variant: "destructive",
       });
     }
   };
@@ -443,7 +440,7 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text  ">
                 Admin Dashboard
               </h1>
               <p className="text-text/70 mt-1">Welcome back, {user?.name || 'Admin'}</p>

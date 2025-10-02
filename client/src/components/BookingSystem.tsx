@@ -61,7 +61,7 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
     numberOfPeople: 1,
     specialRequests: '',
     contactInfo: {
-      name: user?.firstName + ' ' + user?.lastName || '',
+      name: user?.name || '',
       phone: user?.phone || '',
       email: user?.email || '',
     },
@@ -211,7 +211,7 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
       numberOfPeople: 1,
       specialRequests: '',
       contactInfo: {
-        name: user?.firstName + ' ' + user?.lastName || '',
+        name: user?.name || '',
         phone: user?.phone || '',
         email: user?.email || '',
       },

@@ -1,17 +1,9 @@
 import { Request, Response } from 'express';
-import { OAuth2Client } from 'google-auth-library';
 import rateLimit from 'express-rate-limit';
-import { UserModel, IUser } from '../models/User';
-import { AuthUtils, JWTPayload } from '../utils/auth';
-import { sendEmail } from '../utils/email';
-import { NotificationModel } from '../models/Notification';
+import { validationResult } from 'express-validator';
+import User from '../models/User';
+import { JWTUtils } from '../utils/jwt';
 import { AuthenticatedRequest } from '../middleware/auth';
-
-const googleClient = new OAuth2Client(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REDIRECT_URI
-);
 
 // Rate limiting configurations
 export const loginRateLimit = rateLimit({
@@ -50,7 +42,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const { email, password, firstName, lastName, phone } = req.body;
+    const { email, password, name, phone } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -66,8 +58,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const user = new User({
       email,
       password,
-      firstName,
-      lastName,
+      firstName: name.split(' ')[0] || name,
+      lastName: name.split(' ').slice(1).join(' ') || '',
       phone
     });
 
@@ -87,8 +79,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         user: {
           id: user._id,
           email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          name: user.getFullName(),
           role: user.role,
           isVerified: user.isVerified
         },
@@ -159,8 +150,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         user: {
           id: user._id,
           email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          name: user.getFullName(),
           role: user.role,
           isVerified: user.isVerified,
           lastLogin: user.lastLogin
@@ -189,8 +179,7 @@ export const getProfile = async (req: AuthenticatedRequest, res: Response): Prom
         user: {
           id: user?._id,
           email: user?.email,
-          firstName: user?.firstName,
-          lastName: user?.lastName,
+          name: user?.getFullName(),
           role: user?.role,
           avatar: user?.avatar,
           phone: user?.phone,
@@ -225,7 +214,7 @@ export const updateProfile = async (req: AuthenticatedRequest, res: Response): P
       return;
     }
 
-    const { firstName, lastName, phone, preferences } = req.body;
+    const { name, firstName, lastName, phone, preferences } = req.body;
     const user = req.user;
 
     if (!user) {
@@ -237,8 +226,14 @@ export const updateProfile = async (req: AuthenticatedRequest, res: Response): P
     }
 
     // Update user fields
-    if (firstName !== undefined) user.firstName = firstName;
-    if (lastName !== undefined) user.lastName = lastName;
+    if (name !== undefined) {
+      const nameParts = name.split(' ');
+      user.firstName = nameParts[0] || name;
+      user.lastName = nameParts.slice(1).join(' ') || '';
+    } else {
+      if (firstName !== undefined) user.firstName = firstName;
+      if (lastName !== undefined) user.lastName = lastName;
+    }
     if (phone !== undefined) user.phone = phone;
     if (preferences !== undefined) {
       user.preferences = { ...user.preferences, ...preferences };
@@ -253,8 +248,7 @@ export const updateProfile = async (req: AuthenticatedRequest, res: Response): P
         user: {
           id: user._id,
           email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          name: user.getFullName(),
           role: user.role,
           avatar: user.avatar,
           phone: user.phone,
@@ -349,9 +343,9 @@ export const logout = async (_req: AuthenticatedRequest, res: Response): Promise
  */
 export const googleCallback = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { googleId, email, firstName, lastName, avatar } = req.body;
+    const { googleId, email, name, firstName, lastName, avatar } = req.body;
 
-    if (!googleId || !email || !firstName || !lastName) {
+    if (!googleId || !email || (!name && (!firstName || !lastName))) {
       res.status(400).json({
         success: false,
         error: 'Missing required Google OAuth data'
@@ -375,11 +369,14 @@ export const googleCallback = async (req: Request, res: Response): Promise<void>
       }
 
       // Create new Google OAuth user
+      const userFirstName = firstName || (name ? name.split(' ')[0] : '');
+      const userLastName = lastName || (name ? name.split(' ').slice(1).join(' ') : '');
+      
       user = new User({
         googleId,
         email,
-        firstName,
-        lastName,
+        firstName: userFirstName,
+        lastName: userLastName,
         avatar,
         authProvider: 'google',
         isVerified: true // Google accounts are pre-verified
@@ -406,8 +403,7 @@ export const googleCallback = async (req: Request, res: Response): Promise<void>
         user: {
           id: user._id,
           email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          name: user.getFullName(),
           role: user.role,
           avatar: user.avatar,
           authProvider: user.authProvider,

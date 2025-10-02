@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { 
   Heart, 
@@ -133,7 +133,7 @@ export default function AboutPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center stagger-animation">
                   <Link to="/temples">
-                    <RippleButton size="lg" variant="primary" className="w-full sm:w-auto shadow-lg hover:shadow-xl">
+                    <RippleButton size="lg" variant="primary" className="w-full sm:w-auto shadow-lg hover:shadow-xl border-4 border-double">
                       Explore Temples
                     </RippleButton>
                   </Link>
@@ -160,7 +160,7 @@ export default function AboutPage() {
               }`}
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-6 text-shadow-soft">
-                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text ">
                   Our Mission
                 </span>
               </h2>
@@ -317,7 +317,7 @@ export default function AboutPage() {
                 }`}
               >
                 <h2 className="text-4xl md:text-5xl font-bold mb-6 text-shadow-soft">
-                  <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-black">
                     Our Values
                   </span>
                 </h2>
@@ -424,7 +424,7 @@ export default function AboutPage() {
                 <Link to="/temples">
                   <RippleButton 
                     size="xl" 
-                    className="w-full sm:w-auto bg-white text-primary hover:bg-white/90 font-semibold shadow-2xl hover:shadow-3xl border-4 border-double"
+                    className="w-full sm:w-auto text-primary hover:bg-white/60 font-semibold shadow-2xl hover:shadow-3xl border-4 border-double text-black"
                   >
                     Start Exploring
                   </RippleButton>
@@ -433,7 +433,7 @@ export default function AboutPage() {
                   <RippleButton 
                     variant="outline" 
                     size="xl" 
-                    className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-primary font-semibold shadow-2xl hover:shadow-3xl"
+                    className="w-full sm:w-auto border-white hover:bg-white/60 hover:text-primary font-semibold shadow-2xl hover:shadow-3xl text-black"
                   >
                     Get in Touch
                   </RippleButton>

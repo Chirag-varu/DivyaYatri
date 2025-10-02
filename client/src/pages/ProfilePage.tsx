@@ -11,29 +11,8 @@ import {
   EyeOff, 
   Loader2, 
   User, 
-  Shield, 
-  Heart,
-  MapPin,
-  Star,
-  Calendar,
-  Camera,
-  Settings,
-  Bell,
-  Trash2,
-  Edit,
-  Plus
+  Shield
 } from 'lucide-react';
-
-interface User {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  bio?: string;
-  location?: string;
-  role: string;
-}
 
 interface Temple {
   _id: string;
@@ -59,23 +38,14 @@ interface Visit {
   review?: string;
 }
 
-interface UserPreferences {
-  emailNotifications: boolean;
-  smsNotifications: boolean;
-  marketingEmails: boolean;
-  templeUpdates: boolean;
-  reviewReminders: boolean;
-  favoriteCategories: string[];
-  preferredStates: string[];
-}
+
 
 export default function ProfilePage() {
   const { user, updateProfile, isAuthenticated } = useAuth();
   
   // Profile form state
   const [profileData, setProfileData] = useState({
-    firstName: '',
-    lastName: '',
+    name: '',
     phone: '',
     bio: '',
     location: '',
@@ -97,27 +67,19 @@ export default function ProfilePage() {
   });
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
-  // User preferences state
-  const [preferences, setPreferences] = useState<UserPreferences>({
-    emailNotifications: true,
-    smsNotifications: false,
-    marketingEmails: false,
-    templeUpdates: true,
-    reviewReminders: true,
-    favoriteCategories: [],
-    preferredStates: []
-  });
 
-  // Avatar upload state
-  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
+
 
   // Fetch user's favorite temples
+  /* 
+  // Fetch user's favorite temples
   const { data: favoriteTemples = [] } = useQuery({
-    queryKey: ['user-favorites', user && '_id' in user ? (user as User)._id : undefined],
+    queryKey: ['user-favorites', user?.id],
     queryFn: async () => {
       if (!user) return [];
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${user._id}/favorites`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${user.id}/favorites`);
         if (!response.ok) throw new Error('Failed to fetch favorites');
         const data = await response.json();
         return data.data || [];
@@ -133,12 +95,12 @@ export default function ProfilePage() {
   const { data: visitHistory = [] } = useQuery({
     queryKey: [
       'user-visits',
-      user && '_id' in user ? (user as User)._id : undefined
+      user?.id
     ],
     queryFn: async () => {
       if (!user || !('_id' in user)) return [];
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${(user as User)._id}/visits`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${user.id}/visits`);
         if (!response.ok) throw new Error('Failed to fetch visits');
         const data = await response.json();
         return data.data || [];
@@ -149,6 +111,7 @@ export default function ProfilePage() {
     },
     enabled: !!user,
   });
+  */
 
   // Mock data for development
   const mockFavoriteTemples: Temple[] = [
@@ -197,11 +160,10 @@ export default function ProfilePage() {
   useEffect(() => {
     if (user) {
       setProfileData({
-        firstName: user.firstName || '',
-        lastName: user.lastName || '',
+        name: user.name || '',
         phone: user.phone || '',
-        bio: user.bio || '',
-        location: user.location || '',
+        bio: user.profile?.bio || '',
+        location: user.profile?.location || '',
       });
     }
   }, [user]);
@@ -211,16 +173,10 @@ export default function ProfilePage() {
   const validateProfileForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!profileData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
-    } else if (profileData.firstName.trim().length < 2) {
-      newErrors.firstName = 'First name must be at least 2 characters long';
-    }
-
-    if (!profileData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
-    } else if (profileData.lastName.trim().length < 2) {
-      newErrors.lastName = 'Last name must be at least 2 characters long';
+    if (!profileData.name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (profileData.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters long';
     }
 
     if (profileData.phone && !/^\+?[\d\s\-\(\)]{10,}$/.test(profileData.phone)) {
@@ -302,8 +258,7 @@ export default function ProfilePage() {
 
     try {
       await updateProfile({
-        firstName: profileData.firstName.trim(),
-        lastName: profileData.lastName.trim(),
+        name: profileData.name.trim(),
         phone: profileData.phone || undefined,
       });
       
@@ -416,7 +371,7 @@ export default function ProfilePage() {
           <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <User className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text   mb-4">
             My Profile
           </h1>
           <p className="text-lg md:text-xl text-text/80 max-w-2xl mx-auto">
@@ -441,7 +396,7 @@ export default function ProfilePage() {
           <TabsContent value="profile">
             <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-2xl hover:shadow-3xl transition-all duration-500">
               <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
-                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Personal Information</CardTitle>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text  ">Personal Information</CardTitle>
                 <CardDescription className="text-text/70 text-base">
                   Update your personal details and contact information
                 </CardDescription>
@@ -456,40 +411,21 @@ export default function ProfilePage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label htmlFor="firstName" className="text-sm font-semibold text-text">
-                        First Name
+                      <label htmlFor="name" className="text-sm font-semibold text-text">
+                        Full Name
                       </label>
                       <Input
-                        id="firstName"
-                        name="firstName"
+                        id="name"
+                        name="name"
                         type="text"
-                        value={profileData.firstName}
+                        value={profileData.name}
                         onChange={handleProfileInputChange}
                         className={`bg-white/50 backdrop-blur-sm border-2 transition-all duration-300 focus:bg-white focus:scale-105 ${
-                          profileErrors.firstName ? 'border-red-500' : 'border-primary/20 focus:border-primary'
+                          profileErrors.name ? 'border-red-500' : 'border-primary/20 focus:border-primary'
                         }`}
                       />
-                      {profileErrors.firstName && (
-                        <p className="text-red-500 text-xs mt-1 animate-fadeInUp">{profileErrors.firstName}</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="lastName" className="text-sm font-semibold text-text">
-                        Last Name
-                      </label>
-                      <Input
-                        id="lastName"
-                        name="lastName"
-                        type="text"
-                        value={profileData.lastName}
-                        onChange={handleProfileInputChange}
-                        className={`bg-white/50 backdrop-blur-sm border-2 transition-all duration-300 focus:bg-white focus:scale-105 ${
-                          profileErrors.lastName ? 'border-red-500' : 'border-primary/20 focus:border-primary'
-                        }`}
-                      />
-                      {profileErrors.lastName && (
-                        <p className="text-red-500 text-xs mt-1 animate-fadeInUp">{profileErrors.lastName}</p>
+                      {profileErrors.name && (
+                        <p className="text-red-500 text-xs mt-1 animate-fadeInUp">{profileErrors.name}</p>
                       )}
                     </div>
                   </div>
@@ -559,7 +495,7 @@ export default function ProfilePage() {
           <TabsContent value="security">
             <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-2xl hover:shadow-3xl transition-all duration-500">
               <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
-                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Change Password</CardTitle>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text  ">Change Password</CardTitle>
                 <CardDescription className="text-text/70 text-base">
                   Update your password to keep your account secure
                 </CardDescription>

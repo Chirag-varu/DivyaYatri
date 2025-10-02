@@ -109,15 +109,9 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSuccess = async (userData: {
-    googleId: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    avatar?: string;
-  }) => {
+  const handleGoogleSuccess = async (credential: string) => {
     try {
-      await loginWithGoogle(userData);
+      await loginWithGoogle(credential);
       toast.success({
         title: 'Welcome!',
         description: 'You have successfully signed in with Google.',
@@ -196,7 +190,7 @@ export default function LoginPage() {
 
       <Card className="w-full max-w-md bg-white/80 backdrop-blur-sm shadow-2xl border-0 hover:shadow-3xl transition-all duration-500 relative z-10">
         <CardHeader className="space-y-1 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-t-lg">
-          <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-primary to-secondary bg-clip-text  ">
             {showForgotPassword ? 'Reset Password' : 'Welcome Back'}
           </CardTitle>
           <CardDescription className="text-center text-text/70 text-base">
@@ -325,7 +319,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              className="w-full bg-gradient-to-r from-primary to-secondary from-primary/90 to-secondary/90 from-primary/90 to-secondary/90 text-black font-semibold py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

@@ -15,10 +15,7 @@ import {
   AlertCircle,
   Grid,
   List,
-  Filter,
   Search,
-  Plus,
-  Star,
   Calendar,
   User
 } from 'lucide-react';
@@ -35,8 +32,7 @@ interface UploadedImage {
   type: string;
   uploadedBy: {
     _id: string;
-    firstName: string;
-    lastName: string;
+    name: string;
     avatar?: string;
   };
   uploadedAt: string;
@@ -98,8 +94,7 @@ export default function ImageUploadGallery({
       type: 'image/jpeg',
       uploadedBy: {
         _id: user?.id || '1',
-        firstName: 'Rajesh',
-        lastName: 'Kumar'
+        name: 'Rajesh Kumar'
       },
       uploadedAt: '2024-09-28T10:30:00Z',
       metadata: {
@@ -126,8 +121,7 @@ export default function ImageUploadGallery({
       type: 'image/jpeg',
       uploadedBy: {
         _id: '2',
-        firstName: 'Priya',
-        lastName: 'Sharma'
+        name: 'Priya Sharma'
       },
       uploadedAt: '2024-09-27T15:45:00Z',
       metadata: {
@@ -230,8 +224,7 @@ export default function ImageUploadGallery({
           type: file.type,
           uploadedBy: {
             _id: user?.id || '1',
-            firstName: user?.firstName || 'User',
-            lastName: user?.lastName || 'Name'
+            name: user?.name || 'User'
           },
           uploadedAt: new Date().toISOString(),
           metadata: {
@@ -647,7 +640,7 @@ export default function ImageUploadGallery({
                       <div className="flex items-center justify-between text-sm text-text/60 mb-3">
                         <div className="flex items-center gap-2">
                           <User className="h-4 w-4" />
-                          <span>{image.uploadedBy.firstName} {image.uploadedBy.lastName}</span>
+                          <span>{image.uploadedBy.name}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4" />
@@ -724,7 +717,7 @@ export default function ImageUploadGallery({
                     <User className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <p className="font-medium">{selectedImage.uploadedBy.firstName} {selectedImage.uploadedBy.lastName}</p>
+                    <p className="font-medium">{selectedImage.uploadedBy.name}</p>
                     <p className="text-sm text-text/60">{new Date(selectedImage.uploadedAt).toLocaleDateString()}</p>
                   </div>
                 </div>

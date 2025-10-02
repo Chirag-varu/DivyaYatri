@@ -229,7 +229,7 @@ export default function ContactPage() {
                 <EnhancedCard variant="glass-strong" hoverEffect="lift" className="shadow-2xl">
                   <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
                     <CardTitle className="text-3xl font-bold text-shadow-soft">
-                      <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                      <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text  ">
                         Send us a Message
                       </span>
                     </CardTitle>
@@ -346,7 +346,7 @@ export default function ContactPage() {
             {/* Contact Information */}
             <div className="space-y-8">
               <div>
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-8">Contact Information</h2>
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text   mb-8">Contact Information</h2>
                 <div className="grid grid-cols-1 gap-6">
                   {contactInfo.map((info, index) => {
                     const Icon = info.icon;
@@ -372,7 +372,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-8">What can we help with?</h2>
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text   mb-8">What can we help with?</h2>
                 <div className="space-y-4">
                   {reasons.map((reason, index) => {
                     const Icon = reason.icon;
@@ -400,7 +400,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16 animate-fadeInUp">
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">Frequently Asked Questions</h2>
+              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text   mb-6">Frequently Asked Questions</h2>
               <p className="text-lg md:text-xl text-text/80">
                 Quick answers to common questions about DivyaYatri
               </p>

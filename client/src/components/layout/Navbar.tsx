@@ -73,7 +73,7 @@ export default function Navbar() {
                   className="flex items-center space-x-2 group hover:bg-secondary/10 transition-all duration-200"
                 >
                   <div className="w-8 h-8 bg-accent text-background rounded-full flex items-center justify-center text-sm font-medium shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-200">
-                    {user.firstName.charAt(0).toUpperCase()}
+                    {user.name ? user.name.charAt(0).toUpperCase() : ''}
                   </div>
                   <span className="hidden md:block text-primary group-hover:text-secondary transition-colors">{user.firstName}</span>
                 </Button>

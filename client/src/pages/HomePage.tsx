@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Search, 
-  MapPin, 
-  Star, 
-  TrendingUp, 
-  Users, 
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Search,
+  MapPin,
+  Star,
+  TrendingUp,
+  Users,
   Heart,
   Navigation,
   Camera,
@@ -16,10 +16,10 @@ import {
   ArrowRight,
   CheckCircle
 } from 'lucide-react';
-import { 
-  AnimatedBackground, 
-  ScrollProgressIndicator, 
-  EnhancedCard, 
+import {
+  AnimatedBackground,
+  ScrollProgressIndicator,
+  EnhancedCard,
   RippleButton,
   AnimatedCounter,
   FloatingElement,
@@ -59,7 +59,7 @@ const fetchFeaturedTemples = async (): Promise<Temple[]> => {
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-  
+
   const heroRef = useScrollReveal();
   const statsRef = useScrollReveal();
   const featuresRef = useScrollReveal();
@@ -146,15 +146,14 @@ export default function HomePage() {
           <FloatingElement delay={2} intensity="subtle">
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-secondary/5 to-accent/5 rounded-full blur-3xl"></div>
           </FloatingElement>
-          
+
           <div className="container mx-auto text-center relative z-10">
-            <div 
+            <div
               ref={heroRef.ref}
-              className={`transition-all duration-1000 ${
-                heroRef.isVisible 
-                  ? 'opacity-100 transform translate-y-0' 
+              className={`transition-all duration-1000 ${heroRef.isVisible
+                  ? 'opacity-100 transform translate-y-0'
                   : 'opacity-0 transform translate-y-10'
-              }`}
+                }`}
             >
               <h1 className="text-5xl md:text-7xl font-bold mb-8 drop-shadow-2xl leading-tight text-shadow-strong">
                 <span className="gradient-text-animated">
@@ -162,28 +161,32 @@ export default function HomePage() {
                 </span>
               </h1>
               <div className="text-xl md:text-2xl mb-12 opacity-95 max-w-4xl mx-auto leading-relaxed font-medium">
-                <TypewriterText 
+                <TypewriterText
                   text="Explore India's spiritual heritage with DivyaYatri - your trusted companion for sacred journeys"
                   speed={40}
                 />
               </div>
             </div>
-            
+
             {/* Enhanced Search Bar */}
             <div className="stagger-animation">
-              <form onSubmit={handleSearch} className="max-w-3xl mx-auto relative mb-12">
-                <div className="flex glass-strong rounded-2xl p-3 shadow-2xl border border-secondary/30 hover:border-secondary/50 transition-all duration-300 group">
+              <form
+                onSubmit={handleSearch}
+                className="max-w-3xl mx-auto relative mb-12 px-4"
+              >
+                <div className="flex items-center glass-strong rounded-2xl p-2 shadow-2xl border border-secondary/30 hover:border-secondary/50 transition-all duration-300 focus-within:ring-2 focus-within:ring-secondary/50 bg-background/60 backdrop-blur-lg">
                   <Input
                     type="text"
                     placeholder="Search temples by name, city, or deity..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 border-0 text-foreground placeholder:text-foreground/60 bg-transparent text-lg py-3 focus:outline-none"
+                    className="flex-1 border-0 text-foreground  text-lg px-4 py-3 "
                   />
-                  <RippleButton 
-                    type="submit" 
-                    size="lg" 
-                    className="ml-3 px-8 py-3 rounded-xl shadow-lg"
+
+                  <RippleButton
+                    type="submit"
+                    size="lg"
+                    className="ml-3 px-8 py-3 rounded-xl shadow-lg flex justify-center items-center border-1 border-solid"
                   >
                     <Search className="h-5 w-5 mr-2" />
                     Search
@@ -192,20 +195,21 @@ export default function HomePage() {
               </form>
             </div>
 
+
             <div className="flex flex-col sm:flex-row gap-6 justify-center stagger-animation">
               <Link to="/temples">
-                <RippleButton 
-                  size="xl" 
-                  variant="secondary" 
+                <RippleButton
+                  size="xl"
+                  variant="secondary"
                   className="w-full sm:w-auto shadow-xl hover:shadow-2xl border-4 border-double "
                 >
                   Browse All Temples
                 </RippleButton>
               </Link>
               <Link to="/about">
-                <RippleButton 
-                  size="xl" 
-                  variant="outline" 
+                <RippleButton
+                  size="xl"
+                  variant="outline"
                   className="w-full sm:w-auto border-2 border-background text-background hover:bg-background hover:text-primary shadow-xl hover:shadow-2xl"
                 >
                   Learn More
@@ -219,18 +223,17 @@ export default function HomePage() {
         <section className="py-16 bg-gradient-to-r from-background via-muted/10 to-background border-b border-border shadow-lg relative">
           <div className="absolute inset-0 bg-gradient-to-r from-secondary/5 via-transparent to-accent/5"></div>
           <div className="container mx-auto px-4 relative z-10">
-            <div 
+            <div
               ref={statsRef.ref}
-              className={`grid grid-cols-2 md:grid-cols-4 gap-8 transition-all duration-1000 ${
-                statsRef.isVisible 
-                  ? 'opacity-100 transform translate-y-0' 
+              className={`grid grid-cols-2 md:grid-cols-4 gap-8 transition-all duration-1000 ${statsRef.isVisible
+                  ? 'opacity-100 transform translate-y-0'
                   : 'opacity-0 transform translate-y-10'
-              }`}
+                }`}
             >
               {stats.map((stat, index) => (
                 <div key={index} className="text-center group">
-                  <EnhancedCard 
-                    variant="glass" 
+                  <EnhancedCard
+                    variant="glass"
                     hoverEffect="scale"
                     delay={index * 0.1}
                     className="p-6 border border-secondary/10 hover:border-secondary/30"
@@ -263,15 +266,14 @@ export default function HomePage() {
           <FloatingElement delay={1}>
             <div className="absolute bottom-10 left-10 w-48 h-48 bg-accent/5 rounded-full blur-3xl"></div>
           </FloatingElement>
-          
+
           <div className="container mx-auto relative z-10">
-            <div 
+            <div
               ref={featuresRef.ref}
-              className={`text-center mb-16 transition-all duration-1000 ${
-                featuresRef.isVisible 
-                  ? 'opacity-100 transform translate-y-0' 
+              className={`text-center mb-16 transition-all duration-1000 ${featuresRef.isVisible
+                  ? 'opacity-100 transform translate-y-0'
                   : 'opacity-0 transform translate-y-10'
-              }`}
+                }`}
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-shadow-soft">
                 <span className="bg-gradient-to-r from-primary to-secondary">
@@ -282,14 +284,14 @@ export default function HomePage() {
                 We make your spiritual journey smoother with comprehensive temple information and community insights.
               </p>
             </div>
-            
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-animation">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
-                  <EnhancedCard 
-                    key={index} 
-                    variant="glass" 
+                  <EnhancedCard
+                    key={index}
+                    variant="glass"
                     hoverEffect="lift"
                     delay={index * 0.1}
                     className="text-center overflow-hidden relative"
@@ -327,15 +329,14 @@ export default function HomePage() {
           <FloatingElement delay={1}>
             <div className="absolute bottom-10 left-10 w-48 h-48 bg-accent/5 rounded-full blur-3xl"></div>
           </FloatingElement>
-          
+
           <div className="container mx-auto relative z-10">
-            <div 
+            <div
               ref={templesRef.ref}
-              className={`text-center mb-16 transition-all duration-1000 ${
-                templesRef.isVisible 
-                  ? 'opacity-100 transform translate-y-0' 
+              className={`text-center mb-16 transition-all duration-1000 ${templesRef.isVisible
+                  ? 'opacity-100 transform translate-y-0'
                   : 'opacity-0 transform translate-y-10'
-              }`}
+                }`}
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-6 text-shadow-soft">
                 <span className="bg-gradient-to-r from-primary to-secondary text-foreground/80 leading-relaxed">
@@ -346,13 +347,13 @@ export default function HomePage() {
                 Discover some of the most visited and highly rated temples across India
               </p>
             </div>
-            
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 stagger-animation">
               {featuredTemples.length > 0 ? (
                 featuredTemples.map((temple, index) => (
-                  <EnhancedCard 
-                    key={temple._id} 
-                    variant="glass-strong" 
+                  <EnhancedCard
+                    key={temple._id}
+                    variant="glass-strong"
                     hoverEffect="lift"
                     delay={index * 0.1}
                     className="temple-card group overflow-hidden cursor-pointer border-2 border-primary/10 hover:border-primary/30 transition-all duration-500"
@@ -394,9 +395,9 @@ export default function HomePage() {
                           <span className="text-xs text-foreground/60">({temple.reviewCount} reviews)</span>
                         </div>
                         <Link to={`/temple/${temple._id}`}>
-                          <RippleButton 
-                            variant="outline" 
-                            size="sm" 
+                          <RippleButton
+                            variant="outline"
+                            size="sm"
                             className="rounded-full px-4 border-primary/30 hover:bg-primary hover:text-background transition-all duration-300 hover:scale-105"
                           >
                             View Details
@@ -409,9 +410,9 @@ export default function HomePage() {
               ) : (
                 // Enhanced fallback mock data
                 [1, 2, 3, 4, 5, 6].map((temple, index) => (
-                  <EnhancedCard 
-                    key={temple} 
-                    variant="glass-strong" 
+                  <EnhancedCard
+                    key={temple}
+                    variant="glass-strong"
                     hoverEffect="lift"
                     delay={index * 0.1}
                     className="temple-card group overflow-hidden cursor-pointer border-2 border-primary/10 hover:border-primary/30 transition-all duration-500"
@@ -441,9 +442,9 @@ export default function HomePage() {
                           </div>
                           <span className="text-xs text-foreground/60">(120 reviews)</span>
                         </div>
-                        <RippleButton 
-                          variant="outline" 
-                          size="sm" 
+                        <RippleButton
+                          variant="outline"
+                          size="sm"
                           className="rounded-full px-4 border-primary/30 hover:bg-primary hover:text-background transition-all duration-300 hover:scale-105"
                         >
                           View Details
@@ -457,8 +458,8 @@ export default function HomePage() {
 
             <div className="text-center">
               <Link to="/temples">
-                <RippleButton 
-                  size="lg" 
+                <RippleButton
+                  size="lg"
                   className="px-12 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl border-4 border-double"
                 >
                   View All Temples
@@ -474,7 +475,7 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-r from-primary/3 via-transparent to-secondary/3"></div>
           <div className="absolute top-20 right-20 w-72 h-72 bg-gradient-to-r from-secondary/10 to-accent/10 rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-r from-accent/10 to-primary/10 rounded-full blur-3xl"></div>
-          
+
           <div className="container mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
@@ -482,10 +483,10 @@ export default function HomePage() {
                   Everything You Need for Your Spiritual Journey
                 </h2>
                 <p className="text-xl text-foreground/80 mb-10 leading-relaxed">
-                  DivyaYatri provides comprehensive information and tools to make your temple visits 
+                  DivyaYatri provides comprehensive information and tools to make your temple visits
                   meaningful and hassle-free. Join our community of spiritual seekers.
                 </p>
-                
+
                 <div className="space-y-6 mb-10">
                   {benefits.map((benefit, index) => (
                     <div key={index} className="flex items-center gap-4 group hover:translate-x-2 transition-transform duration-300">
@@ -499,17 +500,17 @@ export default function HomePage() {
 
                 <div className="flex flex-col sm:flex-row gap-6">
                   <Link to="/register">
-                    <RippleButton 
-                      size="lg" 
+                    <RippleButton
+                      size="lg"
                       className="w-full sm:w-auto px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl border-4 border-double"
                     >
                       Join DivyaYatri
                     </RippleButton>
                   </Link>
                   <Link to="/contact">
-                    <RippleButton 
-                      variant="outline" 
-                      size="lg" 
+                    <RippleButton
+                      variant="outline"
+                      size="lg"
                       className="w-full sm:w-auto px-8 py-4 text-lg font-semibold border-2 hover:bg-primary hover:text-background shadow-xl hover:shadow-2xl"
                     >
                       Contact Us
@@ -527,9 +528,9 @@ export default function HomePage() {
                 ].map((item, index) => {
                   const Icon = item.icon;
                   return (
-                    <EnhancedCard 
+                    <EnhancedCard
                       key={index}
-                      variant="glass" 
+                      variant="glass"
                       hoverEffect="lift"
                       delay={index * 0.1}
                       className="text-center p-8"
@@ -556,28 +557,28 @@ export default function HomePage() {
           <FloatingElement delay={2}>
             <div className="absolute bottom-10 right-10 w-56 h-56 bg-accent/10 rounded-full blur-3xl"></div>
           </FloatingElement>
-          
+
           <div className="container mx-auto text-center relative z-10">
             <h2 className="text-4xl md:text-6xl font-bold mb-8 text-secondary leading-tight">
               Ready to Begin Your Spiritual Journey?
             </h2>
             <p className="text-xl md:text-2xl mb-12 opacity-95 max-w-4xl mx-auto text-background leading-relaxed">
-              Join thousands of devotees who trust DivyaYatri for their temple visits. 
+              Join thousands of devotees who trust DivyaYatri for their temple visits.
               Start exploring today and discover the sacred.
             </p>
             <div className="flex flex-col sm:flex-row gap-8 justify-center">
               <Link to="/temples">
-                <RippleButton 
-                  size="xl" 
+                <RippleButton
+                  size="xl"
                   className="w-full sm:w-auto px-10 py-5 text-xl font-bold bg-secondary text-primary hover:bg-background hover:text-primary shadow-2xl hover:shadow-3xl border-4 border-double"
                 >
                   Start Exploring
                 </RippleButton>
               </Link>
               <Link to="/register">
-                <RippleButton 
-                  size="xl" 
-                  variant="outline" 
+                <RippleButton
+                  size="xl"
+                  variant="outline"
                   className="w-full sm:w-auto px-10 py-5 text-xl font-bold border-2 border-secondary text-secondary hover:bg-secondary hover:text-primary shadow-2xl hover:shadow-3xl"
                 >
                   Create Account
