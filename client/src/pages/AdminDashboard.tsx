@@ -14,6 +14,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import TempleFormDialog from '@/components/admin/TempleFormDialog';
+import UserManagementDialog from '@/components/admin/UserManagementDialog';
+import BookingManagementDialog from '@/components/admin/BookingManagementDialog';
 
 import { 
 
@@ -73,13 +76,38 @@ interface Temple {
   id: string;
   name: string;
   location: string;
-  rating: number;
-  reviews: number;
+  rating?: number;
+  reviews?: number;
   status: 'active' | 'pending' | 'suspended';
   addedDate: string;
   lastUpdated: string;
   images: string[];
   description: string;
+  category?: string;
+  subcategory?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  latitude?: number;
+  longitude?: number;
+  contactNumber?: string;
+  email?: string;
+  website?: string;
+  openingHours?: {
+    [key: string]: { open: string; close: string; closed: boolean };
+  };
+  specialEvents?: Array<{
+    name: string;
+    date: string;
+    description: string;
+  }>;
+  facilities?: string[];
+  entryFee?: number;
+  parkingAvailable?: boolean;
+  wheelchairAccessible?: boolean;
+  verificationStatus?: 'verified' | 'pending' | 'rejected';
+  verificationNotes?: string;
 }
 
 interface User {
@@ -320,6 +348,12 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const [templeFormOpen, setTempleFormOpen] = useState(false);
+  const [selectedTemple, setSelectedTemple] = useState<Temple | null>(null);
+  const [userManagementOpen, setUserManagementOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [bookingManagementOpen, setBookingManagementOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const { user } = useAuth();
 
   const { data: stats } = useQuery({
@@ -379,6 +413,7 @@ export default function AdminDashboard() {
   const handleApproveTemple = async (templeId: string) => {
     try {
       // API call to approve temple
+      console.log('Approving temple:', templeId);
       toast.success({
         title: "Temple Approved",
         description: "The temple has been approved and is now live.",
@@ -391,17 +426,174 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleSuspendUser = async (userId: string) => {
+  const handleSaveTemple = async (templeData: any) => {
     try {
-      // API call to suspend user
+      // API call to save temple
+      console.log('Saving temple:', templeData);
+      toast.success({
+        title: "Temple Saved",
+        description: `Temple "${templeData.name}" has been saved successfully.`,
+      });
+      // Here you would typically refetch the temples data
+    } catch (error) {
+      toast.error({
+        title: "Error",
+        description: "Failed to save temple. Please try again.",
+      });
+    }
+  };
+
+  const handleEditTemple = (temple: Temple) => {
+    setSelectedTemple(temple);
+    setTempleFormOpen(true);
+  };
+
+  const handleAddTemple = () => {
+    setSelectedTemple(null);
+    setTempleFormOpen(true);
+  };
+
+  const handleEditUser = (user: User) => {
+    setSelectedUser(user);
+    setUserManagementOpen(true);
+  };
+
+  const handleSaveUser = async (userData: any) => {
+    try {
+      console.log('Saving user:', userData);
+      toast.success({
+        title: "User Updated",
+        description: `User "${userData.name}" has been updated successfully.`,
+      });
+    } catch (error) {
+      toast.error({
+        title: "Error",
+        description: "Failed to update user. Please try again.",
+      });
+    }
+  };
+
+  const handleSuspendUser = async (userId: string, reason: string, duration: string) => {
+    try {
+      console.log('Suspending user:', userId, 'for', duration, 'days. Reason:', reason);
       toast.success({
         title: "User Suspended",
-        description: "The user has been suspended.",
+        description: `User has been suspended for ${duration} days.`,
       });
     } catch (error) {
       toast.error({
         title: "Error",
         description: "Failed to suspend user. Please try again.",
+      });
+    }
+  };
+
+  const handleBanUser = async (userId: string, reason: string) => {
+    try {
+      console.log('Banning user:', userId, 'Reason:', reason);
+      toast.success({
+        title: "User Banned",
+        description: "User has been permanently banned.",
+      });
+    } catch (error) {
+      toast.error({
+        title: "Error",
+        description: "Failed to ban user. Please try again.",
+      });
+    }
+  };
+
+  const handleSendUserMessage = async (userId: string, message: string, type: 'email' | 'notification') => {
+    try {
+      console.log('Sending', type, 'to user:', userId, 'Message:', message);
+      toast.success({
+        title: "Message Sent",
+        description: `${type} sent successfully.`,
+      });
+    } catch (error) {
+      toast.error({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+      });
+    }
+  };
+
+  const handleEditBooking = (booking: Booking) => {
+    setSelectedBooking(booking);
+    setBookingManagementOpen(true);
+  };
+
+  const handleSaveBooking = async (bookingData: any) => {
+    try {
+      console.log('Saving booking:', bookingData);
+      toast.success({
+        title: "Booking Updated",
+        description: `Booking for ${bookingData.templeName} has been updated successfully.`,
+      });
+    } catch (error) {
+      toast.error({
+        title: "Error",
+        description: "Failed to update booking. Please try again.",
+      });
+    }
+  };
+
+  const handleConfirmBooking = async (bookingId: string) => {
+    try {
+      console.log('Confirming booking:', bookingId);
+      toast.success({
+        title: "Booking Confirmed",
+        description: "The booking has been confirmed successfully.",
+      });
+    } catch (error) {
+      toast.error({
+        title: "Error",
+        description: "Failed to confirm booking. Please try again.",
+      });
+    }
+  };
+
+  const handleCancelBooking = async (bookingId: string, reason: string) => {
+    try {
+      console.log('Cancelling booking:', bookingId, 'Reason:', reason);
+      toast.success({
+        title: "Booking Cancelled",
+        description: "The booking has been cancelled successfully.",
+      });
+    } catch (error) {
+      toast.error({
+        title: "Error",
+        description: "Failed to cancel booking. Please try again.",
+      });
+    }
+  };
+
+  const handleRefundBooking = async (bookingId: string, amount: number, reason: string) => {
+    try {
+      console.log('Processing refund for booking:', bookingId, 'Amount:', amount, 'Reason:', reason);
+      toast.success({
+        title: "Refund Processed",
+        description: `Refund of ₹${amount} has been processed successfully.`,
+      });
+    } catch (error) {
+      toast.error({
+        title: "Error",
+        description: "Failed to process refund. Please try again.",
+      });
+    }
+  };
+
+  const handleCompleteBooking = async (bookingId: string) => {
+    try {
+      console.log('Completing booking:', bookingId);
+      toast.success({
+        title: "Booking Completed",
+        description: "The booking has been marked as completed.",
+      });
+    } catch (error) {
+      toast.error({
+        title: "Error",
+        description: "Failed to complete booking. Please try again.",
       });
     }
   };
@@ -673,7 +865,7 @@ export default function AdminDashboard() {
                         <option value="suspended">Suspended</option>
                       </Select>
                     </div>
-                    <Button className="from-primary to-secondary text-white">
+                    <Button className="from-primary to-secondary text-white" onClick={handleAddTemple}>
                       <Plus className="h-4 w-4 mr-2" />
                       Add Temple
                     </Button>
@@ -739,7 +931,7 @@ export default function AdminDashboard() {
                                   Approve
                                 </Button>
                               )}
-                              <Button size="sm" variant="outline">
+                              <Button size="sm" variant="outline" onClick={() => handleEditTemple(temple)}>
                                 <Edit className="h-4 w-4 mr-1" />
                                 Edit
                               </Button>
@@ -844,14 +1036,14 @@ export default function AdminDashboard() {
                                 <Button 
                                   size="sm" 
                                   variant="outline"
-                                  onClick={() => handleSuspendUser(user.id)}
+                                  onClick={() => handleEditUser(user)}
                                   className="text-red-600 hover:text-red-700"
                                 >
                                   <Ban className="h-4 w-4 mr-1" />
-                                  Suspend
+                                  Manage
                                 </Button>
                               )}
-                              <Button size="sm" variant="outline">
+                              <Button size="sm" variant="outline" onClick={() => handleEditUser(user)}>
                                 <Edit className="h-4 w-4 mr-1" />
                                 Edit
                               </Button>
@@ -975,9 +1167,9 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" onClick={() => handleEditBooking(booking)}>
                           <Eye className="h-4 w-4 mr-1" />
-                          View
+                          Manage
                         </Button>
                       </div>
                     </div>
@@ -988,6 +1180,37 @@ export default function AdminDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Temple Form Dialog */}
+      <TempleFormDialog
+        open={templeFormOpen}
+        onOpenChange={setTempleFormOpen}
+        temple={selectedTemple as any}
+        onSave={handleSaveTemple}
+      />
+
+      {/* User Management Dialog */}
+      <UserManagementDialog
+        open={userManagementOpen}
+        onOpenChange={setUserManagementOpen}
+        user={selectedUser as any}
+        onSave={handleSaveUser}
+        onSuspend={handleSuspendUser}
+        onBan={handleBanUser}
+        onSendMessage={handleSendUserMessage}
+      />
+
+      {/* Booking Management Dialog */}
+      <BookingManagementDialog
+        open={bookingManagementOpen}
+        onOpenChange={setBookingManagementOpen}
+        booking={selectedBooking as any}
+        onSave={handleSaveBooking}
+        onConfirm={handleConfirmBooking}
+        onCancel={handleCancelBooking}
+        onRefund={handleRefundBooking}
+        onComplete={handleCompleteBooking}
+      />
     </div>
   );
 }

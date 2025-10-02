@@ -6,7 +6,7 @@ import { config } from 'dotenv';
 
 config();
 
-const MONGODB_URI = "mongodb+srv://chiragvaru03_db_user:gTxBLY24q86yXpzW@divyayatri.6ytv1xy.mongodb.net/?retryWrites=true&w=majority&appName=DivyaYatri";
+const MONGODB_URI = "";
 
 // Sample Users
 const sampleUsers = [
