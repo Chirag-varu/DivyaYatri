@@ -116,12 +116,12 @@ export default function TempleDetailPage() {
             <div className="h-96 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl mb-8"></div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-6">
-                <div className="h-8 bg-gradient-to-r from-text/20 to-text/10 rounded"></div>
-                <div className="h-4 bg-gradient-to-r from-text/20 to-text/10 rounded w-3/4"></div>
-                <div className="h-32 bg-gradient-to-r from-text/20 to-text/10 rounded"></div>
+                <div className="h-8   from-text/20 to-text/10 rounded"></div>
+                <div className="h-4   from-text/20 to-text/10 rounded w-3/4"></div>
+                <div className="h-32   from-text/20 to-text/10 rounded"></div>
               </div>
               <div className="space-y-6">
-                <div className="h-64 bg-gradient-to-r from-text/20 to-text/10 rounded"></div>
+                <div className="h-64   from-text/20 to-text/10 rounded"></div>
               </div>
             </div>
           </div>
@@ -140,7 +140,7 @@ export default function TempleDetailPage() {
           <h2 className="text-2xl font-bold text-text mb-4">Temple Not Found</h2>
           <p className="text-text/70 mb-8">The temple you're looking for doesn't exist or has been removed.</p>
           <Link to="/temples">
-            <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border-4 border-double">
+            <Button className="  from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border-4 border-double">
               Browse All Temples
             </Button>
           </Link>
@@ -242,7 +242,7 @@ export default function TempleDetailPage() {
             <div className="mb-8">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text   mb-2">
+                  <h1 className="text-4xl md:text-5xl font-bold   from-primary to-secondary bg-clip-text   mb-2">
                     {temple.name}
                   </h1>
                   <div className="flex items-center gap-4 text-text/70">
@@ -257,7 +257,7 @@ export default function TempleDetailPage() {
                     </div>
                   </div>
                 </div>
-                <span className="bg-gradient-to-r from-primary/20 to-secondary/20 text-primary px-4 py-2 rounded-full font-medium">
+                <span className="  from-primary/20 to-secondary/20 text-primary px-4 py-2 rounded-full font-medium">
                   {temple.category}
                 </span>
               </div>
@@ -442,7 +442,7 @@ export default function TempleDetailPage() {
 
             {/* Action Buttons */}
             <div className="space-y-3">
-              <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+              <Button className="w-full   from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                 Get Directions
               </Button>
               <Button variant="outline" className="w-full bg-white/80 backdrop-blur-sm border-primary/20 hover:bg-white hover:border-primary transition-all duration-300">

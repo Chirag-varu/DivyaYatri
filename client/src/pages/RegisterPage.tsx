@@ -194,8 +194,8 @@ export default function RegisterPage() {
       </div>
 
       <Card className="w-full max-w-lg bg-white/80 backdrop-blur-sm shadow-2xl border-0 hover:shadow-3xl transition-all duration-500 relative z-10">
-        <CardHeader className="space-y-1 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-t-lg">
-          <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-primary to-secondary bg-clip-text  ">
+        <CardHeader className="space-y-1   from-primary/5 to-secondary/5 rounded-t-lg">
+          <CardTitle className="text-3xl font-bold text-center   from-primary to-secondary bg-clip-text  ">
             Create Account
           </CardTitle>
           <CardDescription className="text-center text-text/70 text-base">
@@ -366,7 +366,7 @@ export default function RegisterPage() {
 
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              className="w-full from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

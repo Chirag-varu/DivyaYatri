@@ -38,7 +38,14 @@ export interface AuthState {
 export interface AuthContextType extends AuthState {
   login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
   register: (userData: RegisterData) => Promise<void>;
-  loginWithGoogle: (credential: string) => Promise<void>;
+  loginWithGoogle: (userData: {
+    googleId: string;
+    email: string;
+    name?: string;
+    firstName?: string;
+    lastName?: string;
+    avatar?: string;
+  }) => Promise<void>;
   logout: () => Promise<void>;
   logoutAll: () => Promise<void>;
   refreshToken: () => Promise<void>;
@@ -285,7 +292,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     console.log('Check auth status called');
   };
 
-  const loginWithGoogle = async (credential: string): Promise<void> => {
+  const loginWithGoogle = async (userData: {
+    googleId: string;
+    email: string;
+    name?: string;
+    firstName?: string;
+    lastName?: string;
+    avatar?: string;
+  }): Promise<void> => {
     dispatch({ type: 'LOGIN_START' });
 
     try {
@@ -294,7 +308,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ credential }),
+        body: JSON.stringify(userData),
       });
 
       const data = await response.json();

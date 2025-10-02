@@ -160,7 +160,7 @@ export default function AboutPage() {
               }`}
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-6 text-shadow-soft">
-                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text ">
+                <span className="  from-primary to-secondary bg-clip-text ">
                   Our Mission
                 </span>
               </h2>
@@ -204,7 +204,7 @@ export default function AboutPage() {
         </section>
 
         {/* Stats Section */}
-        <section className="relative py-20 bg-gradient-to-r from-primary via-primary/90 to-secondary text-white overflow-hidden">
+        <section className="relative py-20   from-primary via-primary/90 to-secondary text-white overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="container mx-auto px-4 relative z-10">
             <div 
@@ -260,7 +260,7 @@ export default function AboutPage() {
               }`}
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-6 text-shadow-soft">
-                <span className="bg-gradient-to-r from-primary to-secondary">
+                <span className="  from-primary to-secondary">
                   Why Choose DivyaYatri?
                 </span>
               </h2>
@@ -317,7 +317,7 @@ export default function AboutPage() {
                 }`}
               >
                 <h2 className="text-4xl md:text-5xl font-bold mb-6 text-shadow-soft">
-                  <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-black">
+                  <span className="  from-primary to-secondary bg-clip-text text-black">
                     Our Values
                   </span>
                 </h2>

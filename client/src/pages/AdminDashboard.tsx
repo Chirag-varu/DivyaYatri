@@ -440,13 +440,13 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text  ">
+              <h1 className="text-3xl font-bold   from-primary to-secondary bg-clip-text  ">
                 Admin Dashboard
               </h1>
               <p className="text-text/70 mt-1">Welcome back, {user?.name || 'Admin'}</p>
             </div>
             <div className="flex items-center gap-4">
-              <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white">
+              <Button className="  from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white">
                 <Download className="h-4 w-4 mr-2" />
                 Export Report
               </Button>
@@ -558,7 +558,7 @@ export default function AdminDashboard() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-primary">Temple Management</CardTitle>
-                  <Button className="bg-gradient-to-r from-primary to-secondary text-white">
+                  <Button className="  from-primary to-secondary text-white">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Temple
                   </Button>

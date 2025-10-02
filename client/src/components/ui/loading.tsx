@@ -56,7 +56,7 @@ export const PageLoader: React.FC = () => (
 // Content Shimmer Effect
 export const ContentShimmer: React.FC<{ className?: string }> = ({ className = '' }) => (
   <div className={`skeleton ${className}`}>
-    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+    <div className="absolute inset-0   from-transparent via-white/20 to-transparent animate-shimmer"></div>
   </div>
 );
 
@@ -95,7 +95,7 @@ export const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
     <div className={`relative overflow-hidden ${className}`}>
       {loading && (
         <div className="absolute inset-0 skeleton">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+          <div className="absolute inset-0   from-transparent via-white/30 to-transparent animate-shimmer"></div>
         </div>
       )}
       

@@ -208,7 +208,7 @@ export default function TempleDetailPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-secondary/5 to-accent/5 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-primary to-secondary rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16   from-primary to-secondary rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-lg text-text/70">Loading temple details...</p>
         </div>
       </div>
@@ -222,7 +222,7 @@ export default function TempleDetailPage() {
           <h2 className="text-2xl font-bold text-text mb-4">Temple not found</h2>
           <p className="text-text/70 mb-6">The temple you're looking for doesn't exist or has been removed.</p>
           <Link to="/temples">
-            <Button className="bg-gradient-to-r from-primary to-secondary text-white">
+            <Button className="  from-primary to-secondary text-white">
               Browse Temples
             </Button>
           </Link>
@@ -492,7 +492,7 @@ export default function TempleDetailPage() {
 
             {/* Action Buttons */}
             <div className="space-y-3">
-              <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+              <Button className="w-full   from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                 Get Directions
               </Button>
               <Button 

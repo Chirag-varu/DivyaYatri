@@ -212,7 +212,7 @@ export default function TemplesPage() {
       <div className="container mx-auto px-4 py-12 relative z-10">
         {/* Header */}
         <div className="mb-12 text-center animate-fadeInUp">
-          <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text   mb-6">
+          <h1 className="text-5xl md:text-7xl font-bold   from-primary via-secondary to-accent bg-clip-text   mb-6">
             Discover Sacred Temples
           </h1>
           <p className="text-xl md:text-2xl text-text/80 max-w-3xl mx-auto leading-relaxed">
@@ -246,7 +246,7 @@ export default function TemplesPage() {
                 </Button>
                 <Button 
                   type="submit" 
-                  className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  className="  from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                 >
                   Search
                 </Button>
@@ -424,7 +424,7 @@ export default function TemplesPage() {
                 </p>
                 <Button 
                   onClick={clearFilters}
-                  className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
+                  className="  from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
                 >
                   Clear Filters
                 </Button>
@@ -510,7 +510,7 @@ export default function TemplesPage() {
                       <div className="flex gap-3">
                         <Button 
                           asChild
-                          className="flex-1 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                          className="flex-1   from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                         >
                           <Link to={`/temples/${temple._id}`}>
                             View Details

@@ -231,7 +231,7 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
           </div>
           <h3 className="text-xl font-bold text-text mb-2">Sign in required</h3>
           <p className="text-text/70 mb-6">Please sign in to book darshan slots and special services.</p>
-          <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white">
+          <Button className="  from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white">
             Sign In
           </Button>
         </CardContent>
@@ -571,7 +571,7 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
               <Button
                 type="button"
                 onClick={() => setCurrentStep('payment')}
-                className="flex-1 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
+                className="flex-1   from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
               >
                 Continue to Payment
               </Button>
@@ -687,7 +687,7 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
                 type="button"
                 onClick={handleBookingSubmit}
                 disabled={isLoading}
-                className="flex-1 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
+                className="flex-1   from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
               >
                 {isLoading ? (
                   <>
@@ -747,7 +747,7 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
               >
                 Book Another Slot
               </Button>
-              <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white">
+              <Button className="  from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white">
                 View My Bookings
               </Button>
             </div>

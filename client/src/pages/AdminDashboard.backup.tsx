@@ -128,7 +128,7 @@ export default function AdminDashboard() {
           <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <Shield className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text   mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold   from-primary to-secondary bg-clip-text   mb-4">
             Admin Dashboard
           </h1>
           <p className="text-lg md:text-xl text-text/80 max-w-2xl mx-auto">
@@ -171,23 +171,23 @@ export default function AdminDashboard() {
         {/* Main Dashboard Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
           <TabsList className="grid w-full grid-cols-5 bg-white/80 backdrop-blur-sm shadow-lg border-0">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
+            <TabsTrigger value="overview" className="data-[state=active]:  data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
               <BarChart3 className="h-4 w-4 mr-2" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="temples" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
+            <TabsTrigger value="temples" className="data-[state=active]:  data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
               <MapPin className="h-4 w-4 mr-2" />
               Temples
             </TabsTrigger>
-            <TabsTrigger value="users" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
+            <TabsTrigger value="users" className="data-[state=active]:  data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
               <Users className="h-4 w-4 mr-2" />
               Users
             </TabsTrigger>
-            <TabsTrigger value="reviews" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
+            <TabsTrigger value="reviews" className="data-[state=active]:  data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
               <MessageSquare className="h-4 w-4 mr-2" />
               Reviews
             </TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
+            <TabsTrigger value="settings" className="data-[state=active]:  data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
               <Settings className="h-4 w-4 mr-2" />
               Settings
             </TabsTrigger>
@@ -230,19 +230,19 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 gap-3">
-                    <Button className="justify-start bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
+                    <Button className="justify-start   from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
                       <Plus className="h-4 w-4 mr-2" />
                       Add New Temple
                     </Button>
-                    <Button className="justify-start bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">
+                    <Button className="justify-start   from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">
                       <Eye className="h-4 w-4 mr-2" />
                       Review Pending Submissions
                     </Button>
-                    <Button className="justify-start bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white">
+                    <Button className="justify-start   from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white">
                       <MessageSquare className="h-4 w-4 mr-2" />
                       Moderate Reviews
                     </Button>
-                    <Button className="justify-start bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white">
+                    <Button className="justify-start   from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white">
                       <BarChart3 className="h-4 w-4 mr-2" />
                       Generate Reports
                     </Button>
@@ -276,7 +276,7 @@ export default function AdminDashboard() {
                     <CardTitle className="text-primary">Temple Management</CardTitle>
                     <CardDescription>Manage temples and their information</CardDescription>
                   </div>
-                  <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white">
+                  <Button className="  from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Temple
                   </Button>

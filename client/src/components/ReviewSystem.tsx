@@ -269,7 +269,7 @@ export default function ReviewSystem({
                   <span className="text-sm font-medium w-8">{rating}★</span>
                   <div className="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-yellow-400 to-yellow-500 transition-all duration-500"
+                      className="h-full   from-yellow-400 to-yellow-500 transition-all duration-500"
                       style={{ width: `${percentage}%` }}
                     />
                   </div>
@@ -283,7 +283,7 @@ export default function ReviewSystem({
           <div className="text-center">
             <Button
               onClick={() => setShowWriteReview(!showWriteReview)}
-              className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              className="  from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
             >
               {showWriteReview ? 'Cancel Review' : 'Write a Review'}
             </Button>
@@ -419,7 +419,7 @@ export default function ReviewSystem({
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                className="w-full   from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Review'}
               </Button>
@@ -485,7 +485,7 @@ export default function ReviewSystem({
               <p className="text-text/70 mb-4">Be the first to share your experience!</p>
               <Button
                 onClick={() => setShowWriteReview(true)}
-                className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
+                className="  from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
               >
                 Write the First Review
               </Button>

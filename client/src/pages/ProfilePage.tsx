@@ -349,7 +349,7 @@ export default function ProfilePage() {
           </div>
           <h2 className="text-2xl font-bold text-text mb-4">Authentication Required</h2>
           <p className="text-text/70 mb-8">Please log in to view your profile.</p>
-          <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+          <Button className="  from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
             Sign In
           </Button>
         </div>
@@ -371,7 +371,7 @@ export default function ProfilePage() {
           <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <User className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text   mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold   from-primary to-secondary bg-clip-text   mb-4">
             My Profile
           </h1>
           <p className="text-lg md:text-xl text-text/80 max-w-2xl mx-auto">
@@ -383,11 +383,11 @@ export default function ProfilePage() {
 
         <Tabs defaultValue="profile" className="space-y-8">
           <TabsList className="grid w-full grid-cols-2 bg-white/80 backdrop-blur-sm shadow-lg border-0">
-            <TabsTrigger value="profile" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
+            <TabsTrigger value="profile" className="flex items-center space-x-2 data-[state=active]:  data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
               <User className="h-4 w-4" />
               <span>Profile Information</span>
             </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
+            <TabsTrigger value="security" className="flex items-center space-x-2 data-[state=active]:  data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
               <Shield className="h-4 w-4" />
               <span>Security</span>
             </TabsTrigger>
@@ -395,8 +395,8 @@ export default function ProfilePage() {
 
           <TabsContent value="profile">
             <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-2xl hover:shadow-3xl transition-all duration-500">
-              <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
-                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text  ">Personal Information</CardTitle>
+              <CardHeader className="  from-primary/5 to-secondary/5">
+                <CardTitle className="text-2xl font-bold   from-primary to-secondary bg-clip-text  ">Personal Information</CardTitle>
                 <CardDescription className="text-text/70 text-base">
                   Update your personal details and contact information
                 </CardDescription>
@@ -466,7 +466,7 @@ export default function ProfilePage() {
 
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-text">Role</label>
-                    <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border-2 border-primary/20 rounded-lg px-4 py-3">
+                    <div className="  from-primary/10 to-secondary/10 border-2 border-primary/20 rounded-lg px-4 py-3">
                       <span className="text-primary font-semibold">
                         {user.role.charAt(0).toUpperCase() + user.role.slice(1).replace('_', ' ')}
                       </span>
@@ -476,7 +476,7 @@ export default function ProfilePage() {
                   <Button
                     type="submit"
                     disabled={isUpdatingProfile}
-                    className="w-full md:w-auto bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                    className="w-full md:w-auto   from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                   >
                     {isUpdatingProfile ? (
                       <>
@@ -494,8 +494,8 @@ export default function ProfilePage() {
 
           <TabsContent value="security">
             <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-2xl hover:shadow-3xl transition-all duration-500">
-              <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
-                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text  ">Change Password</CardTitle>
+              <CardHeader className="  from-primary/5 to-secondary/5">
+                <CardTitle className="text-2xl font-bold   from-primary to-secondary bg-clip-text  ">Change Password</CardTitle>
                 <CardDescription className="text-text/70 text-base">
                   Update your password to keep your account secure
                 </CardDescription>
@@ -607,7 +607,7 @@ export default function ProfilePage() {
                   <Button
                     type="submit"
                     disabled={isChangingPassword}
-                    className="w-full md:w-auto bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                    className="w-full md:w-auto   from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                   >
                     {isChangingPassword ? (
                       <>

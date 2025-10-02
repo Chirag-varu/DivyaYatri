@@ -442,7 +442,7 @@ export default function ImageUploadGallery({
                 <Button
                   onClick={uploadFiles}
                   disabled={isUploading}
-                  className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
+                  className="  from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
                 >
                   {isUploading ? (
                     <>

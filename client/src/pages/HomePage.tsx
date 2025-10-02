@@ -136,7 +136,7 @@ export default function HomePage() {
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 py-24 px-4 text-background relative overflow-hidden">
           {/* Enhanced animated background elements */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/40 via-transparent to-secondary/20"></div>
+          <div className="absolute inset-0   from-primary/40 via-transparent to-secondary/20"></div>
           <FloatingElement delay={0} intensity="strong">
             <div className="absolute top-20 left-10 w-32 h-32 bg-secondary/15 rounded-full blur-3xl"></div>
           </FloatingElement>
@@ -144,7 +144,7 @@ export default function HomePage() {
             <div className="absolute bottom-20 right-10 w-40 h-40 bg-accent/15 rounded-full blur-3xl"></div>
           </FloatingElement>
           <FloatingElement delay={2} intensity="subtle">
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-secondary/5 to-accent/5 rounded-full blur-3xl"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96   from-secondary/5 to-accent/5 rounded-full blur-3xl"></div>
           </FloatingElement>
 
           <div className="container mx-auto text-center relative z-10">
@@ -220,8 +220,8 @@ export default function HomePage() {
         </section>
 
         {/* Enhanced Stats Section */}
-        <section className="py-16 bg-gradient-to-r from-background via-muted/10 to-background border-b border-border shadow-lg relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-secondary/5 via-transparent to-accent/5"></div>
+        <section className="py-16   from-background via-muted/10 to-background border-b border-border shadow-lg relative">
+          <div className="absolute inset-0   from-secondary/5 via-transparent to-accent/5"></div>
           <div className="container mx-auto px-4 relative z-10">
             <div
               ref={statsRef.ref}
@@ -259,7 +259,7 @@ export default function HomePage() {
 
         {/* Enhanced Features Section */}
         <section className="py-24 px-4 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-secondary/3 via-transparent to-accent/3"></div>
+          <div className="absolute inset-0   from-secondary/3 via-transparent to-accent/3"></div>
           <FloatingElement delay={0}>
             <div className="absolute top-10 right-10 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
           </FloatingElement>
@@ -276,7 +276,7 @@ export default function HomePage() {
                 }`}
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-shadow-soft">
-                <span className="bg-gradient-to-r from-primary to-secondary">
+                <span className=" from-primary to-secondary">
                   Why Choose DivyaYatri?
                 </span>
               </h2>
@@ -299,11 +299,11 @@ export default function HomePage() {
                     <CardHeader className="p-8">
                       <div className="relative mb-6">
                         <FloatingElement delay={index * 0.2}>
-                          <div className="w-20 h-20 mx-auto bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <div className="w-20 h-20 mx-auto   from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all duration-300">
                             <Icon className="h-10 w-10 text-accent group-hover:text-secondary transition-colors duration-300" />
                           </div>
                         </FloatingElement>
-                        <div className="absolute inset-0 bg-gradient-to-r from-accent/20 to-secondary/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0   from-accent/20 to-secondary/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       </div>
                       <CardTitle className="text-xl font-bold mb-4 group-hover:text-primary transition-colors duration-300">
                         {feature.title}
@@ -321,7 +321,7 @@ export default function HomePage() {
         </section>
 
         {/* Enhanced Featured Temples Section */}
-        <section className="py-24 px-4 bg-gradient-to-r from-muted/10 via-background to-muted/10 border-y border-border/50 relative">
+        <section className="py-24 px-4   from-muted/10 via-background to-muted/10 border-y border-border/50 relative">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-secondary/3"></div>
           <FloatingElement delay={0}>
             <div className="absolute top-10 right-10 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
@@ -339,7 +339,7 @@ export default function HomePage() {
                 }`}
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-6 text-shadow-soft">
-                <span className="bg-gradient-to-r from-primary to-secondary text-foreground/80 leading-relaxed">
+                <span className="  from-primary to-secondary text-foreground/80 leading-relaxed">
                   Featured Temples
                 </span>
               </h2>
@@ -472,9 +472,9 @@ export default function HomePage() {
 
         {/* Benefits Section */}
         <section className="py-24 px-4 bg-gradient-to-br from-background via-muted/5 to-background relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/3 via-transparent to-secondary/3"></div>
-          <div className="absolute top-20 right-20 w-72 h-72 bg-gradient-to-r from-secondary/10 to-accent/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-r from-accent/10 to-primary/10 rounded-full blur-3xl"></div>
+          <div className="absolute inset-0   from-primary/3 via-transparent to-secondary/3"></div>
+          <div className="absolute top-20 right-20 w-72 h-72   from-secondary/10 to-accent/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 left-20 w-64 h-64   from-accent/10 to-primary/10 rounded-full blur-3xl"></div>
 
           <div className="container mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -490,7 +490,7 @@ export default function HomePage() {
                 <div className="space-y-6 mb-10">
                   {benefits.map((benefit, index) => (
                     <div key={index} className="flex items-center gap-4 group hover:translate-x-2 transition-transform duration-300">
-                      <div className="w-10 h-10 bg-gradient-to-r from-accent/20 to-secondary/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-10 h-10   from-accent/20 to-secondary/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <CheckCircle className="h-6 w-6 text-accent group-hover:text-secondary transition-colors duration-300" />
                       </div>
                       <span className="text-foreground font-medium text-lg">{benefit}</span>
@@ -535,7 +535,7 @@ export default function HomePage() {
                       delay={index * 0.1}
                       className="text-center p-8"
                     >
-                      <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-16 h-16 mx-auto mb-6   from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <Icon className="h-8 w-8 text-accent group-hover:text-secondary transition-colors duration-300" />
                       </div>
                       <h3 className="font-bold text-lg mb-3 group-hover:text-primary transition-colors duration-300">{item.title}</h3>
@@ -550,7 +550,7 @@ export default function HomePage() {
 
         {/* CTA Section */}
         <section className="py-24 px-4 bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-background relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/60 via-transparent to-secondary/20"></div>
+          <div className="absolute inset-0   from-primary/60 via-transparent to-secondary/20"></div>
           <FloatingElement delay={0}>
             <div className="absolute top-10 left-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl"></div>
           </FloatingElement>

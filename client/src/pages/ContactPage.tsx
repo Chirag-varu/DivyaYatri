@@ -227,9 +227,9 @@ export default function ContactPage() {
                 }`}
               >
                 <EnhancedCard variant="glass-strong" hoverEffect="lift" className="shadow-2xl">
-                  <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
+                  <CardHeader className="  from-primary/5 to-secondary/5">
                     <CardTitle className="text-3xl font-bold text-shadow-soft">
-                      <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text  ">
+                      <span className="  from-primary to-secondary bg-clip-text  ">
                         Send us a Message
                       </span>
                     </CardTitle>
@@ -323,7 +323,7 @@ export default function ContactPage() {
 
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-4 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                      className="w-full   from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-4 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
@@ -346,13 +346,13 @@ export default function ContactPage() {
             {/* Contact Information */}
             <div className="space-y-8">
               <div>
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text   mb-8">Contact Information</h2>
+                <h2 className="text-3xl font-bold   from-primary to-secondary bg-clip-text   mb-8">Contact Information</h2>
                 <div className="grid grid-cols-1 gap-6">
                   {contactInfo.map((info, index) => {
                     const Icon = info.icon;
                     return (
                       <Card key={index} className="group bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0   from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <CardContent className="p-6 relative z-10">
                           <div className="flex items-start gap-4">
                             <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
@@ -372,7 +372,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text   mb-8">What can we help with?</h2>
+                <h2 className="text-3xl font-bold   from-primary to-secondary bg-clip-text   mb-8">What can we help with?</h2>
                 <div className="space-y-4">
                   {reasons.map((reason, index) => {
                     const Icon = reason.icon;
@@ -400,7 +400,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16 animate-fadeInUp">
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text   mb-6">Frequently Asked Questions</h2>
+              <h2 className="text-4xl md:text-5xl font-bold   from-primary to-secondary bg-clip-text   mb-6">Frequently Asked Questions</h2>
               <p className="text-lg md:text-xl text-text/80">
                 Quick answers to common questions about DivyaYatri
               </p>
@@ -408,7 +408,7 @@ export default function ContactPage() {
 
             <div className="space-y-6">
               <Card className="group bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
-                <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
+                <CardHeader className="  from-primary/5 to-secondary/5">
                   <CardTitle className="text-xl font-bold text-text group-hover:text-primary transition-colors duration-300">How do I add a temple to DivyaYatri?</CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -420,7 +420,7 @@ export default function ContactPage() {
               </Card>
 
               <Card className="group bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
-                <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
+                <CardHeader className="  from-primary/5 to-secondary/5">
                   <CardTitle className="text-xl font-bold text-text group-hover:text-primary transition-colors duration-300">Is DivyaYatri free to use?</CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -432,7 +432,7 @@ export default function ContactPage() {
               </Card>
 
               <Card className="group bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
-                <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
+                <CardHeader className="  from-primary/5 to-secondary/5">
                   <CardTitle className="text-xl font-bold text-text group-hover:text-primary transition-colors duration-300">How do you verify temple information?</CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -444,7 +444,7 @@ export default function ContactPage() {
               </Card>
 
               <Card className="group bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
-                <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
+                <CardHeader className="  from-primary/5 to-secondary/5">
                   <CardTitle className="text-xl font-bold text-text group-hover:text-primary transition-colors duration-300">Can I write reviews for temples?</CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
