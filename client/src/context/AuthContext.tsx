@@ -3,45 +3,58 @@ import type { ReactNode } from 'react';
 
 // Types
 export interface User {
-  _id: any;
-  location: string;
-  bio: string;
   id: string;
+  name: string;
   email: string;
-  firstName: string;
-  lastName: string;
-  role: 'user' | 'admin' | 'temple_manager';
-  avatar?: string;
   phone?: string;
-  isVerified: boolean;
+  role: 'user' | 'admin' | 'temple_admin';
+  isEmailVerified: boolean;
+  profile: {
+    avatar?: string;
+    bio?: string;
+    location?: string;
+    preferences: {
+      language: string;
+      notifications: {
+        email: boolean;
+        push: boolean;
+        sms: boolean;
+      };
+    };
+  };
+  createdAt: string;
+  lastLogin?: string;
 }
 
 export interface AuthState {
   user: User | null;
-  token: string | null;
+  accessToken: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  isEmailVerified: boolean;
+  requiresEmailVerification: boolean;
 }
 
 export interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
   register: (userData: RegisterData) => Promise<void>;
-  loginWithGoogle: (userData: {
-    googleId: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    avatar?: string;
-  }) => Promise<void>;
-  logout: () => void;
+  loginWithGoogle: (credential: string) => Promise<void>;
+  logout: () => Promise<void>;
+  logoutAll: () => Promise<void>;
+  refreshToken: () => Promise<void>;
+  verifyEmail: (token: string) => Promise<void>;
+  resendVerificationEmail: () => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<void>;
+  resetPassword: (token: string, newPassword: string) => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   updateProfile: (userData: Partial<User>) => Promise<void>;
+  checkAuthStatus: () => Promise<void>;
 }
 
 export interface RegisterData {
+  name: string;
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
   phone?: string;
 }
 

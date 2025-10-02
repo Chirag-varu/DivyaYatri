@@ -1,8 +1,38 @@
 import { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
-import User from '../models/User';
-import { JWTUtils } from '../utils/jwt';
+import { OAuth2Client } from 'google-auth-library';
+import rateLimit from 'express-rate-limit';
+import { UserModel, IUser } from '../models/User';
+import { AuthUtils, JWTPayload } from '../utils/auth';
+import { sendEmail } from '../utils/email';
+import { NotificationModel } from '../models/Notification';
 import { AuthenticatedRequest } from '../middleware/auth';
+
+const googleClient = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URI
+);
+
+// Rate limiting configurations
+export const loginRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts per window
+  message: { error: 'Too many login attempts, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+export const registerRateLimit = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3, // 3 registration attempts per hour
+  message: { error: 'Too many registration attempts, please try again later' },
+});
+
+export const passwordResetRateLimit = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3, // 3 password reset attempts per hour
+  message: { error: 'Too many password reset attempts, please try again later' },
+});
 
 /**
  * Register a new user
