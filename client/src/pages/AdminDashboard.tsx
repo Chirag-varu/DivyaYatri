@@ -1,8 +1,19 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 import { 
 
@@ -336,6 +347,35 @@ export default function AdminDashboard() {
     queryFn: fetchBookings,
   });
 
+  // Filter functions
+  const filteredTemples = temples.filter(temple => {
+    const matchesSearch = temple.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         temple.location.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = selectedFilter === 'all' || temple.status === selectedFilter;
+    return matchesSearch && matchesFilter;
+  });
+
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = selectedFilter === 'all' || user.status === selectedFilter;
+    return matchesSearch && matchesFilter;
+  });
+
+  const filteredReviews = reviews.filter(review => {
+    const matchesSearch = review.templeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         review.userName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = selectedFilter === 'all' || review.status === selectedFilter;
+    return matchesSearch && matchesFilter;
+  });
+
+  const filteredBookings = bookings.filter(booking => {
+    const matchesSearch = booking.templeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         booking.userName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = selectedFilter === 'all' || booking.status === selectedFilter;
+    return matchesSearch && matchesFilter;
+  });
+
   const handleApproveTemple = async (templeId: string) => {
     try {
       // API call to approve temple
@@ -369,7 +409,7 @@ export default function AdminDashboard() {
   const handleApproveReview = async (reviewId: string) => {
     try {
       // API call to approve review
-      toast({
+      toast.success({
         title: "Review Approved",
         description: "The review has been approved and is now visible.",
       });
@@ -507,15 +547,15 @@ export default function AdminDashboard() {
                 <CardContent>
                   <div className="space-y-4">
                     {stats?.recentActivity.map((activity) => (
-                      <div key={activity.id} className="flex items-center gap-3 p-3 bg-secondary/5 rounded-lg">
-                        <div className={`w-3 h-3 rounded-full ${
+                      <div key={activity.id} className="flex items-start gap-3 p-3 bg-secondary/5 rounded-lg">
+                        <div className={`w-2 h-2 rounded-full mt-2 ${
                           activity.status === 'success' ? 'bg-green-500' :
                           activity.status === 'warning' ? 'bg-yellow-500' :
                           'bg-red-500'
-                        }`}></div>
+                        }`} />
                         <div className="flex-1">
-                          <p className="text-text text-sm">{activity.description}</p>
-                          <p className="text-text/60 text-xs">{activity.timestamp}</p>
+                          <p className="text-sm text-text">{activity.description}</p>
+                          <p className="text-xs text-text/60 mt-1">{activity.timestamp}</p>
                         </div>
                       </div>
                     ))}
@@ -523,31 +563,87 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Pending Actions */}
+              {/* Quick Actions */}
               <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-primary">
-                    <Bell className="h-5 w-5" />
-                    Pending Actions
+                  <CardTitle className="text-primary">Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button className="h-20 flex-col gap-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+                      <Plus className="h-5 w-5" />
+                      Add Temple
+                    </Button>
+                    <Button className="h-20 flex-col gap-2 bg-gradient-to-br from-green-500 to-green-600 text-white">
+                      <CheckCircle className="h-5 w-5" />
+                      Approve Reviews
+                    </Button>
+                    <Button className="h-20 flex-col gap-2 bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                      <Users className="h-5 w-5" />
+                      Manage Users
+                    </Button>
+                    <Button className="h-20 flex-col gap-2 bg-gradient-to-br from-yellow-500 to-yellow-600 text-white">
+                      <Bell className="h-5 w-5" />
+                      Notifications
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Pending Items */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-amber-600">
+                    <AlertTriangle className="h-5 w-5" />
+                    Pending Reviews
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                      <div>
-                        <p className="text-sm font-medium">Pending Reviews</p>
-                        <p className="text-xs text-text/60">{stats?.pendingReviews || 0} reviews awaiting approval</p>
-                      </div>
-                      <Button size="sm" variant="outline">View</Button>
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                      <div>
-                        <p className="text-sm font-medium">Flagged Content</p>
-                        <p className="text-xs text-text/60">{stats?.flaggedContent || 0} items need attention</p>
-                      </div>
-                      <Button size="sm" variant="outline">Review</Button>
-                    </div>
+                  <div className="text-3xl font-bold text-amber-600 mb-2">
+                    {stats?.pendingReviews || 0}
                   </div>
+                  <p className="text-sm text-text/60">Awaiting moderation</p>
+                  <Button size="sm" className="mt-3 w-full">
+                    Review Now
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-red-600">
+                    <XCircle className="h-5 w-5" />
+                    Flagged Content
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-red-600 mb-2">
+                    {stats?.flaggedContent || 0}
+                  </div>
+                  <p className="text-sm text-text/60">Requires attention</p>
+                  <Button size="sm" className="mt-3 w-full">
+                    Review Flags
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-blue-600">
+                    <TrendingUp className="h-5 w-5" />
+                    Average Rating
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-blue-600 mb-2">
+                    {stats?.averageRating || 0}
+                  </div>
+                  <p className="text-sm text-text/60">Across all temples</p>
+                  <Button size="sm" className="mt-3 w-full">
+                    View Details
+                  </Button>
                 </CardContent>
               </Card>
             </div>
@@ -556,53 +652,111 @@ export default function AdminDashboard() {
           <TabsContent value="temples" className="space-y-6">
             <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <CardTitle className="text-primary">Temple Management</CardTitle>
-                  <Button className="  from-primary to-secondary text-white">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Temple
-                  </Button>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                      <Input
+                        placeholder="Search temples..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full sm:w-64"
+                      />
+                      <Select
+                        value={selectedFilter}
+                        onChange={(e) => setSelectedFilter(e.target.value)}
+                        className="w-full sm:w-32"
+                      >
+                        <option value="all">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="pending">Pending</option>
+                        <option value="suspended">Suspended</option>
+                      </Select>
+                    </div>
+                    <Button className="from-primary to-secondary text-white">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Temple
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {temples.map((temple) => (
-                    <div key={temple.id} className="flex items-center justify-between p-4 bg-secondary/5 rounded-lg">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-text">{temple.name}</h3>
-                        <p className="text-sm text-text/60">{temple.location}</p>
-                        <div className="flex items-center gap-4 mt-2">
-                          <span className="flex items-center gap-1">
-                            <Star className="h-4 w-4 text-yellow-500" />
-                            {temple.rating || 'N/A'}
-                          </span>
-                          <span className="text-sm text-text/60">{temple.reviews} reviews</span>
-                          <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(temple.status)}`}>
-                            {temple.status}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {temple.status === 'pending' && (
-                          <Button 
-                            size="sm" 
-                            onClick={() => handleApproveTemple(temple.id)}
-                            className="bg-green-600 hover:bg-green-700 text-white"
-                          >
-                            <CheckCircle className="h-4 w-4 mr-1" />
-                            Approve
-                          </Button>
-                        )}
-                        <Button size="sm" variant="outline">
-                          <Edit className="h-4 w-4 mr-1" />
-                          Edit
-                        </Button>
-                        <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                <div className="rounded-lg border overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Temple</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead>Rating</TableHead>
+                        <TableHead>Reviews</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Added Date</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredTemples.map((temple) => (
+                        <TableRow key={temple.id}>
+                          <TableCell>
+                            <div>
+                              <div className="font-semibold">{temple.name}</div>
+                              <div className="text-sm text-muted-foreground truncate max-w-[200px]">
+                                {temple.description}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>{temple.location}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              <Star className="h-4 w-4 text-yellow-500" />
+                              {temple.rating || 'N/A'}
+                            </div>
+                          </TableCell>
+                          <TableCell>{temple.reviews}</TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant={
+                                temple.status === 'active' ? 'success' :
+                                temple.status === 'pending' ? 'warning' :
+                                'destructive'
+                              }
+                            >
+                              {temple.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {new Date(temple.addedDate).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              {temple.status === 'pending' && (
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => handleApproveTemple(temple.id)}
+                                  className="bg-green-600 hover:bg-green-700 text-white"
+                                >
+                                  <CheckCircle className="h-4 w-4 mr-1" />
+                                  Approve
+                                </Button>
+                              )}
+                              <Button size="sm" variant="outline">
+                                <Edit className="h-4 w-4 mr-1" />
+                                Edit
+                              </Button>
+                              <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  {filteredTemples.length === 0 && (
+                    <div className="text-center py-8 text-muted-foreground">
+                      No temples found matching your criteria.
                     </div>
-                  ))}
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -611,42 +765,107 @@ export default function AdminDashboard() {
           <TabsContent value="users" className="space-y-6">
             <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
               <CardHeader>
-                <CardTitle className="text-primary">User Management</CardTitle>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <CardTitle className="text-primary">User Management</CardTitle>
+                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <Input
+                      placeholder="Search users..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full sm:w-64"
+                    />
+                    <Select
+                      value={selectedFilter}
+                      onChange={(e) => setSelectedFilter(e.target.value)}
+                      className="w-full sm:w-32"
+                    >
+                      <option value="all">All Status</option>
+                      <option value="active">Active</option>
+                      <option value="suspended">Suspended</option>
+                      <option value="banned">Banned</option>
+                    </Select>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {users.map((user) => (
-                    <div key={user.id} className="flex items-center justify-between p-4 bg-secondary/5 rounded-lg">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-text">{user.name}</h3>
-                        <p className="text-sm text-text/60">{user.email}</p>
-                        <div className="flex items-center gap-4 mt-2">
-                          <span className="text-sm text-text/60">Joined: {new Date(user.joinDate).toLocaleDateString()}</span>
-                          <span className="text-sm text-text/60">{user.reviewsCount} reviews</span>
-                          <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(user.status)}`}>
-                            {user.status}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {user.status === 'active' && (
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => handleSuspendUser(user.id)}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            <Ban className="h-4 w-4 mr-1" />
-                            Suspend
-                          </Button>
-                        )}
-                        <Button size="sm" variant="outline">
-                          <Edit className="h-4 w-4 mr-1" />
-                          Edit
-                        </Button>
-                      </div>
+                <div className="rounded-lg border overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>User</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Join Date</TableHead>
+                        <TableHead>Reviews</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Last Activity</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredUsers.map((user) => (
+                        <TableRow key={user.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-accent text-background rounded-full flex items-center justify-center text-sm font-medium">
+                                {user.name.charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <div className="font-semibold">{user.name}</div>
+                                <div className="text-sm text-muted-foreground">
+                                  {user.avatar ? 'Has avatar' : 'No avatar'}
+                                </div>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>
+                            <Badge variant={user.role === 'admin' ? 'destructive' : 'secondary'}>
+                              {user.role}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{new Date(user.joinDate).toLocaleDateString()}</TableCell>
+                          <TableCell>{user.reviewsCount}</TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant={
+                                user.status === 'active' ? 'success' :
+                                user.status === 'suspended' ? 'warning' :
+                                'destructive'
+                              }
+                            >
+                              {user.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{new Date(user.lastActivity).toLocaleDateString()}</TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              {user.status === 'active' && (
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => handleSuspendUser(user.id)}
+                                  className="text-red-600 hover:text-red-700"
+                                >
+                                  <Ban className="h-4 w-4 mr-1" />
+                                  Suspend
+                                </Button>
+                              )}
+                              <Button size="sm" variant="outline">
+                                <Edit className="h-4 w-4 mr-1" />
+                                Edit
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  {filteredUsers.length === 0 && (
+                    <div className="text-center py-8 text-muted-foreground">
+                      No users found matching your criteria.
                     </div>
-                  ))}
+                  )}
                 </div>
               </CardContent>
             </Card>

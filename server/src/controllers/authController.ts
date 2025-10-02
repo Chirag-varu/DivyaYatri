@@ -102,6 +102,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Validation errors:', errors.array());
       res.status(400).json({
         success: false,
         error: 'Validation errors',
@@ -111,10 +112,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     const { email, password } = req.body;
+    console.log('Login attempt for email:', email);
+    console.log('Login attempt for password:', password);
 
     // Find user with password field included
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
+      console.log('User not found for email:', email);
       res.status(401).json({
         success: false,
         error: 'Invalid email or password'
@@ -122,8 +126,11 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    console.log('User found:', { email: user.email, role: user.role, hasPassword: !!user.password });
+
     // Check password
     const isPasswordValid = await user.comparePassword(password);
+    console.log('Password comparison result:', isPasswordValid);
     if (!isPasswordValid) {
       res.status(401).json({
         success: false,

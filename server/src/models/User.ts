@@ -1,22 +1,55 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-export interface IUser extends Document {
+export interface User extends Document {
   _id: string;
   email: string;
   password?: string;
   firstName: string;
   lastName: string;
+  name: string; // Virtual property for full name
   role: 'user' | 'admin' | 'temple_manager';
   avatar?: string;
   phone?: string;
   isVerified: boolean;
+  isEmailVerified: boolean; // Alias for isVerified
   verificationToken?: string;
+  emailVerificationToken?: string | null; // Alias for verificationToken
+  emailVerificationExpires?: Date | null;
   resetPasswordToken?: string;
+  passwordResetToken?: string | null; // Alias for resetPasswordToken
   resetPasswordExpire?: Date;
+  passwordResetExpires?: Date | null; // Alias for resetPasswordExpire
+  
+  // Enhanced authentication properties
+  refreshTokens: Array<{
+    token: string;
+    createdAt: Date;
+    expiresAt: Date;
+    userAgent: string;
+    ipAddress: string;
+  }>;
+  loginAttempts?: number;
+  lockUntil?: Date | null;
+  authProviders: string[];
+  
   // Google OAuth fields
   googleId?: string;
   authProvider: 'local' | 'google';
+  
+  // Profile properties
+  profile?: {
+    avatar?: string;
+    preferences?: {
+      language: string;
+      notifications: {
+        email: boolean;
+        push: boolean;
+        sms?: boolean;
+      };
+    };
+  };
+  
   preferences: {
     language: string;
     notifications: {
@@ -31,7 +64,7 @@ export interface IUser extends Document {
   getFullName(): string;
 }
 
-const userSchema = new Schema<IUser>({
+const userSchema = new Schema< User>({
   email: {
     type: String,
     required: [true, 'Email is required'],
@@ -45,7 +78,7 @@ const userSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required: function(this: IUser) {
+    required: function(this:  User) {
       return this.authProvider === 'local';
     },
     minlength: [6, 'Password must be at least 6 characters long'],
@@ -85,7 +118,19 @@ const userSchema = new Schema<IUser>({
     type: String,
     select: false
   },
+  emailVerificationToken: {
+    type: String,
+    select: false
+  },
+  emailVerificationExpires: {
+    type: Date,
+    select: false
+  },
   resetPasswordToken: {
+    type: String,
+    select: false
+  },
+  passwordResetToken: {
     type: String,
     select: false
   },
@@ -93,6 +138,45 @@ const userSchema = new Schema<IUser>({
     type: Date,
     select: false
   },
+  passwordResetExpires: {
+    type: Date,
+    select: false
+  },
+  
+  // Enhanced authentication properties
+  refreshTokens: [{
+    token: {
+      type: String,
+      required: true
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    },
+    expiresAt: {
+      type: Date,
+      required: true
+    },
+    userAgent: {
+      type: String,
+      default: ''
+    },
+    ipAddress: {
+      type: String,
+      default: ''
+    }
+  }],
+  loginAttempts: {
+    type: Number,
+    default: 0
+  },
+  lockUntil: {
+    type: Date
+  },
+  authProviders: [{
+    type: String,
+    enum: ['local', 'google']
+  }],
   googleId: {
     type: String,
     unique: true,
@@ -104,6 +188,35 @@ const userSchema = new Schema<IUser>({
     default: 'local',
     required: true
   },
+  
+  // Profile properties
+  profile: {
+    avatar: {
+      type: String
+    },
+    preferences: {
+      language: {
+        type: String,
+        default: 'en',
+        enum: ['en', 'hi', 'ta', 'te', 'kn', 'ml', 'gu', 'bn', 'or', 'pa']
+      },
+      notifications: {
+        email: {
+          type: Boolean,
+          default: true
+        },
+        push: {
+          type: Boolean,
+          default: true
+        },
+        sms: {
+          type: Boolean,
+          default: false
+        }
+      }
+    }
+  },
+  
   preferences: {
     language: {
       type: String,
@@ -135,8 +248,20 @@ userSchema.index({ role: 1 });
 userSchema.index({ isVerified: 1 });
 
 // Virtual for full name
-userSchema.virtual('fullName').get(function(this: IUser) {
+userSchema.virtual('fullName').get(function(this: User) {
   return `${this.firstName} ${this.lastName}`;
+});
+
+// Virtual for name (alias for fullName)
+userSchema.virtual('name').get(function(this: User) {
+  return `${this.firstName} ${this.lastName}`;
+});
+
+// Virtual for isEmailVerified (alias for isVerified)
+userSchema.virtual('isEmailVerified').get(function(this: User) {
+  return this.isVerified;
+}).set(function(this: User, value: boolean) {
+  this.isVerified = value;
 });
 
 // Pre-save middleware to hash password
@@ -181,4 +306,4 @@ userSchema.methods.toJSON = function() {
   return userObject;
 };
 
-export default mongoose.model<IUser>('User', userSchema);
+export default mongoose.model< User>('User', userSchema);

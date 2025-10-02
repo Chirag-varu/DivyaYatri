@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../middleware/auth';
 import Notification from '../models/Notification';
 
 // Get user notifications
-export const getUserNotifications = async (req: Request, res: Response) => {
+export const getUserNotifications = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { page = 1, limit = 20, unreadOnly = false } = req.query;
     const userId = req.user?._id;
@@ -49,7 +50,7 @@ export const getUserNotifications = async (req: Request, res: Response) => {
 };
 
 // Mark notification as read
-export const markAsRead = async (req: Request, res: Response) => {
+export const markAsRead = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const userId = req.user?._id;
@@ -60,13 +61,16 @@ export const markAsRead = async (req: Request, res: Response) => {
     });
 
     if (!notification) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Notification not found'
       });
+      return;
     }
 
-    await notification.markAsRead();
+    // Mark as read
+    notification.status.read = true;
+    await notification.save();
 
     res.json({
       success: true,
@@ -83,7 +87,7 @@ export const markAsRead = async (req: Request, res: Response) => {
 };
 
 // Mark all notifications as read
-export const markAllAsRead = async (req: Request, res: Response) => {
+export const markAllAsRead = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user?._id;
 
@@ -112,7 +116,7 @@ export const markAllAsRead = async (req: Request, res: Response) => {
 };
 
 // Mark notification as clicked
-export const markAsClicked = async (req: Request, res: Response) => {
+export const markAsClicked = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const userId = req.user?._id;
@@ -123,13 +127,16 @@ export const markAsClicked = async (req: Request, res: Response) => {
     });
 
     if (!notification) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Notification not found'
       });
+      return;
     }
 
-    await notification.markAsClicked();
+    // Mark as clicked
+    notification.status.clicked = true;
+    await notification.save();
 
     res.json({
       success: true,
@@ -146,7 +153,7 @@ export const markAsClicked = async (req: Request, res: Response) => {
 };
 
 // Delete notification
-export const deleteNotification = async (req: Request, res: Response) => {
+export const deleteNotification = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const userId = req.user?._id;
@@ -157,10 +164,11 @@ export const deleteNotification = async (req: Request, res: Response) => {
     });
 
     if (!notification) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Notification not found'
       });
+      return;
     }
 
     res.json({
@@ -177,11 +185,12 @@ export const deleteNotification = async (req: Request, res: Response) => {
 };
 
 // Get notification preferences
-export const getNotificationPreferences = async (req: Request, res: Response) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getNotificationPreferences = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const userId = req.user?._id;
+    // const userId = req.user?._id; // TODO: Use for user-specific preferences
 
-    // This would typically come from a user preferences model
+    // TODO: Fetch user-specific preferences from User model using userId
     // For now, return default preferences
     const preferences = {
       email: true,
@@ -216,9 +225,10 @@ export const getNotificationPreferences = async (req: Request, res: Response) =>
 };
 
 // Update notification preferences
-export const updateNotificationPreferences = async (req: Request, res: Response) => {
+export const updateNotificationPreferences = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const userId = req.user?._id;
+    // const userId = req.user?._id; // TODO: Use for user-specific preferences
+    // TODO: Update user-specific preferences in User model using userId
     const { preferences } = req.body;
 
     // This would typically update a user preferences model
@@ -239,7 +249,7 @@ export const updateNotificationPreferences = async (req: Request, res: Response)
 };
 
 // Create notification (admin only)
-export const createNotification = async (req: Request, res: Response) => {
+export const createNotification = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const {
       recipient,

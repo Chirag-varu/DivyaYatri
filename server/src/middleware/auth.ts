@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { JWTUtils } from '../utils/jwt';
-import User, { IUser } from '../models/User';
+import UserModel, { User } from '../models/User';
 
 // Extend Request interface to include user
 export interface AuthenticatedRequest extends Request {
-  user?: IUser;
+  user?: User;
 }
 
 /**
@@ -27,7 +27,7 @@ export const authenticate = async (
     }
 
     const decoded = JWTUtils.verifyToken(token);
-    const user = await User.findById(decoded.id).select('-password');
+    const user = await UserModel.findById(decoded.id).select('-password');
 
     if (!user) {
       res.status(401).json({
@@ -93,7 +93,7 @@ export const optionalAuth = async (
 
     if (token) {
       const decoded = JWTUtils.verifyToken(token);
-      const user = await User.findById(decoded.id).select('-password');
+      const user = await UserModel.findById(decoded.id).select('-password');
       
       if (user && user.isVerified) {
         req.user = user;

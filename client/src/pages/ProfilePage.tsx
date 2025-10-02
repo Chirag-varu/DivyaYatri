@@ -383,11 +383,11 @@ export default function ProfilePage() {
 
         <Tabs defaultValue="profile" className="space-y-8">
           <TabsList className="grid w-full grid-cols-2 bg-white/80 backdrop-blur-sm shadow-lg border-0">
-            <TabsTrigger value="profile" className="flex items-center space-x-2 data-[state=active]:  data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
+            <TabsTrigger value="profile" className="flex items-center space-x-2 data-[state=active]:  data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-black">
               <User className="h-4 w-4" />
               <span>Profile Information</span>
             </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center space-x-2 data-[state=active]:  data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-white">
+            <TabsTrigger value="security" className="flex items-center space-x-2 data-[state=active]:  data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-black">
               <Shield className="h-4 w-4" />
               <span>Security</span>
             </TabsTrigger>

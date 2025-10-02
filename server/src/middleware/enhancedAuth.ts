@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import UserModel, { IUser } from '../models/User';
+import UserModel, {  User } from '../models/User';
 import { AuthUtils, JWTPayload } from '../utils/auth';
 
 export interface AuthenticatedRequest extends Request {
-  user?: IUser;
+  user?:  User;
   sessionId?: string;
 }
 

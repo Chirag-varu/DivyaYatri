@@ -146,7 +146,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 }
 
 // API base URL
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Auth context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -162,22 +162,34 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // API request helper
   const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
     const url = `${API_BASE_URL}${endpoint}`;
-    const config: RequestInit = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      credentials: 'include', // Include cookies for refresh token
-      ...options,
+    // Ensure headers is always a plain object for type safety
+    let headers: Record<string, string> = {
+      'Content-Type': 'application/json',
     };
+    if (options.headers) {
+      if (options.headers instanceof Headers) {
+        options.headers.forEach((value, key) => {
+          headers[key] = value;
+        });
+      } else if (Array.isArray(options.headers)) {
+        options.headers.forEach(([key, value]) => {
+          headers[key] = value;
+        });
+      } else {
+        headers = { ...headers, ...options.headers as Record<string, string> };
+      }
+    }
 
     // Add auth header if access token exists
-    if (state.accessToken && !config.headers?.['Authorization']) {
-      config.headers = {
-        ...config.headers,
-        'Authorization': `Bearer ${state.accessToken}`,
-      };
+    if (state.accessToken && !headers['Authorization']) {
+      headers['Authorization'] = `Bearer ${state.accessToken}`;
     }
+
+    const config: RequestInit = {
+      ...options,
+      headers,
+      credentials: 'include', // Include cookies for refresh token
+    };
 
     const response = await fetch(url, config);
     const data = await response.json();

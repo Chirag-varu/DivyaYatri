@@ -1,12 +1,11 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { User } from '../models/User';
 
 export interface JWTPayload {
   userId: string;
   email: string;
-  role: 'user' | 'admin' | 'temple_admin';
+  role: 'user' | 'admin' | 'temple_manager';
   isVerified: boolean;
 }
 
@@ -18,7 +17,6 @@ export interface TokenPair {
 export class AuthUtils {
   private static readonly ACCESS_TOKEN_EXPIRY = '15m';
   private static readonly REFRESH_TOKEN_EXPIRY = '7d';
-  private static readonly RESET_TOKEN_EXPIRY = '1h';
   
   /**
    * Hash password with bcrypt
@@ -39,16 +37,20 @@ export class AuthUtils {
    * Generate access and refresh token pair
    */
   static generateTokenPair(payload: JWTPayload): TokenPair {
+    if (!process.env.JWT_ACCESS_SECRET || !process.env.JWT_REFRESH_SECRET) {
+      throw new Error('JWT secrets not configured');
+    }
+
     const accessToken = jwt.sign(
       payload,
-      process.env.JWT_ACCESS_SECRET!,
-      { expiresIn: this.ACCESS_TOKEN_EXPIRY }
+      process.env.JWT_ACCESS_SECRET,
+      { expiresIn: AuthUtils.ACCESS_TOKEN_EXPIRY }
     );
 
     const refreshToken = jwt.sign(
       { userId: payload.userId },
-      process.env.JWT_REFRESH_SECRET!,
-      { expiresIn: this.REFRESH_TOKEN_EXPIRY }
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: AuthUtils.REFRESH_TOKEN_EXPIRY }
     );
 
     return { accessToken, refreshToken };
@@ -58,14 +60,50 @@ export class AuthUtils {
    * Verify access token
    */
   static verifyAccessToken(token: string): JWTPayload {
-    return jwt.verify(token, process.env.JWT_ACCESS_SECRET!) as JWTPayload;
+    if (!token) {
+      throw new Error('Token is required');
+    }
+    
+    if (!process.env.JWT_ACCESS_SECRET) {
+      throw new Error('JWT access secret not configured');
+    }
+
+    try {
+      return jwt.verify(token, process.env.JWT_ACCESS_SECRET) as JWTPayload;
+    } catch (error) {
+      if (error instanceof jwt.JsonWebTokenError) {
+        throw new Error('Invalid token');
+      }
+      if (error instanceof jwt.TokenExpiredError) {
+        throw new Error('Token expired');
+      }
+      throw error;
+    }
   }
 
   /**
    * Verify refresh token
    */
   static verifyRefreshToken(token: string): { userId: string } {
-    return jwt.verify(token, process.env.JWT_REFRESH_SECRET!) as { userId: string };
+    if (!token) {
+      throw new Error('Token is required');
+    }
+    
+    if (!process.env.JWT_REFRESH_SECRET) {
+      throw new Error('JWT refresh secret not configured');
+    }
+
+    try {
+      return jwt.verify(token, process.env.JWT_REFRESH_SECRET) as { userId: string };
+    } catch (error) {
+      if (error instanceof jwt.JsonWebTokenError) {
+        throw new Error('Invalid refresh token');
+      }
+      if (error instanceof jwt.TokenExpiredError) {
+        throw new Error('Refresh token expired');
+      }
+      throw error;
+    }
   }
 
   /**
@@ -83,7 +121,7 @@ export class AuthUtils {
     hashedToken: string;
     expiresAt: Date;
   } {
-    const token = this.generateSecureToken();
+    const token = AuthUtils.generateSecureToken();
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
@@ -105,8 +143,8 @@ export class AuthUtils {
     hashedToken: string;
     expiresAt: Date;
   } {
-    const token = this.generateSecureToken();
-    const hashedToken = this.hashToken(token);
+    const token = AuthUtils.generateSecureToken();
+    const hashedToken = AuthUtils.hashToken(token);
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
     return { token, hashedToken, expiresAt };
@@ -116,10 +154,11 @@ export class AuthUtils {
    * Extract token from Authorization header
    */
   static extractBearerToken(authHeader: string): string | null {
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || typeof authHeader !== 'string' || !authHeader.startsWith('Bearer ')) {
       return null;
     }
-    return authHeader.substring(7);
+    const token = authHeader.substring(7).trim();
+    return token || null;
   }
 
   /**
@@ -137,6 +176,11 @@ export class AuthUtils {
     errors: string[];
   } {
     const errors: string[] = [];
+
+    if (!password || typeof password !== 'string') {
+      errors.push('Password is required');
+      return { isValid: false, errors };
+    }
 
     if (password.length < 8) {
       errors.push('Password must be at least 8 characters long');
@@ -173,7 +217,7 @@ export class AuthUtils {
     expiresAt: Date;
   } {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const hashedOTP = this.hashToken(otp);
+    const hashedOTP = AuthUtils.hashToken(otp);
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     return { otp, hashedOTP, expiresAt };
@@ -197,10 +241,20 @@ export class AuthUtils {
    * Verify OAuth state parameter
    */
   static verifyOAuthState(receivedState: string, storedState: string): boolean {
-    return crypto.timingSafeEqual(
-      Buffer.from(receivedState, 'hex'),
-      Buffer.from(storedState, 'hex')
-    );
+    if (!receivedState || !storedState || 
+        typeof receivedState !== 'string' || typeof storedState !== 'string') {
+      return false;
+    }
+
+    try {
+      return crypto.timingSafeEqual(
+        Buffer.from(receivedState, 'hex'),
+        Buffer.from(storedState, 'hex')
+      );
+    } catch (error) {
+      // If buffers are different lengths or invalid hex, return false
+      return false;
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import rateLimit from 'express-rate-limit';
-import UserModel, { IUser } from '../models/User';
+import UserModel, { User } from '../models/User';
 import { AuthUtils, JWTPayload } from '../utils/auth';
 import { sendEmail } from '../utils/email';
 import NotificationModel from '../models/Notification';
@@ -34,7 +34,7 @@ export const passwordResetRateLimit = rateLimit({
 });
 
 interface AuthRequest extends Request {
-  user?: IUser;
+  user?: User;
 }
 
 /**
@@ -49,6 +49,16 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       res.status(400).json({
         success: false,
         error: 'Name, email, and password are required'
+      });
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      res.status(400).json({
+        success: false,
+        error: 'Please provide a valid email address'
       });
       return;
     }
@@ -107,29 +117,41 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     // Send verification email
     const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
-    await sendEmail(
-      email,
-      'verify-email',
-      {
-        name,
-        verificationUrl,
-        expiresIn: '24 hours'
-      }
-    );
+    
+    try {
+      await sendEmail({
+        to: email,
+        subject: 'Verify Your Email - DivyaYatri',
+        template: 'verify-email',
+        data: {
+          name,
+          verificationUrl,
+          expiresIn: '24 hours'
+        }
+      });
+    } catch (emailError) {
+      console.error('Failed to send verification email:', emailError);
+      // Continue with registration even if email fails
+    }
 
     // Create welcome notification
-    await NotificationModel.create({
-      user: user._id,
-      type: 'welcome',
-      title: 'Welcome to DivyaYatri!',
-      message: 'Your spiritual journey begins here. Please verify your email to get started.',
-      priority: 'normal',
-      channels: ['in-app'],
-      data: {
-        action: 'verify_email',
-        verificationRequired: true
-      }
-    });
+    try {
+      await NotificationModel.create({
+        user: user._id,
+        type: 'welcome',
+        title: 'Welcome to DivyaYatri!',
+        message: 'Your spiritual journey begins here. Please verify your email to get started.',
+        priority: 'normal',
+        channels: ['in-app'],
+        data: {
+          action: 'verify_email',
+          verificationRequired: true
+        }
+      });
+    } catch (notificationError) {
+      console.error('Failed to create welcome notification:', notificationError);
+      // Continue with registration even if notification fails
+    }
 
     res.status(201).json({
       success: true,
@@ -165,10 +187,20 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      res.status(400).json({
+        success: false,
+        error: 'Please provide a valid email address'
+      });
+      return;
+    }
+
     // Find user
     const user = await UserModel.findOne({ 
       email: email.toLowerCase() 
-    }).select('+password +refreshTokens');
+    }).select('+password +refreshTokens +loginAttempts +lockUntil');
 
     if (!user) {
       res.status(401).json({
@@ -189,11 +221,23 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Verify password
+    if (!user.password) {
+      res.status(401).json({
+        success: false,
+        error: 'Invalid email or password'
+      });
+      return;
+    }
+    
     const isPasswordValid = await AuthUtils.comparePassword(password, user.password);
 
     if (!isPasswordValid) {
       // Increment failed attempts
-      await user.incLoginAttempts();
+      user.loginAttempts = (user.loginAttempts || 0) + 1;
+      if (user.loginAttempts >= 5) {
+        user.lockUntil = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+      }
+      await user.save();
       
       res.status(401).json({
         success: false,
@@ -203,8 +247,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Reset login attempts on successful login
-    if (user.loginAttempts > 0) {
-      await user.resetLoginAttempts();
+    if (user.loginAttempts && user.loginAttempts > 0) {
+      user.loginAttempts = 0;
+      user.lockUntil = null;
+      await user.save();
     }
 
     // Check if email is verified
@@ -228,12 +274,16 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const { accessToken, refreshToken } = AuthUtils.generateTokenPair(tokenPayload);
 
     // Store refresh token
+    if (!user.refreshTokens) {
+      user.refreshTokens = [];
+    }
+    
     user.refreshTokens.push({
       token: refreshToken,
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
       userAgent: req.get('User-Agent') || '',
-      ipAddress: req.ip
+      ipAddress: req.ip || 'unknown'
     });
 
     // Limit stored refresh tokens (keep only last 5)
@@ -256,19 +306,24 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.cookie('refreshToken', refreshToken, cookieOptions);
 
     // Create login notification
-    await NotificationModel.create({
-      user: user._id,
-      type: 'security',
-      title: 'New Login Detected',
-      message: `Your account was accessed from ${req.get('User-Agent') || 'Unknown device'}`,
-      priority: 'normal',
-      channels: ['in-app'],
-      data: {
-        ipAddress: req.ip,
-        userAgent: req.get('User-Agent'),
-        loginTime: new Date().toISOString()
-      }
-    });
+    try {
+      await NotificationModel.create({
+        user: user._id,
+        type: 'security',
+        title: 'New Login Detected',
+        message: `Your account was accessed from ${req.get('User-Agent') || 'Unknown device'}`,
+        priority: 'normal',
+        channels: ['in-app'],
+        data: {
+          ipAddress: req.ip || 'unknown',
+          userAgent: req.get('User-Agent'),
+          loginTime: new Date().toISOString()
+        }
+      });
+    } catch (notificationError) {
+      console.error('Failed to create login notification:', notificationError);
+      // Continue with login even if notification fails
+    }
 
     res.status(200).json({
       success: true,
@@ -311,8 +366,17 @@ export const refreshToken = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    // Verify refresh token
-    const decoded = AuthUtils.verifyRefreshToken(refreshToken);
+    let decoded;
+    try {
+      // Verify refresh token
+      decoded = AuthUtils.verifyRefreshToken(refreshToken);
+    } catch (error) {
+      res.status(401).json({
+        success: false,
+        error: 'Invalid refresh token'
+      });
+      return;
+    }
     
     // Find user and check if refresh token exists
     const user = await UserModel.findById(decoded.userId).select('+refreshTokens');
@@ -325,7 +389,7 @@ export const refreshToken = async (req: Request, res: Response): Promise<void> =
     }
 
     // Check if refresh token exists and is not expired
-    const tokenIndex = user.refreshTokens.findIndex(
+    const tokenIndex = (user.refreshTokens || []).findIndex(
       rt => rt.token === refreshToken && rt.expiresAt > new Date()
     );
 
@@ -372,7 +436,7 @@ export const logout = async (req: AuthRequest, res: Response): Promise<void> => 
     const refreshToken = req.cookies.refreshToken;
     const user = req.user;
 
-    if (user && refreshToken) {
+    if (user && refreshToken && user.refreshTokens) {
       // Remove refresh token from user's tokens
       user.refreshTokens = user.refreshTokens.filter(
         rt => rt.token !== refreshToken
@@ -430,8 +494,8 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
 
     // Mark email as verified
     user.isEmailVerified = true;
-    user.emailVerificationToken = undefined;
-    user.emailVerificationExpires = undefined;
+    user.emailVerificationToken = null;
+    user.emailVerificationExpires = null;
     await user.save();
 
     // Create verification success notification
@@ -473,6 +537,16 @@ export const requestPasswordReset = async (req: Request, res: Response): Promise
       return;
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      res.status(400).json({
+        success: false,
+        error: 'Please provide a valid email address'
+      });
+      return;
+    }
+
     const user = await UserModel.findOne({ email: email.toLowerCase() });
 
     // Always return success to prevent email enumeration
@@ -495,16 +569,22 @@ export const requestPasswordReset = async (req: Request, res: Response): Promise
     await user.save();
 
     // Send password reset email
-    const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
-    await sendEmail(
-      email,
-      'password-reset',
-      {
-        name: user.name,
-        resetUrl,
-        expiresIn: '1 hour'
-      }
-    );
+    try {
+      const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
+      await sendEmail({
+        to: email,
+        subject: 'Password Reset - DivyaYatri',
+        template: 'password-reset',
+        data: {
+          name: user.name,
+          resetUrl,
+          expiresIn: '1 hour'
+        }
+      });
+    } catch (emailError) {
+      console.error('Failed to send password reset email:', emailError);
+      // Still return success to prevent email enumeration
+    }
 
     res.status(200).json(successResponse);
 
@@ -564,8 +644,8 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
 
     // Update password and clear reset token
     user.password = hashedPassword;
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
+    user.passwordResetToken = null;
+    user.passwordResetExpires = null;
     user.refreshTokens = []; // Invalidate all sessions
     await user.save();
 
@@ -608,11 +688,25 @@ export const googleAuth = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    // Verify Google token
-    const ticket = await googleClient.verifyIdToken({
-      idToken: credential,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
+    let ticket;
+    try {
+      // Verify Google token
+      if (!process.env.GOOGLE_CLIENT_ID) {
+        throw new Error('Google Client ID not configured');
+      }
+      
+      ticket = await googleClient.verifyIdToken({
+        idToken: credential,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+    } catch (verificationError) {
+      console.error('Google token verification failed:', verificationError);
+      res.status(400).json({
+        success: false,
+        error: 'Invalid Google credential'
+      });
+      return;
+    }
 
     const payload = ticket.getPayload();
     if (!payload) {
@@ -654,15 +748,22 @@ export const googleAuth = async (req: Request, res: Response): Promise<void> => 
             }
           }
         },
-        authProviders: ['google']
+        authProviders: ['google'],
+        refreshTokens: []
       });
     } else {
       // Update existing user
+      if (!user.authProviders) {
+        user.authProviders = [];
+      }
       if (!user.authProviders.includes('google')) {
         user.authProviders.push('google');
       }
       user.isEmailVerified = email_verified || user.isEmailVerified;
-      if (picture && !user.profile.avatar) {
+      if (picture && (!user.profile || !user.profile.avatar)) {
+        if (!user.profile) {
+          user.profile = {};
+        }
         user.profile.avatar = picture;
       }
     }
@@ -681,12 +782,16 @@ export const googleAuth = async (req: Request, res: Response): Promise<void> => 
     const { accessToken, refreshToken } = AuthUtils.generateTokenPair(tokenPayload);
 
     // Store refresh token
+    if (!user.refreshTokens) {
+      user.refreshTokens = [];
+    }
+    
     user.refreshTokens.push({
       token: refreshToken,
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
       userAgent: req.get('User-Agent') || '',
-      ipAddress: req.ip
+      ipAddress: req.ip || 'unknown'
     });
 
     await user.save();

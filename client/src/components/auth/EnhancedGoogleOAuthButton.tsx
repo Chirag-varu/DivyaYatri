@@ -73,7 +73,7 @@ export const GoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = ({
     try {
       // Initialize Google One Tap
       window.google.accounts.id.initialize({
-        client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
         callback: handleCredentialResponse,
         auto_select: false,
         cancel_on_tap_outside: true,
@@ -229,8 +229,8 @@ export const GoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = ({
 
 // Enhanced Google OAuth Hook
 export const useGoogleAuth = () => {
-  const { loginWithGoogle } = useAuth();
-  const { showToast } = useToast();
+  // const { loginWithGoogle } = useAuth();
+  // const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const signInWithGoogle = async (): Promise<void> => {
