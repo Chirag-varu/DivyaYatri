@@ -62,7 +62,7 @@ export default function ReviewSystem({
   onReviewVote, 
   onReviewReport 
 }: ReviewSystemProps) {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [showWriteReview, setShowWriteReview] = useState(false);
   const [reviewForm, setReviewForm] = useState<ReviewFormData>({
     rating: 5,

@@ -6,18 +6,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Calendar, 
   Clock, 
-  Users, 
-  MapPin, 
-  Star,
   CheckCircle,
   AlertCircle,
   CreditCard,
   User,
-  Phone,
-  Mail,
   Plus,
   Minus,
-  Info,
   Loader2
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
