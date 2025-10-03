@@ -460,7 +460,7 @@ export default function HomePage() {
               <Link to="/temples">
                 <RippleButton
                   size="lg"
-                  className="px-12 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl border-4 border-double"
+                  className="px-12 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl border-4 border-double flex justify-center items-center mx-auto"
                 >
                   View All Temples
                   <ArrowRight className="ml-3 h-6 w-6" />

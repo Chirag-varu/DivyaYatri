@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from '@/hooks/useToast';
 import { Button } from '@/components/ui/button';
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -19,7 +19,7 @@ export default function Navbar() {
   const handleLogout = () => {
     logout();
     navigate('/');
-    
+
     toast.success({
       title: 'Signed out',
       description: 'You have been successfully signed out.',
@@ -64,73 +64,105 @@ export default function Navbar() {
 
           {/* Right side buttons */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="hidden md:flex text-primary hover:text-secondary hover:bg-secondary/10 hover:scale-110 transition-all duration-200 ease-in-out">
-              <Search className="h-5 w-5" />
-            </Button>
-            
             {isAuthenticated && user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="flex items-center space-x-2 group hover:bg-secondary/10 transition-all duration-200"
+                    className="flex items-center gap-3 px-2 py-1 hover:bg-accent/10 rounded-full transition-all duration-200 group"
                   >
-                    <div className="w-8 h-8 bg-accent text-background rounded-full flex items-center justify-center text-sm font-medium shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-200">
-                      {user.firstName && typeof user.firstName === 'string' ? user.firstName.charAt(0).toUpperCase() : 'U'}
+                    {/* Avatar */}
+                    <div className="w-9 h-9   from-primary to-secondary text-background rounded-full flex items-center justify-center text-sm font-semibold shadow-sm group-hover:shadow-md group-hover:scale-105 transition-transform">
+                      {user.firstName && typeof user.firstName === "string"
+                        ? user.firstName.charAt(0).toUpperCase()
+                        : "U"}
                     </div>
-                    <span className="hidden md:block text-primary group-hover:text-secondary transition-colors">
-                      {user.firstName && typeof user.firstName === 'string' ? user.firstName : 'User'}
+
+                    {/* User Name (hidden on small screens) */}
+                    <span className="hidden md:block text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                      {user.firstName && typeof user.firstName === "string"
+                        ? user.firstName
+                        : "User"}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <DropdownMenuLabel className="font-normal">
+
+                <DropdownMenuContent
+                  className="w-64 p-2 rounded-xl shadow-lg border border-border/50 bg-card"
+                  align="end"
+                  forceMount
+                >
+                  {/* User Info */}
+                  <DropdownMenuLabel className="font-normal p-3 bg-muted/30 rounded-lg mb-2">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">
+                      <p className="text-sm font-semibold leading-none text-foreground">
                         {user.firstName} {user.lastName}
                       </p>
-                      <p className="text-xs leading-none text-muted-foreground">
+                      <p className="text-xs leading-none text-muted-foreground truncate">
                         {user.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>
+
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleProfileClick}>
-                    <Settings className="mr-2 h-4 w-4" />
+
+                  {/* Profile Settings */}
+                  <DropdownMenuItem
+                    onClick={handleProfileClick}
+                    className="cursor-pointer rounded-md hover:bg-accent/10 transition-colors"
+                  >
+                    <Settings className="mr-2 h-4 w-4 text-muted-foreground" />
                     <span>Profile Settings</span>
                   </DropdownMenuItem>
-                  {(user.role === 'admin' || user.role === 'temple_admin') && (
-                    <DropdownMenuItem onClick={handleAdminClick}>
-                      <Shield className="mr-2 h-4 w-4" />
+
+                  {/* Admin Dashboard (Conditional) */}
+                  {(user.role === "admin" || user.role === "temple_admin") && (
+                    <DropdownMenuItem
+                      onClick={handleAdminClick}
+                      className="cursor-pointer rounded-md hover:bg-accent/10 transition-colors"
+                    >
+                      <Shield className="mr-2 h-4 w-4 text-muted-foreground" />
                       <span>Admin Dashboard</span>
                     </DropdownMenuItem>
                   )}
+
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
+
+                  {/* Logout */}
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="cursor-pointer text-red-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sign Out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <>
+              <div className="flex items-center gap-3">
                 <Link to="/login">
-                  <Button variant="outline">
-                    <User className="h-4 w-4 mr-2" />
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 rounded-full px-4"
+                  >
+                    <User className="h-4 w-4" />
                     Login
                   </Button>
                 </Link>
-                
+
                 <Link to="/register">
-                  <Button>Sign Up</Button>
+                  <Button className="rounded-full px-5 from-primary to-secondary shadow hover:opacity-90 transition-all">
+                    Sign Up
+                  </Button>
                 </Link>
-              </>
+              </div>
             )}
 
+
             {/* Mobile menu button */}
-            <Button variant="ghost" size="icon" className="md:hidden text-primary hover:text-secondary hover:bg-secondary/10">
+            {/* <Button variant="ghost" size="icon" className="md:hidden text-primary hover:text-secondary hover:bg-secondary/10">
               <Menu className="h-5 w-5" />
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
