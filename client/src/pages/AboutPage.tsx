@@ -125,9 +125,9 @@ export default function AboutPage() {
                     About DivyaYatri
                   </span>
                 </h1>
-                <div className="text-xl md:text-2xl text-text/80 mb-8 leading-relaxed max-w-3xl mx-auto">
+                <div className="text-lg md:text-2xl text-text/80 mb-8 leading-relaxed max-w-3xl mx-auto">
                   <TypewriterText 
-                    text="Your trusted companion for spiritual journeys across India. We connect devotees with sacred temples, making every pilgrimage meaningful and accessible."
+                    text="Your trusted companion for spiritual journeys across India. We connect devotees with sacred temples, making every pilgrimage accessible."
                     speed={30}
                   />
                 </div>

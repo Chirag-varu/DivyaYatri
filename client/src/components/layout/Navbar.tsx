@@ -1,4 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from '@/hooks/useToast';
 import { Button } from '@/components/ui/button';
@@ -10,11 +11,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Menu, User, Search, LogOut, Settings, Shield } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { Menu, User, LogOut, Settings, Shield } from 'lucide-react';
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
+  const isActiveRoute = (path: string) => {
+    return location.pathname === path;
+  };
 
   const handleLogout = () => {
     logout();
@@ -34,6 +49,11 @@ export default function Navbar() {
     navigate('/admin');
   };
 
+  const handleMobileNavClick = (path: string) => {
+    navigate(path);
+    setMobileMenuOpen(false);
+  };
+
   return (
     <nav className="bg-background/95 backdrop-blur-md shadow-lg border-b border-secondary/20 sticky top-0 z-50">
       <div className="container mx-auto px-4">
@@ -48,16 +68,44 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-primary hover:text-secondary transition-colors font-medium">
+            <Link 
+              to="/" 
+              className={`font-medium px-4 py-2 rounded-4xl transition-colors ${
+                isActiveRoute('/') 
+                  ? 'text-[hsl(27,83%,28%)] bg-amber-100' 
+                  : 'text-primary hover:text-secondary'
+              }`}
+            >
               Home
             </Link>
-            <Link to="/temples" className="text-primary hover:text-secondary transition-colors font-medium">
+            <Link 
+              to="/temples" 
+              className={`font-medium px-4 py-2 rounded-4xl transition-colors ${
+                isActiveRoute('/temples') 
+                  ? 'text-[hsl(27,83%,28%)] bg-amber-100' 
+                  : 'text-primary hover:text-secondary'
+              }`}
+            >
               Temples
             </Link>
-            <Link to="/about" className="text-primary hover:text-secondary transition-colors font-medium">
+            <Link 
+              to="/about" 
+              className={`font-medium px-4 py-2 rounded-4xl transition-colors ${
+                isActiveRoute('/about') 
+                  ? 'text-[hsl(27,83%,28%)] bg-amber-100' 
+                  : 'text-primary hover:text-secondary'
+              }`}
+            >
               About
             </Link>
-            <Link to="/contact" className="text-primary hover:text-secondary transition-colors font-medium">
+            <Link 
+              to="/contact" 
+              className={`font-medium px-4 py-2 rounded-4xl transition-colors ${
+                isActiveRoute('/contact') 
+                  ? 'text-[hsl(27,83%,28%)] bg-amber-100' 
+                  : 'text-primary hover:text-secondary'
+              }`}
+            >
               Contact
             </Link>
           </div>
@@ -160,9 +208,153 @@ export default function Navbar() {
 
 
             {/* Mobile menu button */}
-            {/* <Button variant="ghost" size="icon" className="md:hidden text-primary hover:text-secondary hover:bg-secondary/10">
-              <Menu className="h-5 w-5" />
-            </Button> */}
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden text-primary hover:text-secondary hover:bg-secondary/10">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-amber-100/90">
+                <SheetHeader>
+                  <SheetTitle className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center shadow-md">
+                      <span className="text-primary font-bold text-lg">🕉</span>
+                    </div>
+                    <span className="text-xl font-bold text-primary">DivyaYatri</span>
+                  </SheetTitle>
+                  <SheetDescription>
+                    Navigate through our spiritual journey
+                  </SheetDescription>
+                </SheetHeader>
+                
+                <div className="grid gap-4 py-6">
+                  {/* Mobile Navigation Links */}
+                  <div className="grid gap-2">
+                    <Button
+                      variant="ghost"
+                      className={`justify-start text-left h-12 px-4 ${
+                        isActiveRoute('/') 
+                          ? 'text-[hsl(27,83%,28%)] bg-amber-200/60 rounded-4xl' 
+                          : 'text-foreground hover:text-secondary hover:bg-accent/10'
+                      }`}
+                      onClick={() => handleMobileNavClick('/')}
+                    >
+                      Home
+                    </Button>
+                    
+                    <Button
+                      variant="ghost"
+                      className={`justify-start text-left h-12 px-4 ${
+                        isActiveRoute('/temples') 
+                          ? 'text-[hsl(27,83%,28%)] bg-amber-200/60 rounded-4xl' 
+                          : 'text-foreground hover:text-secondary hover:bg-accent/10'
+                      }`}
+                      onClick={() => handleMobileNavClick('/temples')}
+                    >
+                      Temples
+                    </Button>
+                    
+                    <Button
+                      variant="ghost"
+                      className={`justify-start text-left h-12 px-4 ${
+                        isActiveRoute('/about') 
+                          ? 'text-[hsl(27,83%,28%)] bg-amber-200/60 rounded-4xl' 
+                          : 'text-foreground hover:text-secondary hover:bg-accent/10'
+                      }`}
+                      onClick={() => handleMobileNavClick('/about')}
+                    >
+                      About
+                    </Button>
+                    
+                    <Button
+                      variant="ghost"
+                      className={`justify-start text-left h-12 px-4 ${
+                        isActiveRoute('/contact') 
+                          ? 'text-[hsl(27,83%,28%)] bg-amber-200/60 rounded-4xl' 
+                          : 'text-foreground hover:text-secondary hover:bg-accent/10'
+                      }`}
+                      onClick={() => handleMobileNavClick('/contact')}
+                    >
+                      Contact
+                    </Button>
+                  </div>
+                  
+                  {/* Separator */}
+                  <div className="border-t border-border/20 my-4"></div>
+                  
+                  {/* Mobile Auth Section */}
+                  {isAuthenticated && user ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-3 px-4 py-3 bg-muted/30 rounded-lg">
+                        <div className="w-10 h-10 bg-gradient-to-r from-primary to-secondary text-background rounded-full flex items-center justify-center text-sm font-semibold">
+                          {user.firstName && typeof user.firstName === "string"
+                            ? user.firstName.charAt(0).toUpperCase()
+                            : "U"}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold">
+                            {user.firstName} {user.lastName}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start h-12 px-4"
+                        onClick={() => handleMobileNavClick('/profile')}
+                      >
+                        <Settings className="mr-3 h-4 w-4" />
+                        Profile Settings
+                      </Button>
+                      
+                      {(user.role === "admin" || user.role === "temple_admin") && (
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start h-12 px-4"
+                          onClick={() => handleMobileNavClick('/admin')}
+                        >
+                          <Shield className="mr-3 h-4 w-4" />
+                          Admin Dashboard
+                        </Button>
+                      )}
+                      
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start h-12 px-4 text-red-500 hover:text-red-600 hover:bg-red-50"
+                        onClick={() => {
+                          handleLogout();
+                          setMobileMenuOpen(false);
+                        }}
+                      >
+                        <LogOut className="mr-3 h-4 w-4" />
+                        Sign Out
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <Button
+                        variant="outline"
+                        className="w-full h-12 justify-center"
+                        onClick={() => handleMobileNavClick('/login')}
+                      >
+                        <User className="mr-2 h-4 w-4" />
+                        Login
+                      </Button>
+                      
+                      <Button
+                        className="w-full h-12 from-primary to-secondary text-background hover:opacity-90"
+                        onClick={() => handleMobileNavClick('/register')}
+                      >
+                        Sign Up
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>
