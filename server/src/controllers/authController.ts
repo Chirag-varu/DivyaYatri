@@ -126,7 +126,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    console.log('User found:', { email: user.email, role: user.role, hasPassword: !!user.password });
+    // console.log('User found:', { email: user.email, role: user.role, hasPassword: !!user.password });
 
     // Check password
     const isPasswordValid = await user.comparePassword(password);

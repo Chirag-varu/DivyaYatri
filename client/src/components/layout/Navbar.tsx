@@ -121,22 +121,22 @@ export default function Navbar() {
                   >
                     {/* Avatar */}
                     <div className="w-9 h-9   from-primary to-secondary text-background rounded-full flex items-center justify-center text-sm font-semibold shadow-sm group-hover:shadow-md group-hover:scale-105 transition-transform">
-                      {user.firstName && typeof user.firstName === "string"
-                        ? user.firstName.charAt(0).toUpperCase()
+                      {user.name && typeof user.name === "string"
+                        ? user.name.charAt(0).toUpperCase()
                         : "U"}
                     </div>
 
                     {/* User Name (hidden on small screens) */}
                     <span className="hidden md:block text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                      {user.firstName && typeof user.firstName === "string"
-                        ? user.firstName
+                      {user.name && typeof user.name === "string"
+                        ? user.name
                         : "User"}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent
-                  className="w-64 p-2 rounded-xl shadow-lg border border-border/50 bg-card"
+                  className="w-64 p-2 rounded-xl shadow-lg border border-border/50 bg-card bg-amber-50"
                   align="end"
                   forceMount
                 >
@@ -144,7 +144,7 @@ export default function Navbar() {
                   <DropdownMenuLabel className="font-normal p-3 bg-muted/30 rounded-lg mb-2">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-semibold leading-none text-foreground">
-                        {user.firstName} {user.lastName}
+                        {user.name}
                       </p>
                       <p className="text-xs leading-none text-muted-foreground truncate">
                         {user.email}

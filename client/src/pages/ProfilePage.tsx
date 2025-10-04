@@ -6,11 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Eye, 
-  EyeOff, 
-  Loader2, 
-  User, 
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  User,
   Shield
 } from 'lucide-react';
 
@@ -42,7 +42,7 @@ interface Visit {
 
 export default function ProfilePage() {
   const { user, updateProfile, isAuthenticated } = useAuth();
-  
+
   // Profile form state
   const [profileData, setProfileData] = useState({
     name: '',
@@ -261,7 +261,7 @@ export default function ProfilePage() {
         name: profileData.name.trim(),
         phone: profileData.phone || undefined,
       });
-      
+
       toast.success({
         title: 'Profile updated',
         description: 'Your profile information has been updated successfully.',
@@ -269,12 +269,12 @@ export default function ProfilePage() {
     } catch (error) {
       console.error('Profile update error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to update profile. Please try again.';
-      
+
       toast.error({
         title: 'Update failed',
         description: errorMessage,
       });
-      
+
       setProfileErrors({
         general: errorMessage,
       });
@@ -314,7 +314,7 @@ export default function ProfilePage() {
           title: 'Password changed',
           description: 'Your password has been updated successfully.',
         });
-        
+
         setPasswordData({
           currentPassword: '',
           newPassword: '',
@@ -326,12 +326,12 @@ export default function ProfilePage() {
     } catch (error) {
       console.error('Password change error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to change password. Please try again.';
-      
+
       toast.error({
         title: 'Password change failed',
         description: errorMessage,
       });
-      
+
       setPasswordErrors({
         general: errorMessage,
       });
@@ -379,8 +379,6 @@ export default function ProfilePage() {
           </p>
         </div>
 
-
-
         <Tabs defaultValue="profile" className="space-y-8">
           <TabsList className="grid w-full grid-cols-2 bg-white/80 backdrop-blur-sm shadow-lg border-0">
             <TabsTrigger value="profile" className="flex items-center space-x-2 data-[state=active]:  data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-black">
@@ -420,9 +418,8 @@ export default function ProfilePage() {
                         type="text"
                         value={profileData.name}
                         onChange={handleProfileInputChange}
-                        className={`bg-white/50 backdrop-blur-sm border-2 transition-all duration-300 focus:bg-white focus:scale-105 ${
-                          profileErrors.name ? 'border-red-500' : 'border-primary/20 focus:border-primary'
-                        }`}
+                        className={`bg-white/50 backdrop-blur-sm border-2 transition-all duration-300 focus:bg-white focus:scale-105 ${profileErrors.name ? 'border-red-500' : 'border-primary/20 focus:border-primary'
+                          }`}
                       />
                       {profileErrors.name && (
                         <p className="text-red-500 text-xs mt-1 animate-fadeInUp">{profileErrors.name}</p>
@@ -454,9 +451,8 @@ export default function ProfilePage() {
                       type="tel"
                       value={profileData.phone}
                       onChange={handleProfileInputChange}
-                      className={`bg-white/50 backdrop-blur-sm border-2 transition-all duration-300 focus:bg-white focus:scale-105 ${
-                        profileErrors.phone ? 'border-red-500' : 'border-primary/20 focus:border-primary'
-                      }`}
+                      className={`bg-white/50 backdrop-blur-sm border-2 transition-all duration-300 focus:bg-white focus:scale-105 ${profileErrors.phone ? 'border-red-500' : 'border-primary/20 focus:border-primary'
+                        }`}
                       placeholder="+1 (555) 123-4567"
                     />
                     {profileErrors.phone && (
@@ -519,9 +515,8 @@ export default function ProfilePage() {
                         type={showPasswords.current ? 'text' : 'password'}
                         value={passwordData.currentPassword}
                         onChange={handlePasswordInputChange}
-                        className={`bg-white/50 backdrop-blur-sm border-2 transition-all duration-300 focus:bg-white focus:scale-105 pr-12 ${
-                          passwordErrors.currentPassword ? 'border-red-500' : 'border-primary/20 focus:border-primary'
-                        }`}
+                        className={`bg-white/50 backdrop-blur-sm border-2 transition-all duration-300 focus:bg-white focus:scale-105 pr-12 ${passwordErrors.currentPassword ? 'border-red-500' : 'border-primary/20 focus:border-primary'
+                          }`}
                       />
                       <button
                         type="button"
@@ -551,9 +546,8 @@ export default function ProfilePage() {
                         type={showPasswords.new ? 'text' : 'password'}
                         value={passwordData.newPassword}
                         onChange={handlePasswordInputChange}
-                        className={`bg-white/50 backdrop-blur-sm border-2 transition-all duration-300 focus:bg-white focus:scale-105 pr-12 ${
-                          passwordErrors.newPassword ? 'border-red-500' : 'border-primary/20 focus:border-primary'
-                        }`}
+                        className={`bg-white/50 backdrop-blur-sm border-2 transition-all duration-300 focus:bg-white focus:scale-105 pr-12 ${passwordErrors.newPassword ? 'border-red-500' : 'border-primary/20 focus:border-primary'
+                          }`}
                       />
                       <button
                         type="button"
@@ -583,9 +577,8 @@ export default function ProfilePage() {
                         type={showPasswords.confirm ? 'text' : 'password'}
                         value={passwordData.confirmPassword}
                         onChange={handlePasswordInputChange}
-                        className={`bg-white/50 backdrop-blur-sm border-2 transition-all duration-300 focus:bg-white focus:scale-105 pr-12 ${
-                          passwordErrors.confirmPassword ? 'border-red-500' : 'border-primary/20 focus:border-primary'
-                        }`}
+                        className={`bg-white/50 backdrop-blur-sm border-2 transition-all duration-300 focus:bg-white focus:scale-105 pr-12 ${passwordErrors.confirmPassword ? 'border-red-500' : 'border-primary/20 focus:border-primary'
+                          }`}
                       />
                       <button
                         type="button"

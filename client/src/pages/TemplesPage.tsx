@@ -371,7 +371,7 @@ export default function TemplesPage() {
                       onClick={() => setViewMode('grid')}
                       className={`p-2 rounded-md transition-all duration-300 ${
                         viewMode === 'grid' 
-                          ? 'bg-primary text-white shadow-lg' 
+                          ? 'bg-primary shadow-lg bg-amber-100' 
                           : 'text-text hover:bg-primary/10'
                       }`}
                     >
@@ -381,7 +381,7 @@ export default function TemplesPage() {
                       onClick={() => setViewMode('list')}
                       className={`p-2 rounded-md transition-all duration-300 ${
                         viewMode === 'list' 
-                          ? 'bg-primary text-white shadow-lg' 
+                          ? 'bg-primary shadow-lg bg-amber-100' 
                           : 'text-text hover:bg-primary/10'
                       }`}
                     >
