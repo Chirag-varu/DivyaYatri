@@ -65,9 +65,9 @@ export const EnhancedCard: React.FC<EnhancedCardProps> = ({
 }) => {
   const variantClasses = {
     default: 'bg-card border border-border',
-    glass: 'glass',
-    'glass-strong': 'glass-strong',
-    'glass-subtle': 'glass-subtle'
+    glass: 'glass bg-amber-900/5 p-1 rounded-lg bg-card border border-border',
+    'glass-strong': 'glass-strong bg-amber-900/5 p-1 rounded-lg ',
+    'glass-subtle': 'glass-subtle bg-amber-900/5 p-1 rounded-lg'
   };
 
   const hoverClasses = {

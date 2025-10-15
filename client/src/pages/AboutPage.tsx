@@ -222,7 +222,7 @@ export default function AboutPage() {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 stagger-animation">
               {stats.map((stat, index) => (
-                <div key={index} className="text-center group">
+                <div key={index} className="text-center font-semibold group bg-amber-900/10 p-4 rounded-lg">
                   <EnhancedCard 
                     variant="glass-subtle" 
                     hoverEffect="scale"
@@ -279,7 +279,7 @@ export default function AboutPage() {
                     variant="glass" 
                     hoverEffect="lift"
                     delay={index * 0.1}
-                    className="overflow-hidden relative"
+                    className="overflow-hidden relative "
                   >
                     <CardHeader className="relative">
                       <FloatingElement delay={index * 0.2}>

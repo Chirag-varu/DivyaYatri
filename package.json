@@ -11,7 +11,14 @@
     "install:client": "cd client && npm install",
     "install:all": "npm run install:server && npm run install:client"
   },
-  "keywords": ["temple", "guide", "mern", "typescript", "react", "mongodb"],
+  "keywords": [
+    "temple",
+    "guide",
+    "mern",
+    "typescript",
+    "react",
+    "mongodb"
+  ],
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
