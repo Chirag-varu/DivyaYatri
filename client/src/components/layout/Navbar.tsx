@@ -60,8 +60,9 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-primary font-bold text-lg">🕉</span>
+            <div className="w-10 h-10 bg-secondary rounded-4xl flex items-center justify-center shadow-md">
+              {/* <span className="text-primary font-bold text-lg">🕉</span> */}
+              <img src="../../public/image.png" alt="DivyaYatri Logo" className='rounded-4xl' />
             </div>
             <span className="text-xl font-bold text-primary">DivyaYatri</span>
           </Link>

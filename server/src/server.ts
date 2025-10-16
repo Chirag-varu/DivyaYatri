@@ -62,15 +62,24 @@ const connectDB = async (): Promise<void> => {
   try {
     const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/divyayatri';
     await mongoose.connect(mongoURI);
-    console.log('✅ MongoDB connected successfully');
+    console.log('MongoDB connected successfully');
   } catch (error) {
-    console.error('❌ MongoDB connection error:', error);
+    console.error('MongoDB connection error:', error);
     process.exit(1);
   }
 };
 
 // Health check endpoint
-app.get('/api/health', (_req, res) => {
+app.get(`/${process.env.API_VERSION}/health`, (_req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'DivyaYatri API is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+  });
+});
+
+app.get(`/${process.env.API_VERSION}/healthCheck`, (_req, res) => {
   res.status(200).json({
     status: 'OK',
     message: 'DivyaYatri API is running',
@@ -80,11 +89,11 @@ app.get('/api/health', (_req, res) => {
 });
 
 // API routes
-app.use('/api/auth', authRoutes);
-app.use('/api/temples', templeRoutes);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/upload', uploadRoutes);
+app.use(`/${process.env.API_VERSION}/auth1`, authRoutes);
+app.use(`/${process.env.API_VERSION}/temples`, templeRoutes);
+app.use(`/${process.env.API_VERSION}/reviews`, reviewRoutes);
+app.use(`/${process.env.API_VERSION}/admin`, adminRoutes);
+app.use(`/${process.env.API_VERSION}/upload`, uploadRoutes);
 
 // Error handling middleware
 app.use(notFound);
@@ -93,13 +102,14 @@ app.use(errorHandler);
 // Start server
 const startServer = async (): Promise<void> => {
   try {
+    console.log(`--------- Server Started ---------`);
     await connectDB();
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
-      console.log(`📱 API Health Check: http://localhost:${PORT}/api/health`);
+      console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
+      console.log(`API Health Check: http://localhost:${PORT}/api/health`);
     });
   } catch (error) {
-    console.error('❌ Failed to start server:', error);
+    console.error('Failed to start server:', error);
     process.exit(1);
   }
 };

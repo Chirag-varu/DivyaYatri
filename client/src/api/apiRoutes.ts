@@ -6,7 +6,7 @@
  */
 
 // Base URL from environment variable with fallback
-const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api/v1";
 
 /**
  * API Routes object containing all application endpoints
