@@ -47,16 +47,7 @@ export interface IReview extends Document {
 }
 
 // Virtuals and methods
-interface IReviewExtras {
-  totalVotes?: number;
-}
-
-// Ensure methods are present on the model instance for TypeScript
-declare module './EnhancedReview' {
-  interface IReview {
-    totalVotes?: number;
-  }
-}
+// totalVotes virtual is computed inline when needed
 
 // Declare methods used by controllers
 interface IReviewMethods {
@@ -271,7 +262,7 @@ reviewSchema.virtual('totalVotes').get(function(this: IReview) {
 
 // Virtual for helpful percentage
 reviewSchema.virtual('helpfulPercentage').get(function(this: IReview) {
-  const total = this.totalVotes || (this.votes.helpful.length + this.votes.unhelpful.length);
+  const total = (this as any).totalVotes || (this.votes.helpful.length + this.votes.unhelpful.length);
   if (total === 0) return 0;
   return Math.round((this.votes.helpful.length / total) * 100);
 });

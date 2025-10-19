@@ -51,6 +51,7 @@ export interface IBooking extends Document {
   };
   createdAt: Date;
   updatedAt: Date;
+  canBeCancelled?(): boolean;
 }
 
 // Add method declarations used by controllers
@@ -285,7 +286,8 @@ bookingSchema.methods.canBeCancelled = function(this: IBooking): boolean {
 
 // Method to calculate refund amount
 bookingSchema.methods.calculateRefund = function(this: IBooking): number {
-  if (!this.canBeCancelled()) return 0;
+  // Guard in case method isn't present on the typed interface
+  if (!(this as any).canBeCancelled || !(this as any).canBeCancelled()) return 0;
   
   const now = new Date();
   const visitDateTime = new Date(this.visitDate);

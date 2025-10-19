@@ -32,6 +32,8 @@ export interface User extends Document {
   loginAttempts?: number;
   lockUntil?: Date | null;
   authProviders: string[];
+  // Account status (used by authentication middleware)
+  status?: 'active' | 'pending' | 'suspended' | 'banned' | 'inactive';
   
   // Google OAuth fields
   googleId?: string;
@@ -187,6 +189,13 @@ const userSchema = new Schema< User>({
     enum: ['local', 'google'],
     default: 'local',
     required: true
+  },
+  // Account status for middleware checks
+  status: {
+    type: String,
+    enum: ['active', 'pending', 'suspended', 'banned', 'inactive'],
+    default: 'active',
+    index: true
   },
   
   // Profile properties

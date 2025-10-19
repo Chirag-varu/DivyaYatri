@@ -93,7 +93,6 @@ export const authenticate = async (
  */
 export const optionalAuth = async (
   req: AuthenticatedRequest,
-  res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
