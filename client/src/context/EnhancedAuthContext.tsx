@@ -230,6 +230,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         },
       });
     } catch (error: any) {
+       
       const requiresEmailVerification = error.message.includes('verify your email');
       dispatch({
         type: 'LOGIN_FAILURE',
@@ -252,6 +253,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       dispatch({ type: 'SET_LOADING', payload: false });
       dispatch({ type: 'SET_EMAIL_VERIFICATION_REQUIRED', payload: true });
     } catch (error) {
+       
       dispatch({ type: 'SET_LOADING', payload: false });
       throw error;
     }
@@ -275,6 +277,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         },
       });
     } catch (error) {
+       
       dispatch({ type: 'LOGIN_FAILURE' });
       throw error;
     }
@@ -320,6 +323,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         },
       });
     } catch (error) {
+       
       dispatch({ type: 'LOGOUT' });
       throw error;
     }
@@ -334,6 +338,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       dispatch({ type: 'EMAIL_VERIFIED' });
     } catch (error) {
+       
       throw error;
     }
   };
@@ -394,7 +399,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Check auth status
   const checkAuthStatus = async (): Promise<void> => {
     try {
-      const data = await apiRequest('/auth/check');
+      await apiRequest('/auth/check');
       // If successful, we're still authenticated
       // The apiRequest will handle token refresh if needed
     } catch (error) {

@@ -9,7 +9,7 @@ import {
   checkInBooking,
   completeBooking
 } from '../controllers/bookingController';
-import { auth } from '../middleware/auth';
+import { authenticate as auth } from '../middleware/auth';
 
 const router = express.Router();
 

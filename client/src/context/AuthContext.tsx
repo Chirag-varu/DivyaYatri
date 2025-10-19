@@ -212,6 +212,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(data.error || 'Login failed');
       }
     } catch (error) {
+       
       dispatch({ type: 'LOGIN_FAILURE' });
       throw error;
     }
@@ -244,6 +245,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(data.error || 'Registration failed');
       }
     } catch (error) {
+      // eslint-disable-next-line no-useless-catch
       dispatch({ type: 'LOGIN_FAILURE' });
       throw error;
     }

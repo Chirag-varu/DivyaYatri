@@ -77,7 +77,7 @@ router.post('/resend-verification', rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 3, // 3 attempts per hour
   message: { error: 'Too many verification emails sent, please try again later' }
-}), async (req, res) => {
+}), async (_req, res) => {
   // This would be implemented in the controller
   res.status(501).json({
     success: false,
@@ -118,7 +118,7 @@ router.get('/profile', authenticate, getProfile);
  * @desc    Update user profile
  * @access  Private
  */
-router.put('/profile', authenticate, async (req, res) => {
+router.put('/profile', authenticate, async (_req, res) => {
   // This would be implemented in the controller
   res.status(501).json({
     success: false,
@@ -131,7 +131,7 @@ router.put('/profile', authenticate, async (req, res) => {
  * @desc    Change user password
  * @access  Private
  */
-router.post('/change-password', authenticate, requireEmailVerification, async (req, res) => {
+router.post('/change-password', authenticate, requireEmailVerification, async (_req, res) => {
   // This would be implemented in the controller
   res.status(501).json({
     success: false,
@@ -144,7 +144,7 @@ router.post('/change-password', authenticate, requireEmailVerification, async (r
  * @desc    Logout from all devices
  * @access  Private
  */
-router.post('/logout-all', authenticate, async (req, res) => {
+router.post('/logout-all', authenticate, async (_req, res) => {
   // This would be implemented in the controller
   res.status(501).json({
     success: false,
@@ -157,7 +157,7 @@ router.post('/logout-all', authenticate, async (req, res) => {
  * @desc    Get active sessions
  * @access  Private
  */
-router.get('/sessions', authenticate, async (req, res) => {
+router.get('/sessions', authenticate, async (_req, res) => {
   // This would be implemented in the controller
   res.status(501).json({
     success: false,
@@ -170,7 +170,7 @@ router.get('/sessions', authenticate, async (req, res) => {
  * @desc    Revoke specific session
  * @access  Private
  */
-router.delete('/sessions/:sessionId', authenticate, async (req, res) => {
+router.delete('/sessions/:sessionId', authenticate, async (_req, res) => {
   // This would be implemented in the controller
   res.status(501).json({
     success: false,
@@ -183,7 +183,7 @@ router.delete('/sessions/:sessionId', authenticate, async (req, res) => {
  * @desc    Enable two-factor authentication
  * @access  Private
  */
-router.post('/enable-2fa', authenticate, requireEmailVerification, async (req, res) => {
+router.post('/enable-2fa', authenticate, requireEmailVerification, async (_req, res) => {
   // This would be implemented in the controller
   res.status(501).json({
     success: false,
@@ -196,7 +196,7 @@ router.post('/enable-2fa', authenticate, requireEmailVerification, async (req, r
  * @desc    Verify two-factor authentication code
  * @access  Private
  */
-router.post('/verify-2fa', authenticate, async (req, res) => {
+router.post('/verify-2fa', authenticate, async (_req, res) => {
   // This would be implemented in the controller
   res.status(501).json({
     success: false,
@@ -209,7 +209,7 @@ router.post('/verify-2fa', authenticate, async (req, res) => {
  * @desc    Disable two-factor authentication
  * @access  Private
  */
-router.post('/disable-2fa', authenticate, requireEmailVerification, async (req, res) => {
+router.post('/disable-2fa', authenticate, requireEmailVerification, async (_req, res) => {
   // This would be implemented in the controller
   res.status(501).json({
     success: false,
@@ -222,7 +222,7 @@ router.post('/disable-2fa', authenticate, requireEmailVerification, async (req, 
  * @desc    Check if user is authenticated (health check)
  * @access  Private
  */
-router.get('/check', authenticate, (req, res) => {
+router.get('/check', authenticate, (req: any, res) => {
   res.status(200).json({
     success: true,
     message: 'User is authenticated',

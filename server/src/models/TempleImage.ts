@@ -42,6 +42,13 @@ export interface ITempleImage extends Document {
   displayOrder: number;
   createdAt: Date;
   updatedAt: Date;
+  // Methods
+  isLikedBy(userId: mongoose.Types.ObjectId): boolean;
+  toggleLike(userId: mongoose.Types.ObjectId): Promise<any>;
+  incrementViews(): Promise<any>;
+  incrementDownloads(): Promise<any>;
+  reportImage(userId: mongoose.Types.ObjectId, reason: string): Promise<any>;
+  likeCount: number;
 }
 
 const templeImageSchema = new Schema<ITempleImage>({
@@ -354,4 +361,9 @@ templeImageSchema.statics.getPopularImages = function(templeId?: mongoose.Types.
   ]);
 };
 
-export default mongoose.model<ITempleImage>('TempleImage', templeImageSchema);
+export type ITempleImageModel = mongoose.Model<ITempleImage> & {
+  getFeaturedImages(templeId?: string | mongoose.Types.ObjectId, limit?: number): Promise<any>;
+  getPopularImages(templeId?: string | mongoose.Types.ObjectId, limit?: number): Promise<any>;
+};
+
+export default mongoose.model<ITempleImage>('TempleImage', templeImageSchema) as unknown as ITempleImageModel;

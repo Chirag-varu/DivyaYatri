@@ -33,8 +33,10 @@ export const validateBookingSlot = async (
       booking.timeSlot.start === startTime && booking.timeSlot.end === endTime
     );
 
-    const totalVisitors = currentBookings.reduce((total, booking) => {
-      return total + booking.totalVisitors;
+    const totalVisitors = currentBookings.reduce((total, booking: any) => {
+      // booking.totalVisitors is a virtual; compute defensively
+      const visitors = (booking.visitors && (booking.visitors.adults || 0) + (booking.visitors.children || 0) + (booking.visitors.seniors || 0)) || 0;
+      return total + visitors;
     }, 0);
 
     return totalVisitors < maxCapacity;

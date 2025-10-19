@@ -294,13 +294,13 @@ export default function ImageUploadGallery({
         });
         break;
         
-      case 'download':
+      case 'download': {
         // Simulate download
         const link = document.createElement('a');
         link.href = image.url;
         link.download = image.originalName;
         link.click();
-        
+
         // Update download count
         setUploadedImages(prev => 
           prev.map(img => 
@@ -309,12 +309,13 @@ export default function ImageUploadGallery({
               : img
           )
         );
-        
+
         toast.success({
           title: 'Download started',
           description: 'Image download has started.',
         });
         break;
+      }
         
       case 'share':
         // Copy link to clipboard

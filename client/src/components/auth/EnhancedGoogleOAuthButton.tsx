@@ -85,7 +85,7 @@ export const GoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = ({
         // Get responsive button size based on screen width
         const screenWidth = window.innerWidth;
         let buttonSize = size;
-        let buttonWidth = fullWidth ? '100%' : 'auto';
+        const buttonWidth = fullWidth ? '100%' : 'auto';
         
         // Auto-adjust size for mobile devices
         if (screenWidth < 480) {

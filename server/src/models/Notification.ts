@@ -46,7 +46,17 @@ export interface INotification extends Document {
   createdBy?: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
+  markAsRead(): Promise<any>;
+  markAsClicked(): Promise<any>;
 }
+
+// Methods used in controllers
+interface INotificationMethods {
+  markAsRead(): Promise<any>;
+  markAsClicked(): Promise<any>;
+}
+
+export type INotificationModel = mongoose.Model<INotification> & INotificationMethods;
 
 const notificationSchema = new Schema<INotification>({
   recipient: {

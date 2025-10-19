@@ -10,8 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   User, 
   Mail, 
-  Phone, 
-  Calendar, 
   Shield, 
   Ban, 
   CheckCircle,

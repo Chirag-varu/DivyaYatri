@@ -35,7 +35,7 @@ export interface IReview extends Document {
   editHistory: {
     content: string;
     editedAt: Date;
-    reason?: string;
+    reason?: string | undefined;
   }[];
   metadata: {
     source: 'web' | 'mobile' | 'admin';
@@ -45,6 +45,30 @@ export interface IReview extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+// Virtuals and methods
+interface IReviewExtras {
+  totalVotes?: number;
+}
+
+// Ensure methods are present on the model instance for TypeScript
+declare module './EnhancedReview' {
+  interface IReview {
+    totalVotes?: number;
+  }
+}
+
+// Declare methods used by controllers
+interface IReviewMethods {
+  hasUserVoted(userId: mongoose.Types.ObjectId): 'helpful' | 'unhelpful' | null;
+  vote(userId: mongoose.Types.ObjectId, voteType: 'helpful' | 'unhelpful'): Promise<any>;
+  removeVote(userId: mongoose.Types.ObjectId): Promise<any>;
+  addReply(userId: mongoose.Types.ObjectId, content: string): Promise<any>;
+  reportReview(userId: mongoose.Types.ObjectId, reason: string, description?: string): Promise<any>;
+  editReview(newContent: string, reason?: string): Promise<any>;
+}
+
+export type IReviewModel = mongoose.Model<IReview> & IReviewMethods;
 
 const reviewSchema = new Schema<IReview>({
   user: {
@@ -247,7 +271,7 @@ reviewSchema.virtual('totalVotes').get(function(this: IReview) {
 
 // Virtual for helpful percentage
 reviewSchema.virtual('helpfulPercentage').get(function(this: IReview) {
-  const total = this.totalVotes;
+  const total = this.totalVotes || (this.votes.helpful.length + this.votes.unhelpful.length);
   if (total === 0) return 0;
   return Math.round((this.votes.helpful.length / total) * 100);
 });
@@ -339,12 +363,9 @@ reviewSchema.methods.reportReview = function(
     throw new Error('You have already reported this review');
   }
   
-  this.reports.push({
-    user: userId,
-    reason,
-    description,
-    reportedAt: new Date()
-  });
+  const reportEntry: any = { user: userId, reason, reportedAt: new Date() };
+  if (description !== undefined) reportEntry.description = description;
+  this.reports.push(reportEntry);
   
   // Auto-flag if reports exceed threshold
   if (this.reports.length >= 3) {
@@ -361,11 +382,9 @@ reviewSchema.methods.editReview = function(
   reason?: string
 ) {
   // Save to edit history
-  this.editHistory.push({
-    content: this.content,
-    editedAt: new Date(),
-    reason
-  });
+  const editEntry: any = { content: this.content, editedAt: new Date() };
+  if (reason !== undefined) editEntry.reason = reason;
+  this.editHistory.push(editEntry);
   
   this.content = newContent;
   this.isEdited = true;

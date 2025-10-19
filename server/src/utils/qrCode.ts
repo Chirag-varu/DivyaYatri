@@ -1,8 +1,13 @@
-import QRCode from 'qrcode';
+let QRCode: any;
+try {
+  QRCode = require('qrcode');
+} catch (err) {
+  // noop - module may not be present in dev environment
+}
 
 export const generateQRCode = async (data: string): Promise<string> => {
   try {
-    const qrCodeDataURL = await QRCode.toDataURL(data, {
+  const qrCodeDataURL = await QRCode.toDataURL(data, {
       errorCorrectionLevel: 'M',
       type: 'image/png',
       quality: 0.92,

@@ -15,7 +15,7 @@ interface ToastContextType {
 }
 
 // Simple toast store using a global variable for now
-let toastStore: {
+const toastStore: {
   toasts: Toast[];
   listeners: Set<() => void>;
 } = {

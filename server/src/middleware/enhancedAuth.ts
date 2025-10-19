@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import UserModel, {  User } from '../models/User';
-import { AuthUtils, JWTPayload } from '../utils/auth';
+import { AuthUtils } from '../utils/auth';
 
 export interface AuthenticatedRequest extends Request {
   user?:  User;
@@ -43,8 +43,9 @@ export const authenticate = async (
       return;
     }
 
-    // Check if user is active
-    if (user.status !== 'active') {
+    // Check if user is active (ensure 'status' exists safely)
+    // Type assertion since User model may not declare 'status' in TypeScript
+    if ((user as any).status !== 'active') {
       res.status(401).json({
         success: false,
         error: 'Account is not active'
@@ -53,7 +54,7 @@ export const authenticate = async (
     }
 
     // Check if account is locked
-    if (user.lockUntil && user.lockUntil > new Date()) {
+    if ((user as any).lockUntil && (user as any).lockUntil > new Date()) {
       res.status(423).json({
         success: false,
         error: 'Account is temporarily locked'
@@ -111,7 +112,7 @@ export const optionalAuth = async (
     // Find user by ID
     const user = await UserModel.findById(decoded.userId);
 
-    if (user && user.status === 'active') {
+    if (user && (user as any).status === 'active') {
       req.user = user;
     }
 
@@ -256,7 +257,7 @@ export const requireOwnership = (resourceUserIdField: string = 'userId') => {
 /**
  * Rate limiting bypass for authenticated users
  */
-export const rateLimitBypass = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+export const rateLimitBypass = (req: AuthenticatedRequest, _res: Response, next: NextFunction): void => {
   const user = req.user;
 
   // Authenticated users get higher rate limits

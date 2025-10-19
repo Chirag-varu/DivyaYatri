@@ -53,6 +53,14 @@ export interface IBooking extends Document {
   updatedAt: Date;
 }
 
+// Add method declarations used by controllers
+interface IBookingMethods {
+  canBeCancelled(): boolean;
+  calculateRefund(): number;
+}
+
+export type IBookingModel = mongoose.Model<IBooking> & IBookingMethods;
+
 const bookingSchema = new Schema<IBooking>({
   temple: {
     type: Schema.Types.ObjectId,
@@ -291,5 +299,10 @@ bookingSchema.methods.calculateRefund = function(this: IBooking): number {
   
   return 0;
 };
+
+// Ensure TypeScript recognizes methods exist on the schema instance
+declare module 'mongoose' {
+  interface DocumentQuery<ResultType, DocType, THelpers = {}> {}
+}
 
 export default mongoose.model<IBooking>('Booking', bookingSchema);

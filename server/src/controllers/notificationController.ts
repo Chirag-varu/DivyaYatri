@@ -186,7 +186,7 @@ export const deleteNotification = async (req: AuthenticatedRequest, res: Respons
 
 // Get notification preferences
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getNotificationPreferences = async (req: AuthenticatedRequest, res: Response) => {
+export const getNotificationPreferences = async (_req: AuthenticatedRequest, res: Response) => {
   try {
     // const userId = req.user?._id; // TODO: Use for user-specific preferences
 
