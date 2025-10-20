@@ -82,7 +82,7 @@ export const toggleImageLike = async (req: ReqWithUser, res: Response): Promise<
 
     if (typeof image.toggleLike === 'function') await image.toggleLike(userOid);
     const isLiked = typeof image.isLikedBy === 'function' ? image.isLikedBy(userOid) : false;
-    const likeCount = (image as any).likeCount ?? image.socialInteractions?.likes?.length ?? 0;
+    const likeCount = image.likeCount ?? image.socialInteractions?.likes?.length ?? 0;
     return res.json({ success: true, message: 'Image like toggled successfully', data: { image, isLiked, likeCount } });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Error toggling image like', error: error instanceof Error ? error.message : 'Unknown error' });
@@ -118,7 +118,7 @@ export const getFeaturedImages = async (req: Request, res: Response): Promise<an
   try {
     const { templeId } = req.params;
     const limit = Number((req.query.limit as string) ?? '10');
-    const images = await (TempleImage as any).getFeaturedImages(templeId ? templeId : undefined, limit);
+    const images = await TempleImage.getFeaturedImages(templeId ? templeId : undefined, limit);
     return res.json({ success: true, data: { images } });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Error fetching featured images', error: error instanceof Error ? error.message : 'Unknown error' });
@@ -129,7 +129,7 @@ export const getPopularImages = async (req: Request, res: Response): Promise<any
   try {
     const { templeId } = req.params;
     const limit = Number((req.query.limit as string) ?? '10');
-    const images = await (TempleImage as any).getPopularImages(templeId ? templeId : undefined, limit);
+    const images = await TempleImage.getPopularImages(templeId ? templeId : undefined, limit);
     return res.json({ success: true, data: { images } });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Error fetching popular images', error: error instanceof Error ? error.message : 'Unknown error' });

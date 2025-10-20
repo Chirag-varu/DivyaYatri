@@ -1,5 +1,41 @@
 import Booking from '../models/Booking';
 
+export const checkAvailability = async (
+  templeId: string,
+  visitDate: Date,
+  timeSlot: string,
+  numberOfVisitors: number
+): Promise<boolean> => {
+  try {
+    const startOfDay = new Date(visitDate.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(visitDate.setHours(23, 59, 59, 999));
+
+    // For simplified time slots like "09:00", we assume 1-hour duration
+    // const endTime = `${(parseInt(timeSlot.split(':')[0]) + 1).toString().padStart(2, '0')}:${timeSlot.split(':')[1]}`;
+
+    const existingBookings = await Booking.find({
+      temple: templeId,
+      visitDate: {
+        $gte: startOfDay,
+        $lt: endOfDay
+      },
+      'timeSlot.start': timeSlot,
+      bookingStatus: { $in: ['confirmed', 'pending'] }
+    });
+
+    const totalVisitors = existingBookings.reduce((total, booking: any) => {
+      const visitors = (booking.visitors?.adults || 0) + (booking.visitors?.children || 0) + (booking.visitors?.seniors || 0);
+      return total + visitors;
+    }, 0);
+
+    const maxCapacity = 50;
+    return (totalVisitors + numberOfVisitors) <= maxCapacity;
+  } catch (error) {
+    console.error('Error checking availability:', error);
+    return false;
+  }
+};
+
 export const validateBookingSlot = async (
   templeId: string,
   visitDate: Date,
