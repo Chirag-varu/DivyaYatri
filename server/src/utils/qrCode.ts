@@ -1,13 +1,8 @@
-let QRCode: any;
-try {
-  QRCode = require('qrcode');
-} catch (err) {
-  // noop - module may not be present in dev environment
-}
+import QRCode from 'qrcode';
 
 export const generateQRCode = async (data: string): Promise<string> => {
   try {
-  const qrCodeDataURL = await QRCode.toDataURL(data, {
+    const qrCodeDataURL = await QRCode.toDataURL(data, {
       errorCorrectionLevel: 'M',
       type: 'image/png',
       quality: 0.92,
@@ -17,7 +12,7 @@ export const generateQRCode = async (data: string): Promise<string> => {
         light: '#FFFFFF'
       }
     });
-    
+
     return qrCodeDataURL;
   } catch (error) {
     throw new Error('Failed to generate QR code');
@@ -30,6 +25,6 @@ export const generateBookingQRCode = async (bookingId: string): Promise<string> 
     id: bookingId,
     timestamp: new Date().toISOString()
   };
-  
+
   return generateQRCode(JSON.stringify(qrData));
 };
