@@ -19,6 +19,7 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { toast } from '@/hooks/useToast';
 import { createBooking, getAvailableSlots, type Booking, type CreateBookingData, type BookingSlot } from '@/api/services/bookingService';
+import { createPaymentOrder, verifyPayment, openRazorpay, type RazorpayOptions } from '@/api/services/paymentService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface BookingFormData {
@@ -49,6 +50,7 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
   const [selectedSlot, setSelectedSlot] = useState<BookingSlot | null>(null);
   const [confirmedBooking, setConfirmedBooking] = useState<Booking | null>(null);
   const [currentStep, setCurrentStep] = useState<'select' | 'details' | 'payment' | 'confirmation'>('select');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'upi' | 'card' | 'wallet'>('upi');
   const [bookingForm, setBookingForm] = useState<BookingFormData>({
     slotId: '',
     numberOfPeople: 1,
@@ -71,7 +73,7 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
     enabled: !!templeId && !!selectedDate,
   });
 
-  // Create booking mutation
+  // Create booking mutation (for free bookings)
   const createBookingMutation = useMutation({
     mutationFn: createBooking,
     onSuccess: (booking) => {
@@ -96,7 +98,109 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
     }
   });
 
+  // Create payment order mutation
+  const createPaymentOrderMutation = useMutation({
+    mutationFn: createPaymentOrder,
+    onSuccess: (order) => {
+      initiateRazorpayPayment(order);
+    },
+    onError: (error) => {
+      console.error('Payment order creation error:', error);
+      toast.error({
+        title: 'Payment failed',
+        description: 'Unable to initiate payment. Please try again.',
+      });
+    }
+  });
+
+  // Verify payment mutation
+  const verifyPaymentMutation = useMutation({
+    mutationFn: verifyPayment,
+    onSuccess: (result) => {
+      if (result.verified && result.booking) {
+        setConfirmedBooking(result.booking);
+        setCurrentStep('confirmation');
+        onBookingComplete(result.booking._id);
+        
+        // Invalidate and refetch slots
+        queryClient.invalidateQueries({ queryKey: ['availableSlots', templeId] });
+        
+        toast.success({
+          title: 'Payment successful!',
+          description: 'Your booking has been confirmed.',
+        });
+      } else {
+        toast.error({
+          title: 'Payment verification failed',
+          description: 'Please contact support if money was deducted.',
+        });
+      }
+    },
+    onError: (error) => {
+      console.error('Payment verification error:', error);
+      toast.error({
+        title: 'Payment verification failed',
+        description: 'Please contact support if money was deducted.',
+      });
+    }
+  });
+
   // Mock booking slots data - this will be replaced by real API data
+
+  // Calculate total amount
+  const totalAmount = selectedSlot ? selectedSlot.price * bookingForm.numberOfPeople : 0;
+
+  // Initiate Razorpay payment
+  const initiateRazorpayPayment = async (order: { orderId: string; amount: number; currency: string }) => {
+    try {
+      const options: RazorpayOptions = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || '',
+        amount: order.amount * 100, // Amount in paise
+        currency: order.currency,
+        name: 'DivyaYatri',
+        description: `Booking for ${templeName}`,
+        order_id: order.orderId,
+        handler: (response) => {
+          // Handle successful payment
+          verifyPaymentMutation.mutate({
+            orderId: response.razorpay_order_id,
+            paymentId: response.razorpay_payment_id,
+            signature: response.razorpay_signature,
+          });
+        },
+        prefill: {
+          name: bookingForm.contactInfo.name,
+          email: bookingForm.contactInfo.email,
+          contact: bookingForm.contactInfo.phone,
+        },
+        notes: {
+          templeId,
+          templeName,
+          date: selectedDate,
+          timeSlot: selectedSlot?.timeSlot || '',
+        },
+        theme: {
+          color: '#8B5A3C', // Primary color from the theme
+        },
+        modal: {
+          ondismiss: () => {
+            toast.error({
+              title: 'Payment cancelled',
+              description: 'You can try again when ready.',
+            });
+          },
+        },
+      };
+
+      await openRazorpay(options);
+    } catch (error) {
+      console.error('Error opening Razorpay:', error);
+      toast.error({
+        title: 'Payment gateway error',
+        description: 'Unable to open payment gateway. Please try again.',
+      });
+    }
+  };
 
   const handleSlotSelect = (slot: BookingSlot) => {
     if (!isAuthenticated) {
@@ -167,7 +271,20 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
       contactInfo: bookingForm.contactInfo
     };
 
-    createBookingMutation.mutate(bookingData);
+    // Check if payment is required
+    if (totalAmount > 0) {
+      // Create payment order for paid bookings
+      createPaymentOrderMutation.mutate({
+        amount: totalAmount,
+        notes: {
+          templeId,
+          userId: user?.id,
+        }
+      });
+    } else {
+      // Direct booking for free slots
+      createBookingMutation.mutate(bookingData);
+    }
   };
 
   const resetBooking = () => {
@@ -601,51 +718,46 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
                 <hr className="my-2" />
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total:</span>
-                  <span className="text-primary">₹{selectedSlot.price * bookingForm.numberOfPeople}</span>
+                  <span className="text-primary">₹{totalAmount}</span>
                 </div>
               </div>
             </div>
 
             {/* Payment Method */}
-            {selectedSlot.price > 0 ? (
+            {totalAmount > 0 ? (
               <div className="space-y-4">
                 <h4 className="font-semibold">Payment Method</h4>
-                <Tabs defaultValue="upi" className="w-full">
+                <Tabs value={selectedPaymentMethod} onValueChange={(value) => setSelectedPaymentMethod(value as 'upi' | 'card' | 'wallet')} className="w-full">
                   <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="upi">UPI</TabsTrigger>
                     <TabsTrigger value="card">Card</TabsTrigger>
                     <TabsTrigger value="wallet">Wallet</TabsTrigger>
                   </TabsList>
                   <TabsContent value="upi" className="space-y-4">
-                    <div className="bg-gray-50 rounded-lg p-4 text-center">
-                      <div className="w-32 h-32 mx-auto bg-white rounded-lg flex items-center justify-center mb-4">
-                        <div className="text-xs text-gray-600">QR Code</div>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+                      <div className="w-16 h-16 mx-auto bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                        <QrCode className="h-8 w-8 text-blue-600" />
                       </div>
-                      <p className="text-sm text-text/70">Scan QR code with your UPI app</p>
+                      <p className="text-sm text-blue-700 font-medium">UPI Payment</p>
+                      <p className="text-xs text-blue-600 mt-1">Pay using any UPI app (Google Pay, PhonePe, Paytm, etc.)</p>
                     </div>
                   </TabsContent>
                   <TabsContent value="card" className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input placeholder="Card Number" className="col-span-2" />
-                      <Input placeholder="MM/YY" />
-                      <Input placeholder="CVV" />
-                      <Input placeholder="Cardholder Name" className="col-span-2" />
+                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 text-center">
+                      <div className="w-16 h-16 mx-auto bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <CreditCard className="h-8 w-8 text-purple-600" />
+                      </div>
+                      <p className="text-sm text-purple-700 font-medium">Credit/Debit Card</p>
+                      <p className="text-xs text-purple-600 mt-1">Secure payment with Visa, Mastercard, RuPay</p>
                     </div>
                   </TabsContent>
                   <TabsContent value="wallet" className="space-y-4">
-                    <div className="space-y-3">
-                      <Button variant="outline" className="w-full justify-start">
-                        <div className="w-8 h-8 bg-blue-500 rounded mr-3"></div>
-                        Paytm Wallet
-                      </Button>
-                      <Button variant="outline" className="w-full justify-start">
-                        <div className="w-8 h-8 bg-purple-500 rounded mr-3"></div>
-                        PhonePe
-                      </Button>
-                      <Button variant="outline" className="w-full justify-start">
-                        <div className="w-8 h-8 bg-green-500 rounded mr-3"></div>
-                        Google Pay
-                      </Button>
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                      <div className="w-16 h-16 mx-auto bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                        <div className="text-green-600 font-bold text-lg">₹</div>
+                      </div>
+                      <p className="text-sm text-green-700 font-medium">Digital Wallets</p>
+                      <p className="text-xs text-green-600 mt-1">Paytm, PhonePe, Amazon Pay, and more</p>
                     </div>
                   </TabsContent>
                 </Tabs>
@@ -671,16 +783,16 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
               <Button
                 type="button"
                 onClick={handleBookingSubmit}
-                disabled={createBookingMutation.isPending}
+                disabled={createBookingMutation.isPending || createPaymentOrderMutation.isPending || verifyPaymentMutation.isPending}
                 className="flex-1   from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
               >
-                {createBookingMutation.isPending ? (
+                {createBookingMutation.isPending || createPaymentOrderMutation.isPending || verifyPaymentMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing...
+                    {totalAmount > 0 ? 'Processing Payment...' : 'Processing...'}
                   </>
                 ) : (
-                  'Confirm Booking'
+                  totalAmount > 0 ? `Pay ₹${totalAmount}` : 'Confirm Booking'
                 )}
               </Button>
             </div>

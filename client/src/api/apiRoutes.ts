@@ -60,6 +60,14 @@ export const API_ROUTES = {
     getSlots: (templeId: string) => `${BASE_URL}/bookings/slots/${templeId}`,
   },
 
+  // Payment endpoints
+  payments: {
+    createOrder: `${BASE_URL}/payments/create-order`,
+    verifyPayment: `${BASE_URL}/payments/verify`,
+    getPaymentStatus: (paymentId: string) => `${BASE_URL}/payments/${paymentId}/status`,
+    refund: (paymentId: string) => `${BASE_URL}/payments/${paymentId}/refund`,
+  },
+
   // Admin endpoints
   admin: {
     dashboard: `${BASE_URL}/admin/dashboard`,
@@ -100,5 +108,6 @@ export type AuthRoutes = typeof API_ROUTES.auth;
 export type TempleRoutes = typeof API_ROUTES.temples;
 export type ReviewRoutes = typeof API_ROUTES.reviews;
 export type BookingRoutes = typeof API_ROUTES.bookings;
+export type PaymentRoutes = typeof API_ROUTES.payments;
 export type AdminRoutes = typeof API_ROUTES.admin;
 export type UploadRoutes = typeof API_ROUTES.upload;

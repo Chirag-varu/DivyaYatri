@@ -11,6 +11,8 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
 import templeRoutes from './routes/temples';
 import reviewRoutes from './routes/reviews';
+import bookingRoutes from './routes/bookings';
+import paymentRoutes from './routes/payments';
 import adminRoutes from './routes/admin';
 import uploadRoutes from './routes/upload';
 
@@ -92,6 +94,8 @@ app.get(`/${process.env.API_VERSION}/healthCheck`, (_req, res) => {
 app.use(`/${process.env.API_VERSION}/auth1`, authRoutes);
 app.use(`/${process.env.API_VERSION}/temples`, templeRoutes);
 app.use(`/${process.env.API_VERSION}/reviews`, reviewRoutes);
+app.use(`/${process.env.API_VERSION}/bookings`, bookingRoutes);
+app.use(`/${process.env.API_VERSION}/payments`, paymentRoutes);
 app.use(`/${process.env.API_VERSION}/admin`, adminRoutes);
 app.use(`/${process.env.API_VERSION}/upload`, uploadRoutes);
 
