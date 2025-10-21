@@ -9,6 +9,7 @@
 export * from './authService';
 export * from './templeService';
 export * from './reviewService';
+export * from './bookingService';
 export * from './uploadService';
 
 // Export API client and routes for direct access when needed

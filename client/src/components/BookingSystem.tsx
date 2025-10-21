@@ -12,22 +12,14 @@ import {
   User,
   Plus,
   Minus,
-  Loader2
+  Loader2,
+  QrCode,
+  Download
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from '@/hooks/useToast';
-
-interface BookingSlot {
-  _id: string;
-  temple: string;
-  date: string;
-  timeSlot: string;
-  maxCapacity: number;
-  currentBookings: number;
-  price: number;
-  type: 'darshan' | 'special_puja' | 'aarti' | 'festival';
-  isAvailable: boolean;
-}
+import { createBooking, getAvailableSlots, type Booking, type CreateBookingData, type BookingSlot } from '@/api/services/bookingService';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface BookingFormData {
   slotId: string;
@@ -52,10 +44,11 @@ interface BookingSystemProps {
 
 export default function BookingSystem({ templeId, templeName, onBookingComplete }: BookingSystemProps) {
   const { user, isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedSlot, setSelectedSlot] = useState<BookingSlot | null>(null);
+  const [confirmedBooking, setConfirmedBooking] = useState<Booking | null>(null);
   const [currentStep, setCurrentStep] = useState<'select' | 'details' | 'payment' | 'confirmation'>('select');
-  const [isLoading, setIsLoading] = useState(false);
   const [bookingForm, setBookingForm] = useState<BookingFormData>({
     slotId: '',
     numberOfPeople: 1,
@@ -71,53 +64,39 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
     },
   });
 
-  // Mock booking slots data
-  const mockSlots: BookingSlot[] = [
-    {
-      _id: '1',
-      temple: templeId,
-      date: selectedDate,
-      timeSlot: '06:00 - 08:00',
-      maxCapacity: 50,
-      currentBookings: 12,
-      price: 0,
-      type: 'darshan',
-      isAvailable: true
+  // Fetch available slots for the selected date
+  const { data: availableSlots = [], isLoading: slotsLoading, error: slotsError } = useQuery({
+    queryKey: ['availableSlots', templeId, selectedDate],
+    queryFn: () => getAvailableSlots(templeId, selectedDate),
+    enabled: !!templeId && !!selectedDate,
+  });
+
+  // Create booking mutation
+  const createBookingMutation = useMutation({
+    mutationFn: createBooking,
+    onSuccess: (booking) => {
+      setConfirmedBooking(booking);
+      setCurrentStep('confirmation');
+      onBookingComplete(booking._id);
+      
+      // Invalidate and refetch slots
+      queryClient.invalidateQueries({ queryKey: ['availableSlots', templeId] });
+      
+      toast.success({
+        title: 'Booking confirmed!',
+        description: 'Your darshan slot has been successfully booked.',
+      });
     },
-    {
-      _id: '2',
-      temple: templeId,
-      date: selectedDate,
-      timeSlot: '08:00 - 10:00',
-      maxCapacity: 50,
-      currentBookings: 35,
-      price: 0,
-      type: 'darshan',
-      isAvailable: true
-    },
-    {
-      _id: '3',
-      temple: templeId,
-      date: selectedDate,
-      timeSlot: '18:00 - 19:00',
-      maxCapacity: 100,
-      currentBookings: 78,
-      price: 100,
-      type: 'aarti',
-      isAvailable: true
-    },
-    {
-      _id: '4',
-      temple: templeId,
-      date: selectedDate,
-      timeSlot: '19:00 - 20:00',
-      maxCapacity: 30,
-      currentBookings: 28,
-      price: 500,
-      type: 'special_puja',
-      isAvailable: true
+    onError: (error) => {
+      console.error('Booking error:', error);
+      toast.error({
+        title: 'Booking failed',
+        description: 'Unable to complete your booking. Please try again.',
+      });
     }
-  ];
+  });
+
+  // Mock booking slots data - this will be replaced by real API data
 
   const handleSlotSelect = (slot: BookingSlot) => {
     if (!isAuthenticated) {
@@ -179,32 +158,21 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
   const handleBookingSubmit = async () => {
     if (!validateBookingForm() || !selectedSlot) return;
 
-    setIsLoading(true);
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const bookingId = 'booking_' + Date.now();
-      onBookingComplete(bookingId);
-      setCurrentStep('confirmation');
-      
-      toast.success({
-        title: 'Booking confirmed!',
-        description: 'Your darshan slot has been successfully booked.',
-      });
-    } catch (error) {
-      console.error('Booking error:', error);
-      toast.error({
-        title: 'Booking failed',
-        description: 'Unable to complete your booking. Please try again.',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    const bookingData: CreateBookingData = {
+      templeId: templeId,
+      date: selectedDate,
+      timeSlot: selectedSlot.timeSlot.split(' - ')[0], // Use start time
+      numberOfVisitors: bookingForm.numberOfPeople,
+      specialRequests: bookingForm.specialRequests,
+      contactInfo: bookingForm.contactInfo
+    };
+
+    createBookingMutation.mutate(bookingData);
   };
 
   const resetBooking = () => {
     setSelectedSlot(null);
+    setConfirmedBooking(null);
     setCurrentStep('select');
     setBookingForm({
       slotId: '',
@@ -322,7 +290,23 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {mockSlots.map((slot) => {
+                {slotsLoading ? (
+                  <div className="col-span-full flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                    <span className="ml-2">Loading available slots...</span>
+                  </div>
+                ) : slotsError ? (
+                  <div className="col-span-full text-center py-8 text-red-600">
+                    <AlertCircle className="h-6 w-6 mx-auto mb-2" />
+                    <p>Error loading slots. Please try again.</p>
+                  </div>
+                ) : availableSlots.length === 0 ? (
+                  <div className="col-span-full text-center py-8 text-gray-500">
+                    <Clock className="h-6 w-6 mx-auto mb-2" />
+                    <p>No available slots for this date.</p>
+                  </div>
+                ) : (
+                  availableSlots.map((slot) => {
                   const availableSpots = slot.maxCapacity - slot.currentBookings;
                   const isAlmostFull = availableSpots <= 5;
                   
@@ -391,7 +375,8 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
                       </CardContent>
                     </Card>
                   );
-                })}
+                })
+                )}
               </div>
             </CardContent>
           </Card>
@@ -686,10 +671,10 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
               <Button
                 type="button"
                 onClick={handleBookingSubmit}
-                disabled={isLoading}
+                disabled={createBookingMutation.isPending}
                 className="flex-1   from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
               >
-                {isLoading ? (
+                {createBookingMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Processing...
@@ -703,7 +688,7 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
         </Card>
       )}
 
-      {currentStep === 'confirmation' && selectedSlot && (
+      {currentStep === 'confirmation' && confirmedBooking && (
         <Card className="bg-white/80 backdrop-blur-sm shadow-xl border-0">
           <CardContent className="p-12 text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -714,29 +699,72 @@ export default function BookingSystem({ templeId, templeName, onBookingComplete 
               Your darshan slot has been successfully booked. You will receive a confirmation email shortly.
             </p>
             
+            {/* QR Code Section */}
+            {confirmedBooking.qrCode && (
+              <div className="mb-6">
+                <div className="bg-white p-4 rounded-lg shadow-md inline-block">
+                  <img 
+                    src={confirmedBooking.qrCode} 
+                    alt="Booking QR Code" 
+                    className="w-32 h-32 mx-auto"
+                  />
+                  <p className="text-sm text-gray-600 mt-2">
+                    <QrCode className="w-4 h-4 inline mr-1" />
+                    Show this QR code at the temple
+                  </p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="mt-2"
+                  onClick={() => {
+                    if (confirmedBooking.qrCode) {
+                      const link = document.createElement('a');
+                      link.href = confirmedBooking.qrCode;
+                      link.download = `booking-qr-${confirmedBooking._id}.png`;
+                      link.click();
+                    }
+                  }}
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Download QR Code
+                </Button>
+              </div>
+            )}
+            
             <div className="bg-gray-50 rounded-lg p-6 mb-6 text-left max-w-md mx-auto">
               <h4 className="font-semibold mb-3">Booking Details</h4>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span>Temple:</span>
-                  <span className="font-medium">{templeName}</span>
+                  <span className="font-medium">{confirmedBooking.temple.name}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Date:</span>
-                  <span className="font-medium">{new Date(selectedDate).toLocaleDateString()}</span>
+                  <span className="font-medium">{new Date(confirmedBooking.visitDate).toLocaleDateString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Time:</span>
-                  <span className="font-medium">{selectedSlot.timeSlot}</span>
+                  <span className="font-medium">{confirmedBooking.timeSlot.start} - {confirmedBooking.timeSlot.end}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>People:</span>
-                  <span className="font-medium">{bookingForm.numberOfPeople}</span>
+                  <span className="font-medium">{confirmedBooking.visitors.adults + confirmedBooking.visitors.children + confirmedBooking.visitors.seniors}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Booking ID:</span>
-                  <span className="font-medium">booking_{Date.now()}</span>
+                  <span className="font-medium font-mono text-xs">{confirmedBooking._id}</span>
                 </div>
+                <div className="flex justify-between">
+                  <span>Status:</span>
+                  <span className="font-medium text-green-600 capitalize">{confirmedBooking.bookingStatus}</span>
+                </div>
+                {confirmedBooking.finalAmount > 0 && (
+                  <div className="flex justify-between border-t pt-2 mt-2">
+                    <span>Amount Paid:</span>
+                    <span className="font-medium">₹{confirmedBooking.finalAmount}</span>
+                  </div>
+                )}
               </div>
             </div>
 

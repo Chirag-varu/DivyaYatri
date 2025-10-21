@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -10,6 +10,8 @@ import NotificationSystem from '@/components/NotificationSystem';
 import ImageUploadGallery from '@/components/ImageUploadGallery';
 import { getTempleById } from '@/api/services/templeService';
 import type { Temple } from '@/api/services/templeService';
+import { getReviewsByTemple, createReview, toggleReviewLike, reportReview } from '@/api/services/reviewService';
+import type { Review as ServiceReview, CreateReviewData } from '@/api/services/reviewService';
 import { 
   MapPin, 
   Star, 
@@ -27,72 +29,37 @@ import {
   CreditCard
 } from 'lucide-react';
 
-
-interface Review {
-  _id: string;
+// Adapter function to transform service Review to component Review
+const adaptReviewFromService = (serviceReview: ServiceReview): any => ({
+  _id: serviceReview.id,
   user: {
-    _id: string;
-    firstName: string;
-    lastName: string;
-    avatar?: string;
-  };
-  temple: string;
-  rating: number;
-  title: string;
-  content: string;
-  images?: string[];
-  visitDate: string;
-  helpfulVotes: number;
-  unhelpfulVotes: number;
-  isVerified: boolean;
-  status: 'pending' | 'approved' | 'rejected';
-  createdAt: string;
-  updatedAt: string;
-}
+    _id: serviceReview.user.id,
+    firstName: serviceReview.user.firstName,
+    lastName: serviceReview.user.lastName,
+    avatar: serviceReview.user.avatar,
+  },
+  temple: serviceReview.templeId,
+  rating: serviceReview.rating,
+  title: serviceReview.title,
+  content: serviceReview.content,
+  images: serviceReview.images || [],
+  visitDate: serviceReview.visitDate,
+  helpfulVotes: serviceReview.likesCount,
+  unhelpfulVotes: 0, // Service doesn't track unhelpful votes separately
+  isVerified: serviceReview.isVerifiedVisit,
+  status: serviceReview.moderationStatus,
+  createdAt: serviceReview.createdAt,
+  updatedAt: serviceReview.updatedAt,
+});
 
-const fetchReviews = async (id: string): Promise<Review[]> => {
-  // Mock data for demo - replace with actual API call
-  return [
-    {
-      _id: "1",
-      temple: id,
-      user: {
-        _id: "user1",
-        firstName: "Rahul",
-        lastName: "Sharma",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100"
-      },
-      title: "Wonderful Experience",
-      content: "Amazing spiritual experience. The temple is beautifully maintained.",
-      rating: 5,
-      visitDate: "2024-01-10",
-      createdAt: "2024-01-15",
-      updatedAt: "2024-01-16",
-      helpfulVotes: 12,
-      unhelpfulVotes: 1,
-      isVerified: true,
-      status: "approved"
-    },
-    {
-      _id: "2",
-      temple: id,
-      user: {
-        _id: "user2",
-        firstName: "Priya",
-        lastName: "Patel"
-      },
-      title: "Peaceful Place",
-      content: "Peaceful environment and helpful staff. Great place for meditation.",
-      rating: 4,
-      visitDate: "2024-01-05",
-      createdAt: "2024-01-10",
-      updatedAt: "2024-01-12",
-      helpfulVotes: 8,
-      unhelpfulVotes: 0,
-      isVerified: false,
-      status: "approved"
-    }
-  ];
+const fetchReviews = async (templeId: string) => {
+  try {
+    const response = await getReviewsByTemple(templeId);
+    return response.reviews.map(adaptReviewFromService);
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    return [];
+  }
 };
 
 export default function TempleDetailPage() {
@@ -100,6 +67,7 @@ export default function TempleDetailPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const queryClient = useQueryClient();
 
   const { data: temple, isLoading: templeLoading, error: templeError } = useQuery<Temple>({
     queryKey: ['temple', id],
@@ -108,9 +76,30 @@ export default function TempleDetailPage() {
   });
 
   const { data: reviews = [] } = useQuery({
-    queryKey: ['reviews', id],
-    queryFn: () => fetchReviews(id!),
-    enabled: !!id,
+    queryKey: ['reviews', temple?.id],
+    queryFn: () => fetchReviews(temple!.id),
+    enabled: !!temple?.id,
+  });
+
+  // Mutations for review actions
+  const createReviewMutation = useMutation({
+    mutationFn: createReview,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reviews', temple?.id] });
+    },
+  });
+
+  const voteReviewMutation = useMutation({
+    mutationFn: ({ reviewId, isCurrentlyLiked }: { reviewId: string; isCurrentlyLiked: boolean }) =>
+      toggleReviewLike(reviewId, isCurrentlyLiked),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reviews', temple?.id] });
+    },
+  });
+
+  const reportReviewMutation = useMutation({
+    mutationFn: ({ reviewId, reason }: { reviewId: string; reason: string }) =>
+      reportReview(reviewId, reason),
   });
 
   const nextImage = () => {
@@ -142,20 +131,46 @@ export default function TempleDetailPage() {
     }
   };
 
-  // Mock functions for component integration
+  // Review handling functions with real API integration
   const handleReviewSubmit = async (reviewData: any) => {
-    console.log('Review submitted:', reviewData);
-    // API call to submit review
+    try {
+      if (!temple) return;
+      
+      const createData: CreateReviewData = {
+        templeId: temple.id,
+        rating: reviewData.rating,
+        title: reviewData.title,
+        content: reviewData.content,
+        visitDate: reviewData.visitDate,
+        images: reviewData.images || []
+      };
+      
+      await createReviewMutation.mutateAsync(createData);
+      console.log('Review submitted successfully');
+    } catch (error) {
+      console.error('Error submitting review:', error);
+    }
   };
 
   const handleReviewVote = async (reviewId: string, vote: 'helpful' | 'unhelpful') => {
-    console.log('Review vote:', reviewId, vote);
-    // API call to vote on review
+    try {
+      // For now, we'll treat both helpful and unhelpful as "like" since the API only supports likes
+      // In a real implementation, you might want to modify the API to support different vote types
+      const isCurrentlyLiked = false; // You'd need to track this in the UI state
+      await voteReviewMutation.mutateAsync({ reviewId, isCurrentlyLiked });
+      console.log('Review vote submitted:', vote);
+    } catch (error) {
+      console.error('Error voting on review:', error);
+    }
   };
 
   const handleReviewReport = async (reviewId: string, reason: string) => {
-    console.log('Review reported:', reviewId, reason);
-    // API call to report review
+    try {
+      await reportReviewMutation.mutateAsync({ reviewId, reason });
+      console.log('Review reported successfully');
+    } catch (error) {
+      console.error('Error reporting review:', error);
+    }
   };
 
   const handleBookingComplete = (bookingId: string) => {

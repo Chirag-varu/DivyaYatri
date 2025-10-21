@@ -48,6 +48,18 @@ export const API_ROUTES = {
     unlike: (id: string) => `${BASE_URL}/reviews/${id}/unlike`,
   },
 
+  // Booking endpoints
+  bookings: {
+    getAll: `${BASE_URL}/bookings`,
+    getById: (id: string) => `${BASE_URL}/bookings/${id}`,
+    create: `${BASE_URL}/bookings`,
+    updatePayment: (id: string) => `${BASE_URL}/bookings/${id}/payment`,
+    cancel: (id: string) => `${BASE_URL}/bookings/${id}/cancel`,
+    checkin: (id: string) => `${BASE_URL}/bookings/${id}/checkin`,
+    complete: (id: string) => `${BASE_URL}/bookings/${id}/complete`,
+    getSlots: (templeId: string) => `${BASE_URL}/bookings/slots/${templeId}`,
+  },
+
   // Admin endpoints
   admin: {
     dashboard: `${BASE_URL}/admin/dashboard`,
@@ -87,5 +99,6 @@ export type ApiRoutes = typeof API_ROUTES;
 export type AuthRoutes = typeof API_ROUTES.auth;
 export type TempleRoutes = typeof API_ROUTES.temples;
 export type ReviewRoutes = typeof API_ROUTES.reviews;
+export type BookingRoutes = typeof API_ROUTES.bookings;
 export type AdminRoutes = typeof API_ROUTES.admin;
 export type UploadRoutes = typeof API_ROUTES.upload;
