@@ -8,12 +8,16 @@
  * - Featured and nearby temples
  */
 
+import type { ReactNode } from 'react';
 import apiClient, { transformError } from '../apiClient';
 import { API_ROUTES } from '../apiRoutes';
 import type { AxiosResponse } from 'axios';
 
 // Type definitions for temples
 export interface Temple {
+  _id: string;
+  history: ReactNode;
+  festivals: any;
   id: string;
   name: string;
   description: string;

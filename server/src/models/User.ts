@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 
 export interface User extends Document {
   _id: string;
@@ -57,6 +57,20 @@ export interface User extends Document {
     notifications: {
       email: boolean;
       push: boolean;
+      sms: boolean;
+      inApp: boolean;
+      types: {
+        booking_confirmed: boolean;
+        booking_reminder: boolean;
+        review_reply: boolean;
+        temple_update: boolean;
+        admin_message: boolean;
+        payment_success: boolean;
+        payment_failed: boolean;
+        booking_cancelled: boolean;
+        new_review: boolean;
+        system_maintenance: boolean;
+      };
     };
   };
   lastLogin?: Date;
@@ -240,6 +254,56 @@ const userSchema = new Schema< User>({
       push: {
         type: Boolean,
         default: true
+      },
+      sms: {
+        type: Boolean,
+        default: false
+      },
+      inApp: {
+        type: Boolean,
+        default: true
+      },
+      types: {
+        booking_confirmed: {
+          type: Boolean,
+          default: true
+        },
+        booking_reminder: {
+          type: Boolean,
+          default: true
+        },
+        review_reply: {
+          type: Boolean,
+          default: true
+        },
+        temple_update: {
+          type: Boolean,
+          default: true
+        },
+        admin_message: {
+          type: Boolean,
+          default: true
+        },
+        payment_success: {
+          type: Boolean,
+          default: true
+        },
+        payment_failed: {
+          type: Boolean,
+          default: true
+        },
+        booking_cancelled: {
+          type: Boolean,
+          default: true
+        },
+        new_review: {
+          type: Boolean,
+          default: false
+        },
+        system_maintenance: {
+          type: Boolean,
+          default: true
+        }
       }
     }
   },

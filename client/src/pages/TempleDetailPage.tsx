@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ReviewSystem from '@/components/ReviewSystem';
 import BookingSystem from '@/components/BookingSystem';
 import NotificationSystem from '@/components/NotificationSystem';
 import ImageUploadGallery from '@/components/ImageUploadGallery';
+import { getTempleById } from '@/api/services/templeService';
+import type { Temple } from '@/api/services/templeService';
 import { 
   MapPin, 
   Star, 
@@ -18,115 +20,77 @@ import {
   Heart,
   Share2,
   ArrowLeft,
-  Users,
-  Calendar,
-  Info,
   ChevronLeft,
   ChevronRight,
   MessageSquare,
   Upload,
-  CreditCard,
-  Bell
+  CreditCard
 } from 'lucide-react';
 
-interface Temple {
-  _id: string;
-  name: string;
-  description: string;
-  location: {
-    address: string;
-    city: string;
-    state: string;
-    coordinates: [number, number];
-  };
-  images: string[];
-  rating: number;
-  reviewCount: number;
-  category: string;
-  features: string[];
-  timings: {
-    open: string;
-    close: string;
-  };
-  contact: {
-    phone?: string;
-    website?: string;
-  };
-  history: string;
-  festivals: string[];
-  isActive: boolean;
-}
 
 interface Review {
   _id: string;
   user: {
-    name: string;
+    _id: string;
+    firstName: string;
+    lastName: string;
     avatar?: string;
   };
+  temple: string;
   rating: number;
-  comment: string;
+  title: string;
+  content: string;
+  images?: string[];
+  visitDate: string;
+  helpfulVotes: number;
+  unhelpfulVotes: number;
+  isVerified: boolean;
+  status: 'pending' | 'approved' | 'rejected';
   createdAt: string;
-  helpful: number;
+  updatedAt: string;
 }
-
-const fetchTemple = async (id: string): Promise<Temple> => {
-  // Mock data for demo - replace with actual API call
-  return {
-    _id: id!,
-    name: "Shri Ganesh Mandir",
-    description: "A beautiful temple dedicated to Lord Ganesha, known for its spiritual atmosphere and stunning architecture.",
-    location: {
-      address: "123 Temple Street",
-      city: "Mumbai",
-      state: "Maharashtra",
-      coordinates: [19.0760, 72.8777]
-    },
-    images: [
-      "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800",
-      "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=800",
-      "https://images.unsplash.com/photo-1548013146-72479768bada?w=800"
-    ],
-    rating: 4.8,
-    reviewCount: 245,
-    category: "Hindu Temple",
-    features: ["Parking Available", "Wheelchair Accessible", "Gift Shop", "Prasadam"],
-    timings: {
-      open: "6:00 AM",
-      close: "9:00 PM"
-    },
-    contact: {
-      phone: "+91 98765 43210",
-      website: "https://ganeshmandir.org"
-    },
-    history: "This ancient temple has been serving devotees for over 200 years...",
-    festivals: ["Ganesh Chaturthi", "Diwali", "Navratri"],
-    isActive: true
-  };
-};
 
 const fetchReviews = async (id: string): Promise<Review[]> => {
   // Mock data for demo - replace with actual API call
   return [
     {
       _id: "1",
+      temple: id,
       user: {
-        name: "Rahul Sharma",
+        _id: "user1",
+        firstName: "Rahul",
+        lastName: "Sharma",
         avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100"
       },
+      title: "Wonderful Experience",
+      content: "Amazing spiritual experience. The temple is beautifully maintained.",
       rating: 5,
-      comment: "Amazing spiritual experience. The temple is beautifully maintained.",
+      visitDate: "2024-01-10",
       createdAt: "2024-01-15",
-      helpful: 12
+      updatedAt: "2024-01-16",
+      helpfulVotes: 12,
+      unhelpfulVotes: 1,
+      isVerified: true,
+      status: "approved"
     },
     {
       _id: "2",
+      temple: id,
       user: {
-        name: "Priya Patel"
+        _id: "user2",
+        firstName: "Priya",
+        lastName: "Patel"
       },
+      title: "Peaceful Place",
+      content: "Peaceful environment and helpful staff. Great place for meditation.",
       rating: 4,
-      comment: "Peaceful environment and helpful staff. Great place for meditation.",
+      visitDate: "2024-01-05",
       createdAt: "2024-01-10",
-      helpful: 8
+      updatedAt: "2024-01-12",
+      helpfulVotes: 8,
+      unhelpfulVotes: 0,
+      isVerified: false,
+      status: "approved"
     }
   ];
 };
@@ -137,13 +101,13 @@ export default function TempleDetailPage() {
   const [isLiked, setIsLiked] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
-  const { data: temple, isLoading: templeLoading, error: templeError } = useQuery({
+  const { data: temple, isLoading: templeLoading, error: templeError } = useQuery<Temple>({
     queryKey: ['temple', id],
-    queryFn: () => fetchTemple(id!),
+    queryFn: () => getTempleById(id!),
     enabled: !!id,
   });
 
-  const { data: reviews = [], isLoading: reviewsLoading } = useQuery({
+  const { data: reviews = [] } = useQuery({
     queryKey: ['reviews', id],
     queryFn: () => fetchReviews(id!),
     enabled: !!id,
@@ -184,8 +148,8 @@ export default function TempleDetailPage() {
     // API call to submit review
   };
 
-  const handleReviewVote = async (reviewId: string, helpful: boolean) => {
-    console.log('Review vote:', reviewId, helpful);
+  const handleReviewVote = async (reviewId: string, vote: 'helpful' | 'unhelpful') => {
+    console.log('Review vote:', reviewId, vote);
     // API call to vote on review
   };
 
@@ -194,14 +158,9 @@ export default function TempleDetailPage() {
     // API call to report review
   };
 
-  const handleBookingSubmit = async (bookingData: any) => {
-    console.log('Booking submitted:', bookingData);
-    // API call to submit booking
-  };
-
-  const handleImageUpload = async (images: File[]) => {
-    console.log('Images uploaded:', images);
-    // API call to upload images
+  const handleBookingComplete = (bookingId: string) => {
+    console.log('Booking completed:', bookingId);
+    // Handle booking completion (e.g., show success message, redirect, etc.)
   };
 
   if (templeLoading) {
@@ -339,7 +298,7 @@ export default function TempleDetailPage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <Star className="h-4 w-4 text-yellow-500" />
-                        {temple.rating} ({temple.reviewCount} reviews)
+                        {temple.ratings.average.toFixed(1)} ({temple.ratings.count} reviews)
                       </div>
                     </div>
                   </div>
@@ -374,7 +333,7 @@ export default function TempleDetailPage() {
                 <div>
                   <h3 className="text-lg font-semibold text-text mb-3">Major Festivals</h3>
                   <div className="flex flex-wrap gap-2">
-                    {temple.festivals.map((festival, index) => (
+                    {temple.festivals.map((festival: string, index: number) => (
                       <span
                         key={index}
                         className="px-3 py-1 bg-accent/10 text-accent text-sm rounded-full"
@@ -420,7 +379,7 @@ export default function TempleDetailPage() {
 
               <TabsContent value="reviews" className="space-y-6">
                 <ReviewSystem
-                  templeId={temple._id}
+                  templeId={temple.id}
                   reviews={reviews}
                   onReviewSubmit={handleReviewSubmit}
                   onReviewVote={handleReviewVote}
@@ -430,16 +389,16 @@ export default function TempleDetailPage() {
 
               <TabsContent value="booking" className="space-y-6">
                 <BookingSystem
-                  temple={temple}
-                  onBookingSubmit={handleBookingSubmit}
+                  templeId={temple.id}
+                  templeName={temple.name}
+                  onBookingComplete={handleBookingComplete}
                 />
               </TabsContent>
 
               <TabsContent value="gallery" className="space-y-6">
                 <ImageUploadGallery
-                  templeId={temple._id}
+                  templeId={temple.id}
                   templeName={temple.name}
-                  onImageUpload={handleImageUpload}
                 />
               </TabsContent>
             </Tabs>
@@ -457,27 +416,29 @@ export default function TempleDetailPage() {
                   <Clock className="h-5 w-5 text-primary" />
                   <div>
                     <p className="font-medium text-text">Timings</p>
-                    <p className="text-text/70">{temple.timings.open} - {temple.timings.close}</p>
+                    <p className="text-text/70">
+                      {temple.openingHours.monday?.open || '6:00'} - {temple.openingHours.monday?.close || '21:00'}
+                    </p>
                   </div>
                 </div>
 
-                {temple.contact?.phone && (
+                {temple.contactInfo?.phone && (
                   <div className="flex items-center gap-3">
                     <Phone className="h-5 w-5 text-primary" />
                     <div>
                       <p className="font-medium text-text">Phone</p>
-                      <p className="text-text/70">{temple.contact.phone}</p>
+                      <p className="text-text/70">{temple.contactInfo.phone}</p>
                     </div>
                   </div>
                 )}
 
-                {temple.contact?.website && (
+                {temple.contactInfo?.website && (
                   <div className="flex items-center gap-3">
                     <Globe className="h-5 w-5 text-primary" />
                     <div>
                       <p className="font-medium text-text">Website</p>
                       <a 
-                        href={temple.contact.website} 
+                        href={temple.contactInfo.website} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-primary hover:text-secondary transition-colors"

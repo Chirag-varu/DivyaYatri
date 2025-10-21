@@ -6,7 +6,7 @@ import { config } from 'dotenv';
 
 config();
 
-const MONGODB_URI = "";
+const MONGODB_URI = process.env.MONGODB_URI || process.env.DEV_MONGODB_URI || "mongodb://localhost:27017/divyayatri";
 
 // Sample Users
 const sampleUsers = [

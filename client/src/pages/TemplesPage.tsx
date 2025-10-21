@@ -18,28 +18,8 @@ import {
   Navigation,
 
 } from 'lucide-react';
-
-interface Temple {
-  _id: string;
-  name: string;
-  description: string;
-  location: {
-    address: string;
-    city: string;
-    state: string;
-    coordinates: [number, number];
-  };
-  images: string[];
-  rating: number;
-  reviewCount: number;
-  category: string;
-  features: string[];
-  timings: {
-    open: string;
-    close: string;
-  };
-  isActive: boolean;
-}
+import { getAllTemples } from '@/api/services/templeService';
+import type { Temple } from '@/api/services/templeService';
 
 interface SearchFilters {
   category: string;
@@ -52,67 +32,26 @@ interface SearchFilters {
 }
 
 const fetchTemples = async (searchQuery?: string, filters?: Partial<SearchFilters>): Promise<Temple[]> => {
-  const params = new URLSearchParams();
-  
-  if (searchQuery) params.append('search', searchQuery);
-  if (filters?.category && filters.category !== 'all') params.append('category', filters.category);
-  if (filters?.state && filters.state !== 'all') params.append('state', filters.state);
-  if (filters?.city && filters.city !== 'all') params.append('city', filters.city);
-  if (filters?.minRating && filters.minRating > 0) params.append('minRating', filters.minRating.toString());
-  if (filters?.features && filters.features.length > 0) params.append('features', filters.features.join(','));
-  if (filters?.sortBy) params.append('sortBy', filters.sortBy);
-  if (filters?.sortOrder) params.append('sortOrder', filters.sortOrder);
-  
-  const url = `${import.meta.env.VITE_API_URL}/api/temples?${params.toString()}`;
-  
   try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Failed to fetch temples');
-    }
-    const data = await response.json();
-    return data.data?.temples || [];
+    // Prepare parameters for the API call
+    const params: any = {};
+    
+    if (searchQuery) params.search = searchQuery;
+    if (filters?.category && filters.category !== 'all') params.category = filters.category;
+    if (filters?.state && filters.state !== 'all') params.state = filters.state;
+    if (filters?.city && filters.city !== 'all') params.city = filters.city;
+    if (filters?.minRating && filters.minRating > 0) params.minRating = filters.minRating;
+    if (filters?.features && filters.features.length > 0) params.features = filters.features.join(',');
+    if (filters?.sortBy) params.sortBy = filters.sortBy;
+    if (filters?.sortOrder) params.sortOrder = filters.sortOrder;
+    
+    // Use the temple service instead of manual fetch
+    const response = await getAllTemples(params);
+    return response.temples || [];
   } catch (error) {
     console.error('Error fetching temples:', error);
-    // Return mock data for development
-    return [
-      {
-        _id: '1',
-        name: 'Golden Temple',
-        description: 'The most sacred Sikh shrine, known for its stunning golden architecture and peaceful atmosphere.',
-        location: {
-          address: 'Golden Temple Rd',
-          city: 'Amritsar',
-          state: 'Punjab',
-          coordinates: [31.6200, 74.8765]
-        },
-        images: ['/api/placeholder/400/300'],
-        rating: 4.8,
-        reviewCount: 1250,
-        category: 'sikh',
-        features: ['Parking', 'Food Court', 'Guest House'],
-        timings: { open: '04:00', close: '22:00' },
-        isActive: true
-      },
-      {
-        _id: '2',
-        name: 'Meenakshi Temple',
-        description: 'Ancient temple dedicated to Goddess Meenakshi with magnificent gopurams and intricate carvings.',
-        location: {
-          address: 'Madurai Main',
-          city: 'Madurai',
-          state: 'Tamil Nadu',
-          coordinates: [9.9195, 78.1195]
-        },
-        images: ['/api/placeholder/400/300'],
-        rating: 4.7,
-        reviewCount: 890,
-        category: 'hindu',
-        features: ['Audio Guide', 'Wheelchair Access'],
-        timings: { open: '05:00', close: '21:30' },
-        isActive: true
-      }
-    ];
+    // Return empty array instead of mock data to encourage proper API setup
+    return [];
   }
 };
 
@@ -438,7 +377,7 @@ export default function TemplesPage() {
             }`}>
               {temples.map((temple) => (
                 <Card 
-                  key={temple._id} 
+                  key={temple.id} 
                   className={`group bg-white/80 backdrop-blur-sm shadow-xl border-0 hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden ${
                     viewMode === 'list' ? 'flex flex-row' : ''
                   }`}
@@ -482,12 +421,12 @@ export default function TemplesPage() {
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-1">
                           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                          <span className="font-semibold">{temple.rating}</span>
-                          <span className="text-foreground/60">({temple.reviewCount} reviews)</span>
+                          <span className="font-semibold">{temple.ratings.average}</span>
+                          <span className="text-foreground/60">({temple.ratings.count} reviews)</span>
                         </div>
                         <div className="flex items-center gap-1 text-foreground/60">
                           <Clock className="h-4 w-4" />
-                          <span className="text-sm">{temple.timings.open} - {temple.timings.close}</span>
+                          <span className="text-sm">{temple.openingHours.monday?.open} - {temple.openingHours.monday?.close}</span>
                         </div>
                       </div>
 
@@ -512,7 +451,7 @@ export default function TemplesPage() {
                           asChild
                           className="flex-1   from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                         >
-                          <Link to={`/temples/${temple._id}`}>
+                          <Link to={`/temples/${temple.id}`}>
                             View Details
                           </Link>
                         </Button>

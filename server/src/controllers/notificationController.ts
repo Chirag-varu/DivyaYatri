@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth';
 import Notification from '../models/Notification';
+import User from '../models/User';
 
 // Get user notifications
 export const getUserNotifications = async (req: AuthenticatedRequest, res: Response) => {
@@ -185,14 +186,31 @@ export const deleteNotification = async (req: AuthenticatedRequest, res: Respons
 };
 
 // Get notification preferences
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getNotificationPreferences = async (_req: AuthenticatedRequest, res: Response) => {
+export const getNotificationPreferences = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    // const userId = req.user?._id; // TODO: Use for user-specific preferences
+    const userId = req.user?._id;
 
-    // TODO: Fetch user-specific preferences from User model using userId
-    // For now, return default preferences
-    const preferences = {
+    if (!userId) {
+      res.status(401).json({
+        success: false,
+        message: 'User not authenticated'
+      });
+      return;
+    }
+
+    // Fetch user preferences from database
+    const user = await User.findById(userId).select('preferences');
+    
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+      return;
+    }
+
+    // Return user's notification preferences
+    const preferences = user.preferences?.notifications || {
       email: true,
       push: true,
       sms: false,
@@ -225,19 +243,50 @@ export const getNotificationPreferences = async (_req: AuthenticatedRequest, res
 };
 
 // Update notification preferences
-export const updateNotificationPreferences = async (req: AuthenticatedRequest, res: Response) => {
+export const updateNotificationPreferences = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    // const userId = req.user?._id; // TODO: Use for user-specific preferences
-    // TODO: Update user-specific preferences in User model using userId
+    const userId = req.user?._id;
     const { preferences } = req.body;
 
-    // This would typically update a user preferences model
-    // For now, just return success
+    if (!userId) {
+      res.status(401).json({
+        success: false,
+        message: 'User not authenticated'
+      });
+      return;
+    }
+
+    if (!preferences) {
+      res.status(400).json({
+        success: false,
+        message: 'Preferences data is required'
+      });
+      return;
+    }
+
+    // Update user preferences in database
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          'preferences.notifications': preferences
+        }
+      },
+      { new: true, runValidators: true }
+    ).select('preferences');
+
+    if (!updatedUser) {
+      res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+      return;
+    }
     
     res.json({
       success: true,
       message: 'Notification preferences updated successfully',
-      data: { preferences }
+      data: { preferences: updatedUser.preferences?.notifications }
     });
   } catch (error) {
     res.status(500).json({
